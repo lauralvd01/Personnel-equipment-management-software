@@ -4,7 +4,7 @@
 
 Este es el repositorio del *Grupo X*, cuyos integrantes son:
 
-* Darael Badilla
+* Darael Badilla - 201821046-3
 * Daniela Stuven
 * Diego Tobar
 * Laura Levraud
