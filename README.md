@@ -1,13 +1,14 @@
 > Notar que **X** corresponde al número del grupo asignado.
 
-# Grupo X
+# Grupo 1
 
 Este es el repositorio del *Grupo X*, cuyos integrantes son:
 
-* 
-* 
-* 
-* **Tutor**: 
+* Darael Badilla
+* Daniela Stuven
+* Diego Tobar
+* Laura Levraud
+* **Tutor**: Ariane Carvajal
 
 ## Wiki
 
