@@ -4,7 +4,7 @@ Este es el repositorio del *Grupo 1*, cuyos integrantes son:
 
 * Darael Badilla - 201821046-3
 * Daniela Stuven - 202030014-3
-* Diego Tobar
+* Diego Tobar - 201930050-4
 * Laura Levraud - 202490033-1
 * **Tutor**: Ariane Carvajal
 
