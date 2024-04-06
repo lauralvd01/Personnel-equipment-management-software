@@ -12,4 +12,4 @@ Este es el repositorio del *Grupo 1*, cuyos integrantes son:
 
 > Obtener enlace desde el home de la wiki del repo.
 
-Puede acceder a la Wiki mediante el siguiente [enlace](https://gitlab.com/inf.../...)
+Puede acceder a la Wiki mediante el siguiente [enlace](https://gitlab.com/inf236-2024-1/grupo001/-/wikis/home)
