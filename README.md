@@ -7,6 +7,7 @@ Este es el repositorio del *Grupo 1*, cuyos integrantes son:
 * Diego Tobar - 201930050-4
 * Laura Levraud - 202490033-1
 * **Tutor**: Ariane Carvajal
+* **Profesor**: Wladimir Ormazabal
 
 ## Wiki
 
