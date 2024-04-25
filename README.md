@@ -21,7 +21,9 @@ Primero se necesita descargar Node.js
 
 Posteriormente, se debe de ir a la carpeta inf236-frontend y dentro de esta misma ejecutar:
 
-* docker-compose build
-* docker-compose up
+```
+docker-compose build
+docker-compose up
+```
 
 Listo, se puede abrir el localhost:7777 para ver el framework Vue.js sobre el cual se trabajará la creación del front-end
