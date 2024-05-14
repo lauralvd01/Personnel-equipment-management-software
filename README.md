@@ -20,14 +20,14 @@ Puede acceder a la Wiki mediante el siguiente [enlace](https://gitlab.com/inf236
 * Instalar [Node.js](https://nodejs.org/en/download)
 * Clonar este repositorio e ingresar el siguiente código en las carpetas respectivas:
 
-En la carpeta inf23620241/inf236-frontend:
+En la carpeta inf23620241:
 
 ```
 docker-compose build
 docker-compose up
 ```
 
-Y lo mismo en la carpeta inf23620241:
+Y lo mismo en la carpeta inf23620241/inf236-frontend:
 
 ```
 docker-compose build
