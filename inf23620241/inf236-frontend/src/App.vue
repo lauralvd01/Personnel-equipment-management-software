@@ -1,18 +1,17 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <HelloWorld msg="Sistema de monitoreo de fallas en motores mineros"/>
+  <p><strong>Current route path:</strong> {{ $route.fullPath }}</p>
+  <nav>
+    <RouterLink to="/">Home</RouterLink>
+    <p> </p>
+    <RouterLink to="/vistamecanico">Vista Mecánico</RouterLink>
+    <p> </p>
+    <RouterLink to="/vistajefemotores">Vista Jefe motores</RouterLink>
+  </nav>
+  <main>
+    <RouterView />
+  </main>
 </template>
-
-<script>
-import HelloWorld from './components/HelloWorld.vue'
-
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
-</script>
 
 <style>
 #app {
