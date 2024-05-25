@@ -97,24 +97,28 @@ export default {
       try {
         const response = await axios.post('http://localhost:8000/api/incidents/', this.form);
         this.message = 'Formulario enviado exitosamente.';
-        this.message = JSON.stringify(this.form);
         this.isSuccess = true;
         this.responseData = response.data; // Almacenar la respuesta en responseData
-        this.form = {
-          motorId: '',
-          mechanicId: '',
-          incidentDate: '',
-          startDate: '',
-          endDate: '',
-          solved: '',
-          problemDescription: '',
-          workToDo: ''
-        };
+        this.resetForm();
       } catch (error) {
-        this.message = 'Error al enviar el formulario.';
+        this.message = 'Error al enviar el formulario.'+ JSON.stringify(this.form);
         this.isSuccess = false;
-        this.message = JSON.stringify(this.form);
+        if (error.response) {
+          this.message += ` Detalles del error: ${error.response.data}`;
+        }
       }
+    },
+    resetForm() {
+      this.form = {
+        motorId: '',
+        mechanicId: '',
+        incidentDate: '',
+        startDate: '',
+        endDate: '',
+        solved: '',
+        problemDescription: '',
+        workToDo: ''
+      };
     }
   }
 };
