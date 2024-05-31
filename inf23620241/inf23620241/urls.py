@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from inf236backend.views import MotorViewSet, CamionViewSet, AsignacionMotorCamionViewSet, handle_incident
+from inf236backend.views import MotorViewSet, CamionViewSet, AsignacionMotorCamionViewSet, handle_incident, login_view
 
 
 router = DefaultRouter()
@@ -28,4 +28,5 @@ urlpatterns = [
     path('', include(router.urls)),
     #path('admin/', admin.site.urls),
     path('api/incidents/', handle_incident, name='handle_incident'), #Path de Vista, linea de prueba
+    path('api/login/', login_view, name='login_view'),
 ]

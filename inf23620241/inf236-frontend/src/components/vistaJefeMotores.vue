@@ -1,227 +1,474 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
     <h2>Vista Jefe Motores</h2>
-    <div class="loader"></div>
-    <div class="container">
-      <form class="form">
-        <div class="title">Por favor<br><span>Ingrese su rol y contraseña</span></div>
-        <input type="email" placeholder="Rol" name="email" class="input">
-        <input type="password" placeholder="Contraseña" name="password" class="input">
-        <button class="button-confirm">Ingresar</button>
-      </form>
-
-
-
-
-
-
-
-
-
+    <div class="containerGeneral">
+    <div class="radio-inputs">
+    <label class="radio">
+      <input type="radio" name="radio" value="html" v-model="selectedOption" />
+      <span class="name">Asignar Motor a Camión</span>
+    </label>
+    <label class="radio">
+      <input type="radio" name="radio" value="react" v-model="selectedOption" />
+      <span class="name">Revisar Incidencias</span>
+    </label>
+    <label class="radio">
+      <input type="radio" name="radio" value="vue" v-model="selectedOption" />
+      <span class="name">Gráficos y Análisis</span>
+    </label>
     </div>
   </div>
 
 
-  
+    <div v-if="selectedOption === 'html'">
+      <div class="containerGeneral">
+        <section class="container">
+          <header>Formulario Asignación de Motores a Camiones</header>
+          <form @submit.prevent="submitForm">
+            <div class="input-box">
+              <label>Identificador de Motor</label>
+              <input v-model="form.motorId" required placeholder="Ingrese el identificador del motor" type="text">
+            </div>
+            <div class="column">
+              <div class="input-box">
+                <label>Identificador Mecánico</label>
+                <input v-model="form.mechanicId" required placeholder="Ingrese su identificador" type="text">
+              </div>
+              <div class="input-box">
+                <label>Fecha Incidencia</label>
+                <input v-model="form.incidentDate" required placeholder="Inserte Fecha" type="date">
+              </div>
+            </div>
+            <div class="column">
+              <div class="input-box">
+                <label>Fecha Inicio Trabajo</label>
+                <input v-model="form.startDate" required placeholder="Inserte Fecha" type="date">
+              </div>
+              <div class="input-box">
+                <label>Fecha Fin Trabajo</label>
+                <input v-model="form.endDate" required placeholder="Inserte Fecha" type="date">
+              </div>
+            </div>
+            <div class="solution-box">
+              <label>¿Solucionado?</label>
+              <div class="radio-button-container">
+                <div class="radio-button">
+                  <input v-model="form.solved" type="radio" class="radio-button__input" id="radio1" value="Si" name="radio-group">
+                  <label class="radio-button__label" for="radio1">
+                    <span class="radio-button__custom"></span>
+                    Si
+                  </label>
+                </div>
+                <div class="radio-button">
+                  <input v-model="form.solved" type="radio" class="radio-button__input" id="radio2" value="No" name="radio-group">
+                  <label class="radio-button__label" for="radio2">
+                    <span class="radio-button__custom"></span>
+                    No
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="input-box">
+              <label>Descripción del problema</label>
+              <textarea v-model="form.problemDescription" required placeholder="Describa el/los problemas asociados a la incidencia"></textarea>
+            </div>
+            <div class="input-box">
+              <label>Trabajo por realizar</label>
+              <textarea v-model="form.workToDo" required placeholder="Indique qué es lo que falta por hacer"></textarea>
+            </div>
+            <button type="submit">Submit</button>
+          </form>
+          <div v-if="message" :class="{'success': isSuccess, 'error': !isSuccess}">
+            {{ message }}
+          </div>
+          <div v-if="responseData">
+            <h3>Datos de la Respuesta:</h3>
+            <pre>{{ responseData }}</pre>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div v-if="selectedOption === 'react'">
+      <div class="containerGeneral">
+      <section class="container">
+      
+      </section>
+    </div>
+    </div>
+
+    <div v-if="selectedOption === 'vue'">
+      <div class="containerGeneral">
+      <section class="container">
+      <form>
+        <label for="vue-name">Name:</label>
+        <input type="text" id="vue-name" name="vue-name" />
+        <button type="submit">Submit</button>
+      </form>
+    </section>
+    </div>
+    </div>
 </template>
 
+<script>
+import { ref } from 'vue';
+import axios from 'axios';
+
+export default {
+  name: 'App',
+  setup() {
+    const selectedOption = ref('html');
+
+    return {
+      selectedOption
+    };
+  },
+  data() {
+    return {
+      form: {
+        motorId: '',
+        mechanicId: '',
+        incidentDate: '',
+        startDate: '',
+        endDate: '',
+        solved: '',
+        problemDescription: '',
+        workToDo: ''
+      },
+      message: '',
+      isSuccess: false,
+      responseData: null // Añadido para almacenar la respuesta
+    };
+  },
+  methods: {
+    async submitForm() {
+      try {
+        const response = await axios.post('http://localhost:8000/api/incidents/', this.form);
+        this.message = 'Formulario enviado exitosamente.';
+        this.isSuccess = true;
+        this.responseData = response.data; // Almacenar la respuesta en responseData
+        this.resetForm();
+      } catch (error) {
+        this.message = 'Error al enviar el formulario.'+ JSON.stringify(this.form);
+        this.isSuccess = false;
+        if (error.response) {
+          this.message += ` Detalles del error: ${error.response.data}`;
+        }
+      }
+    },
+    resetForm() {
+      this.form = {
+        motorId: '',
+        mechanicId: '',
+        incidentDate: '',
+        startDate: '',
+        endDate: '',
+        solved: '',
+        problemDescription: '',
+        workToDo: ''
+      };
+    }
+  }
+};
+</script>
 
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <style scoped>
-.container {
-  display: flex; /* Configura el contenedor como un flex container */
-  justify-content: center; /* Centra el contenido horizontalmente */
-  height: 100vh; /* Establece la altura del contenedor al 100% del viewport */
+.radio-inputs {
+  position: relative;
+  display: flex;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  font-size: 17px;
+  max-width: 1050px;
+  width: 100%;
+  padding: 1rem 1rem 0 1rem;
 }
 
-.content {
-  /* Estilos para tu objeto o contenido */
-  margin: 0px;
+.radio-inputs .radio input {
+  display: none;
 }
-h3 {
-  margin: 40px 0 0;
+
+.radio-inputs .radio .name {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  border: none;
+  padding: 0.5rem 0.8rem;
+  transition: all 0.15s ease-in-out;
+  position: relative;
 }
+
+.radio-inputs .radio input:checked + .name {
+  background-color: #FCEDDA;
+  font-weight: 600;
+}
+.radio-inputs .radio input + .name:hover {
+  color: #a3a3a3;
+}
+.radio-inputs .radio input:checked + .name:hover {
+  color: #1d1d29;
+}
+
+.radio-inputs .radio input:checked + .name::after,
+.radio-inputs .radio input:checked + .name::before {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #ffffff;
+  bottom: 0;
+}
+
+.radio-inputs .radio input:checked + .name::after {
+  right: -10px;
+  border-bottom-left-radius: 300px;
+  box-shadow: -3px 3px 0px 3px #FCEDDA;
+}
+.radio-inputs .radio input:checked + .name::before {
+  left: -10px;
+  border-bottom-right-radius: 300px;
+  box-shadow: 3px 3px 0px 3px #FCEDDA;
+}
+
+
+
+/* Formulario Mecanicos */
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
+
+.containerGeneral {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
 ul {
   list-style-type: none;
   padding: 0;
 }
+
 li {
   display: inline-block;
   margin: 0 10px;
 }
+
 a {
   color: #42b983;
 }
-
-/*Formulario*/
-.form {
-  height: 400px;
-  --input-focus: #2d8cf0;
-  --font-color: #323232;
-  --font-color-sub: #666;
-  --bg-color: #fff;
-  --main-color: #323232;
-  padding: 20px;
-  background: lightgrey;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: top;
-  gap: 20px;
-  border-radius: 5px;
-  border: 2px solid var(--main-color);
-  box-shadow: 4px 4px var(--main-color);
+.container {
+  position: relative;
+  max-width: 1000px;
+  height: auto; /* Ajustado para permitir que el contenedor se expanda */
+  width: 100%;
+  background: #FCEDDA;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
-.title {
-  color: var(--font-color);
-  font-weight: 900;
-  font-size: 20px;
-  margin-bottom: 25px;
-}
-
-.title span {
-  color: var(--font-color-sub);
+.container header {
+  font-size: 1.2rem;
+  color: #000;
   font-weight: 600;
-  font-size: 17px;
+  text-align: center;
 }
 
-.input {
-  width: 250px;
-  height: 40px;
-  border-radius: 5px;
-  border: 2px solid var(--main-color);
-  background-color: var(--bg-color);
-  box-shadow: 4px 4px var(--main-color);
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--font-color);
-  padding: 5px 10px;
+.form .input-box {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.input-box label {
+  color: #000;
+}
+
+.input-box input,
+.input-box textarea {
+  width: 100%;
   outline: none;
+  font-size: 1rem;
+  color: #585858;
+  margin-top: 5px;
+  border: 1px solid #EE4E34;
+  border-radius: 6px;
+  padding: 10px; /* Añadido padding */
+  background: #FCEDDA;
+  box-sizing: border-box; /* Incluido para asegurarse de que el padding no afecte el tamaño total */
 }
 
-.input::placeholder {
-  color: var(--font-color-sub);
-  opacity: 0.8;
+.input-box input:focus,
+.input-box textarea:focus {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
 }
 
-.input:focus {
-  border: 2px solid var(--input-focus);
+.column {
+  margin-top: 10px;
+  display:flex;
+  column-gap: 15px;
+  justify-content: center;
+  width: 100%;
 }
 
-.login-with {
-  display: flex;
-  gap: 20px;
+.solution-box {
+  margin-top: 10px;
 }
 
-.button-log {
-  cursor: pointer;
-  width: 40px;
-  height: 40px;
-  border-radius: 100%;
-  border: 2px solid var(--main-color);
-  background-color: var(--bg-color);
-  box-shadow: 4px 4px var(--main-color);
-  color: var(--font-color);
-  font-size: 25px;
+.solution-option,
+.solution {
   display: flex;
   justify-content: center;
   align-items: center;
+  column-gap: 50px;
+  flex-wrap: wrap;
 }
 
-.icon {
-  width: 24px;
-  height: 24px;
-  fill: var(--main-color);
+.gender {
+  column-gap: 5px;
 }
 
-.button-log:active, .button-confirm:active {
-  box-shadow: 0px 0px var(--main-color);
-  transform: translate(3px, 3px);
+.gender input {
+  accent-color: #EE4E34;
 }
 
-.button-confirm {
-  margin: 50px auto 0 auto;
-  width: 120px;
-  height: 40px;
-  border-radius: 5px;
-  border: 2px solid var(--main-color);
-  background-color: var(--bg-color);
-  box-shadow: 4px 4px var(--main-color);
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--font-color);
+.gender input,
+.gender label {
   cursor: pointer;
 }
 
-/*Fin Formulario*/ 
+.gender label {
+  color: #000;
+}
 
-/*Loader*/
-.loader {
+.address input,
+.address .select-box {
+  margin-top: 10px;
+}
+
+.select-box select {
+  height: 100%;
+  width: 100%;
+  outline: none;
+  border: none;
+  color: #808080;
+  font-size: 1rem;
+  background: #FCEDDA;
+}
+
+button {
+  height: 40px;
+  width: 100%;
+  color: #000;
+  font-size: 1rem;
+  font-weight: 400;
+  margin-top: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #EE4E34;
+}
+
+button:hover {
+  background: #EE3E34;
+}
+
+/* Estilo de los campos Togle */
+.radio-button-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+}
+
+.radio-button {
+  display: inline-block;
   position: relative;
-  width: 120px;
-  height: 90px;
-  margin: -600 px;
+  cursor: pointer;
 }
 
-.loader:before {
-  content: "";
+.radio-button__input {
   position: absolute;
-  bottom: 30px;
-  left: 50px;
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  background: #2a9d8f;
-  animation: loading-bounce 0.5s ease-in-out infinite alternate;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-.loader:after {
-  content: "";
+.radio-button__label {
+  display: inline-block;
+  padding-left: 30px;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 15px;
+  color: #181717;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.radio-button__custom {
   position: absolute;
-  right: 0;
   top: 0;
-  height: 7px;
-  width: 45px;
-  border-radius: 4px;
-  box-shadow: 0 5px 0 #f2f2f2, -35px 50px 0 #f2f2f2, -70px 95px 0 #f2f2f2;
-  animation: loading-step 1s ease-in-out infinite;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #555;
+  transition: all 0.3s ease;
 }
 
-@keyframes loading-bounce {
-  0% {
-    transform: scale(1, 0.7);
-  }
-
-  40% {
-    transform: scale(0.8, 1.2);
-  }
-
-  60% {
-    transform: scale(1, 1);
-  }
-
-  100% {
-    bottom: 140px;
-  }
+.radio-button__input:checked + .radio-button__label .radio-button__custom {
+  background-color: #4c8bf5;
+  border-color: transparent;
+  transform: scale(0.8);
+  box-shadow: 0 0 20px #4c8bf580;
 }
 
-@keyframes loading-step {
-  0% {
-    box-shadow: 0 10px 0 rgba(0, 0, 0, 0),
-            0 10px 0 #000000,
-            -35px 50px 0 #000000,
-            -70px 90px 0 #000000;
-  }
-
-  100% {
-    box-shadow: 0 10px 0 #000000,
-            -35px 50px 0 #000000,
-            -70px 90px 0 #000000,
-            -70px 90px 0 rgba(0, 0, 0, 0);
-  }
+.radio-button__input:checked + .radio-button__label {
+  color: #4c8bf5;
 }
-/*Loader*/
+
+.radio-button__label:hover .radio-button__custom {
+  transform: scale(1.2);
+  border-color: #4c8bf5;
+  box-shadow: 0 0 20px #4c8bf580;
+}
+
+
+
 </style>

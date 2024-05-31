@@ -24,6 +24,17 @@ class AsignacionMotorCamionViewSet(viewsets.ModelViewSet):
 # Nueva vista para manejar la solicitud POST del formulario de incidencias
 
 @api_view(['POST'])
+
+def login_view(request):
+    role = request.data.get('role')
+    password = request.data.get('password')
+    
+    if role == '123456789' and password == 'holamundo':
+        return Response({'success': True}, status=status.HTTP_200_OK)
+    else:
+        return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
+
+
 def handle_incident(request):
     data = request.data
     # Procesa los datos del formulario según tus necesidades

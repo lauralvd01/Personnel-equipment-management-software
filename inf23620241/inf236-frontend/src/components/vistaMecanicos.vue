@@ -1,80 +1,126 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h2>Vista Mecánicos</h2>
-    <div class="containerGeneral">
-      <section class="container">
-        <header>Formulario de Incidencias</header>
-        <form @submit.prevent="submitForm">
-          <div class="input-box">
-            <label>Identificador de Motor</label>
-            <input v-model="form.motorId" required placeholder="Ingrese el identificador del motor" type="text">
-          </div>
-          <div class="column">
-            <div class="input-box">
-              <label>Identificador Mecánico</label>
-              <input v-model="form.mechanicId" required placeholder="Ingrese su identificador" type="text">
-            </div>
-            <div class="input-box">
-              <label>Fecha Incidencia</label>
-              <input v-model="form.incidentDate" required placeholder="Inserte Fecha" type="date">
-            </div>
-          </div>
-          <div class="column">
-            <div class="input-box">
-              <label>Fecha Inicio Trabajo</label>
-              <input v-model="form.startDate" required placeholder="Inserte Fecha" type="date">
-            </div>
-            <div class="input-box">
-              <label>Fecha Fin Trabajo</label>
-              <input v-model="form.endDate" required placeholder="Inserte Fecha" type="date">
-            </div>
-          </div>
-          <div class="solution-box">
-            <label>¿Solucionado?</label>
-            <div class="radio-button-container">
-              <div class="radio-button">
-                <input v-model="form.solved" type="radio" class="radio-button__input" id="radio1" value="Si" name="radio-group">
-                <label class="radio-button__label" for="radio1">
-                  <span class="radio-button__custom"></span>
-                  Si
-                </label>
-              </div>
-              <div class="radio-button">
-                <input v-model="form.solved" type="radio" class="radio-button__input" id="radio2" value="No" name="radio-group">
-                <label class="radio-button__label" for="radio2">
-                  <span class="radio-button__custom"></span>
-                  No
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="input-box">
-            <label>Descripción del problema</label>
-            <textarea v-model="form.problemDescription" required placeholder="Describa el/los problemas asociados a la incidencia"></textarea>
-          </div>
-          <div class="input-box">
-            <label>Trabajo por realizar</label>
-            <textarea v-model="form.workToDo" required placeholder="Indique qué es lo que falta por hacer"></textarea>
-          </div>
-          <button type="submit">Submit</button>
-        </form>
-        <div v-if="message" :class="{'success': isSuccess, 'error': !isSuccess}">
-          {{ message }}
-        </div>
-        <div v-if="responseData">
-          <h3>Datos de la Respuesta:</h3>
-          <pre>{{ responseData }}</pre>
-        </div>
-      </section>
+<h2>Vista Mecánico</h2>
+<div class="containerGeneral">
+    <div class="radio-inputs">
+    <label class="radio">
+      <input type="radio" name="radio" value="html" v-model="selectedOption" />
+      <span class="name">Asignar Motor a Camión</span>
+    </label>
+    <label class="radio">
+      <input type="radio" name="radio" value="react" v-model="selectedOption" />
+      <span class="name">Revisar Incidencias</span>
+    </label>
+    <label class="radio">
+      <input type="radio" name="radio" value="vue" v-model="selectedOption" />
+      <span class="name">Gráficos y Análisis</span>
+    </label>
     </div>
   </div>
+
+
+    <div v-if="selectedOption === 'html'">
+      <div class="containerGeneral">
+        <section class="container">
+          <header>Formulario Asignación de Motores a Camiones</header>
+          <form @submit.prevent="submitForm">
+            <div class="input-box">
+              <label>Identificador de Motor</label>
+              <input v-model="form.motorId" required placeholder="Ingrese el identificador del motor" type="text">
+            </div>
+            <div class="column">
+              <div class="input-box">
+                <label>Identificador Mecánico</label>
+                <input v-model="form.mechanicId" required placeholder="Ingrese su identificador" type="text">
+              </div>
+              <div class="input-box">
+                <label>Fecha Incidencia</label>
+                <input v-model="form.incidentDate" required placeholder="Inserte Fecha" type="date">
+              </div>
+            </div>
+            <div class="column">
+              <div class="input-box">
+                <label>Fecha Inicio Trabajo</label>
+                <input v-model="form.startDate" required placeholder="Inserte Fecha" type="date">
+              </div>
+              <div class="input-box">
+                <label>Fecha Fin Trabajo</label>
+                <input v-model="form.endDate" required placeholder="Inserte Fecha" type="date">
+              </div>
+            </div>
+            <div class="solution-box">
+              <label>¿Solucionado?</label>
+              <div class="radio-button-container">
+                <div class="radio-button">
+                  <input v-model="form.solved" type="radio" class="radio-button__input" id="radio1" value="Si" name="radio-group">
+                  <label class="radio-button__label" for="radio1">
+                    <span class="radio-button__custom"></span>
+                    Si
+                  </label>
+                </div>
+                <div class="radio-button">
+                  <input v-model="form.solved" type="radio" class="radio-button__input" id="radio2" value="No" name="radio-group">
+                  <label class="radio-button__label" for="radio2">
+                    <span class="radio-button__custom"></span>
+                    No
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="input-box">
+              <label>Descripción del problema</label>
+              <textarea v-model="form.problemDescription" required placeholder="Describa el/los problemas asociados a la incidencia"></textarea>
+            </div>
+            <div class="input-box">
+              <label>Trabajo por realizar</label>
+              <textarea v-model="form.workToDo" required placeholder="Indique qué es lo que falta por hacer"></textarea>
+            </div>
+            <button type="submit">Submit</button>
+          </form>
+          <div v-if="message" :class="{'success': isSuccess, 'error': !isSuccess}">
+            {{ message }}
+          </div>
+          <div v-if="responseData">
+            <h3>Datos de la Respuesta:</h3>
+            <pre>{{ responseData }}</pre>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div v-if="selectedOption === 'react'">
+      <div class="containerGeneral">
+      <section class="container">
+      
+      </section>
+    </div>
+    </div>
+
+    <div v-if="selectedOption === 'vue'">
+      <div class="containerGeneral">
+      <section class="container">
+      <form>
+        <label for="vue-name">Name:</label>
+        <input type="text" id="vue-name" name="vue-name" />
+        <button type="submit">Submit</button>
+      </form>
+    </section>
+    </div>
+    </div>
 </template>
 
 <script>
+import { ref } from 'vue';
 import axios from 'axios';
 
 export default {
+  name: 'App',
+  setup() {
+    const selectedOption = ref('html');
+
+    return {
+      selectedOption
+    };
+  },
   data() {
     return {
       form: {
@@ -124,7 +170,98 @@ export default {
 };
 </script>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <style scoped>
+.radio-inputs {
+  position: relative;
+  display: flex;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  font-size: 17px;
+  max-width: 1050px;
+  width: 100%;
+  padding: 1rem 1rem 0 1rem;
+}
+
+.radio-inputs .radio input {
+  display: none;
+}
+
+.radio-inputs .radio .name {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  border: none;
+  padding: 0.5rem 0.8rem;
+  transition: all 0.15s ease-in-out;
+  position: relative;
+}
+
+.radio-inputs .radio input:checked + .name {
+  background-color: #FCEDDA;
+  font-weight: 600;
+}
+.radio-inputs .radio input + .name:hover {
+  color: #a3a3a3;
+}
+.radio-inputs .radio input:checked + .name:hover {
+  color: #1d1d29;
+}
+
+.radio-inputs .radio input:checked + .name::after,
+.radio-inputs .radio input:checked + .name::before {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #ffffff;
+  bottom: 0;
+}
+
+.radio-inputs .radio input:checked + .name::after {
+  right: -10px;
+  border-bottom-left-radius: 300px;
+  box-shadow: -3px 3px 0px 3px #FCEDDA;
+}
+.radio-inputs .radio input:checked + .name::before {
+  left: -10px;
+  border-bottom-right-radius: 300px;
+  box-shadow: 3px 3px 0px 3px #FCEDDA;
+}
+
+
+
+/* Formulario Mecanicos */
+
 .success {
   color: green;
 }
@@ -136,7 +273,7 @@ export default {
 .containerGeneral {
   display: flex;
   justify-content: center;
-  height: 100vh;
+  height: 100%;
 }
 
 ul {
@@ -152,11 +289,9 @@ li {
 a {
   color: #42b983;
 }
-
-/* Formulario Mecanicos */
 .container {
   position: relative;
-  max-width: 750px;
+  max-width: 1000px;
   height: auto; /* Ajustado para permitir que el contenedor se expanda */
   width: 100%;
   background: #FCEDDA;
@@ -201,8 +336,11 @@ a {
 }
 
 .column {
-  display: flex;
+  margin-top: 10px;
+  display:flex;
   column-gap: 15px;
+  justify-content: center;
+  width: 100%;
 }
 
 .solution-box {
@@ -330,4 +468,7 @@ button:hover {
   border-color: #4c8bf5;
   box-shadow: 0 0 20px #4c8bf580;
 }
+
+
+
 </style>

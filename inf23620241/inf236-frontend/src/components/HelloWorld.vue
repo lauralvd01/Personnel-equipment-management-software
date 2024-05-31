@@ -1,38 +1,60 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
     <h2>Vista Home</h2>
     <div class="container">
-      <form class="form">
+      <form class="form" @submit.prevent="submitForm">
         <div class="title">Por favor<br><span>Ingrese su rol y contraseña</span></div>
-        <input type="email" placeholder="Rol" name="email" class="input">
-        <input type="password" placeholder="Contraseña" name="password" class="input">
-        <button class="button-confirm">Ingresar</button>
+        <input v-model="form.role" type="text" placeholder="Rol" name="role" class="input" required>
+        <input v-model="form.password" type="password" placeholder="Contraseña" name="password" class="input" required>
+        <button type="submit" class="button-confirm">Ingresar</button>
       </form>
-
-
-
-
-
-
-
-
-
+      
     </div>
+    <p>{{ msg }}</p> <!-- Para mostrar el mensaje de éxito o error -->
   </div>
-
-
-  
 </template>
 
+<script>
+import axios from 'axios';
+import { useRouter } from 'vue-router';
 
+export default {
+  data() {
+    return {
+      form: {
+        role: '',
+        password: ''
+      },
+      msg: ''
+    };
+  },
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
+  methods: {
+    async submitForm() {
+      try {
+        const response = await axios.post('http://localhost:8000/api/login/', this.form);
+        if (response.data.success) {
+          this.$router.push('/vistamecanico'); // Redirigir a la vista del mecánico
+        } else {
+          this.msg = 'Usuario o contraseña incorrectos';
+        }
+      } catch (error) {
+        this.msg = 'Error al enviar el formulario';
+      }
+    }
+  }
+};
+</script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .container {
   display: flex; /* Configura el contenedor como un flex container */
   justify-content: center; /* Centra el contenido horizontalmente */
-  height: 100vh; /* Establece la altura del contenedor al 100% del viewport */
+  height: 100%; /* Establece la altura del contenedor al 100% del viewport */
 }
 
 .content {
