@@ -61,3 +61,19 @@ class Incidencia(models.Model):
     fecha_inicio_trabajo = models.DateTimeField(null=True, blank=True)
     fecha_fin_trabajo = models.DateTimeField(null=True, blank=True)
     solucionado = models.BooleanField(default=False)
+
+
+# Modelo para Hito 4, en un futuro se eliminará y se trabajarán con los modelos vistos arriba
+
+class Incident(models.Model):
+    motor_id = models.CharField(max_length=100)
+    mechanic_id = models.CharField(max_length=100)
+    incident_date = models.DateField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    solved = models.BooleanField()
+    problem_description = models.TextField()
+    work_to_do = models.TextField()
+
+    def __str__(self):
+        return self.motor_id

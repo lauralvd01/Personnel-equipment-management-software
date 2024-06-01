@@ -2,8 +2,10 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Motor, Camion, AsignacionMotorCamion
-from .serializers import MotorSerializer, CamionSerializer, AsignacionMotorCamionSerializer
+from .models import Motor, Camion, AsignacionMotorCamion, Incident
+from .serializers import MotorSerializer, CamionSerializer, AsignacionMotorCamionSerializer, IncidentSerializer
+
+
 
 # Create your views here.
 # Views are in charge of the business logic of the application
@@ -34,40 +36,24 @@ def login_view(request):
     else:
         return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
 
-
+# Modificación momentánea para hito 4
+@api_view(['POST'])
 def handle_incident(request):
-    data = request.data
-    # Procesa los datos del formulario según tus necesidades
-    # Por ejemplo, puedes guardar los datos en la base de datos o realizar otras operaciones
+    if request.method == 'POST':
+        print(f"Request data: {request.data}")
+        serializer = IncidentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(f"Serializer errors: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # Aquí puedes realizar validaciones y otras lógicas de negocio
-    
-    motor_id = data.get('motorId')
-    mechanic_id = data.get('mechanicId')
-    incident_date = data.get('incidentDate')
-    start_date = data.get('startDate')
-    end_date = data.get('endDate')
-    solved = data.get('solved')
-    problem_description = data.get('problemDescription')
-    work_to_do = data.get('workToDo')
 
-    # Ejemplo simple de validación y respuesta
-    if not motor_id or not mechanic_id:
-        return Response({'error': 'Faltan campos obligatorios'}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Aquí puedes crear una nueva instancia de un modelo, si es necesario
-    # nuevo_incidente = Incidente.objects.create(
-    response_data = {
-        'motorId': motor_id,
-        'mechanicId': mechanic_id,
-        'incidentDate': incident_date,
-        'startDate': start_date,
-        'endDate': end_date,
-        'solved': solved,
-        'problemDescription': problem_description,
-        'workToDo': work_to_do,
-        'message': 'Formulario recibido correctamente'
-    }
-
-    # Responder con un mensaje de éxito
-    return Response(response_data, status=status.HTTP_200_OK)
+@api_view(['GET'])
+def search_incidents(request):
+    motor_id = request.query_params.get('motor_id', None)
+    if motor_id is not None:
+        incidents = Incident.objects.filter(motor_id=motor_id)
+        serializer = IncidentSerializer(incidents, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({'error': 'Motor ID no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
