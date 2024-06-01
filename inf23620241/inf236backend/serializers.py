@@ -25,3 +25,18 @@ class IncidentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Incident
         fields = '__all__'
+    
+    def save(self):
+        import datetime
+        for key, value in self.validated_data.items(): # Momentaneo formatamos las fechas a string para registrarlas en la (momentanea) base de datos en JSON
+            if isinstance(value, datetime.date) :
+                date = value.strftime("%Y-%m-%d")
+                self.validated_data[key] = date
+        
+        import json
+        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
+            data = json.load(incidentsDB)
+        data.append(self.validated_data)
+
+        with open('./inf236backend/tempDB/incidents.json', 'w') as newIncidentsDB:
+	        json.dump(data, newIncidentsDB)
