@@ -185,10 +185,11 @@
               <th>Fecha inicio del trabajo</th>
               <th>Fecha fin del trabajo</th>
               <th>¿Solucionado?</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="incident in incidentsList" :key="incident.id">
+            <tr v-for="(incident,index) in incidentsList" :key="index">
               <td>{{ incident.motor_id }}</td>
               <td>{{ incident.incident_date }}</td>
               <td>{{ incident.problem_description }}</td>
@@ -198,37 +199,93 @@
               <td>{{ incident.start_date }}</td>
               <td>{{ incident.end_date }}</td>
               <td>{{ incident.solved ? 'Yes' : 'No' }}</td>
+              <td>
+                <button @click="updateIndex(index)">Editar</button>
+              </td>
             </tr> 
           </tbody>
         </table>
         <div v-else>Todavia no hay incidencias</div>
       </section>
     </div>
-  </div>
 
+<!-- -------------------------------------------- Modificar una incidencia -->
+    <div class="containerGeneral">
+      <section class="container" v-if="editIndex || editIndex === 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Motor ID</th>
+              <th>Fecha de incidencia</th>
+              <th>Descripción del problema</th>
+              <th>Mecánicos relacionados</th>
+              <th>Trabajo por hacer</th>
+              <th>Mecánico asignado</th>
+              <th>Fecha inicio del trabajo</th>
+              <th>Fecha fin del trabajo</th>
+              <th>¿Solucionado?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ incidentsList[editIndex].motor_id }}</td>
+              <td>{{ incidentsList[editIndex].incident_date }}</td>
+              <td>{{ incidentsList[editIndex].problem_description }}</td>
+              <td>{{ incidentsList[editIndex].mechanics_associated }}</td>
+              <td>{{ incidentsList[editIndex].work_to_do }}</td>
+              <td>{{ incidentsList[editIndex].mechanic_id }}</td>
+              <td>{{ incidentsList[editIndex].start_date }}</td>
+              <td>{{ incidentsList[editIndex].end_date }}</td>
+              <td>{{ incidentsList[editIndex].solved ? 'Yes' : 'No' }}</td>
+            </tr> 
+          </tbody>
+        </table>
 
-<!-- CUIDADO normalmente solo un Jefe de Motores puede ver esa posibilidad de asignar la incidencia a un Mecánico -->
+        <header style="margin-top: 2%;">Modificar los datos de la incidencia</header>
+        <form @submit.prevent="editReport">
+          <div class="column">
+            <div class="input-box">
+              <label>Identificador del Motor</label>
+              <input v-model="edit.motor_id" :placeholder="[[incidentsList[editIndex].motor_id]]" type="text">
+            </div>
+            <div class="input-box">
+              <label>Fecha de la incidencia</label>
+              <input v-model="edit.incident_date" :placeholder="[[incidentsList[editIndex].incident_date]]" type="date">
+            </div>
+          </div>
+          <div class="input-box">
+            <label>Descripción del problema</label>
+            <textarea v-model="edit.problem_description" :placeholder="[[incidentsList[editIndex].problem_description]]"></textarea>
+          </div>
+          <div class="input-box">
+            <label>Mecánicos relacionados con la incidencia</label>
+            <textarea v-model="edit.mechanics_associated" :placeholder="[[incidentsList[editIndex].mechanics_associated]]"></textarea>
+          </div>
+          <div class="input-box">
+            <label>Trabajo por realizar</label>
+            <textarea v-model="edit.work_to_do" :placeholder="[[incidentsList[editIndex].work_to_do]]"></textarea>
+          </div>
+
+<!-- CUIDADO normalmente solo un Jefe de Motores puede ver esa posibilidad de asignar la incidencia a un Mecánico --> 
           <!-- <div class="input-box">
             <label>Identificador del Mecánico asignado</label>
-            <input v-model="form.mechanic_id" placeholder="Ingrese el identificador del Mecánico asignado" type="text">
+            <input v-model="edit.mechanic_id" placeholder="Ingrese el identificador del Mecánico asignado" type="text">
           </div> -->
-
-<!-- CUIDADO eso aparece solo para la modificacion de incidencias ya existentes : esos datos no son conocidos cuando la incidencia se registra por primera vez -->
-          <!-- <div class="column">
+          <div class="column">
             <div class="input-box">
               <label>Fecha Inicio Trabajo</label>
-              <input v-model="form.start_date" placeholder="Inserte Fecha" type="date">
+              <input v-model="edit.start_date" placeholder="Inserte Fecha" type="date">
             </div>
             <div class="input-box">
               <label>Fecha Fin Trabajo</label>
-              <input v-model="form.end_date" placeholder="Inserte Fecha" type="date">
+              <input v-model="edit.end_date" placeholder="Inserte Fecha" type="date">
             </div>
           </div>
           <div class="solution-box">
             <label>¿Solucionado?</label>
             <div class="radio-button-container">
               <div class="radio-button">
-                <input v-model="form.solved" type="radio" class="radio-button__input" id="radio1" :value="true"
+                <input v-model="edit.solved" type="radio" class="radio-button__input" id="radio1" :value="true"
                   name="radio-group">
                 <label class="radio-button__label" for="radio1">
                   <span class="radio-button__custom"></span>
@@ -236,7 +293,7 @@
                 </label>
               </div>
               <div class="radio-button">
-                <input v-model="form.solved" type="radio" class="radio-button__input" id="radio2" :value="false"
+                <input v-model="edit.solved" type="radio" class="radio-button__input" id="radio2" :value="false"
                   name="radio-group">
                 <label class="radio-button__label" for="radio2">
                   <span class="radio-button__custom"></span>
@@ -244,7 +301,15 @@
                 </label>
               </div>
             </div>
-          </div> -->
+          </div>
+
+          <button type="submit">Editar</button>
+        </form>
+      </section>
+    </div>
+
+
+  </div>
 
 
 <!--
@@ -386,6 +451,18 @@ export default {
       response_report: null,
       search_motor_id: '',
       incidentsList: [],
+      editIndex: null,
+      edit: {
+        motor_id: '',
+        incident_date: '',
+        problem_description: '',
+        mechanics_associated: '',
+        work_to_do: '',
+        mechanic_id: '',
+        start_date: '',
+        end_date: '',
+        solved: ''
+      },
       message: '',
       isSuccess: false
     };
@@ -426,6 +503,7 @@ export default {
       }
     },
     async searchAll() {
+      this.updateIndex(null);
       try {
         const response = await axios.get('http://localhost:8000/api/incidents/all/');
         this.incidentsList = response.data;
@@ -436,12 +514,31 @@ export default {
       }
     },
     async searchByMotor() {
+      this.updateIndex(null);
       try {
         const response = await axios.get(`http://localhost:8000/api/incidents/?motor_id=${this.search_motor_id}`);
         this.incidentsList = response.data;
         this.message = `Se encontraron ${response.data.length} resultados.`;
       } catch (error) {
         this.message = 'Error al buscar incidentes.';
+        this.isSuccess = false;
+      }
+    },
+    updateIndex(index) {
+      this.editIndex = index;
+    },
+    async editReport() {
+      try {
+        // TODO : find a way to specify wich incident to edit
+        // (this.editIndex is the index of the incident in the incidentsList array, not the id of the incident in the database)
+        // ==> We need to add an id field to the incident object in the database
+        const response = await axios.put(`http://localhost:8000/api/incidents/edit/${this.editIndex}/`, this.edit);
+        this.message = 'Formulario enviado exitosamente.';
+        this.isSuccess = true;
+        this.response_report = response.data;
+        this.editIndex = null;
+      } catch (error) {
+        this.message = `Error al enviar el formulario.`;
         this.isSuccess = false;
       }
     },

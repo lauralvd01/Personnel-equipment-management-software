@@ -106,6 +106,23 @@ class Incident(models.Model):
     end_date = models.CharField(default="", blank=True, max_length=100)
     solved = models.BooleanField(default=False)
 
+    # def __init__(self, report) :
+    #     print("Creating incident with data: ", report)
+    #     import datetime
+    #     self.motor_id = report['motor_id']
+    #     if isinstance(report['incident_date'], datetime.date) :
+    #             date = report['incident_date'].strftime("%Y-%m-%d")
+    #             self.incident_date = date
+    #     else:
+    #         self.incident_date = report['incident_date']
+    #     self.problem_description = report['problem_description']
+    #     self.mechanics_associated = report['mechanics_associated']
+    #     self.work_to_do = report['work_to_do']
+    #     self.mechanic_id = ""
+    #     self.start_date = ""
+    #     self.end_date = ""
+    #     self.solved = False
+
     def all():
         import json
         with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
