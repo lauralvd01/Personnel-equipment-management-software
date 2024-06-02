@@ -30,7 +30,7 @@
 <div v-if="selectedOption === 'asign'">
     <div class="containerGeneral">
       <section class="container">
-        <header>Buscar las asignaciones de un motor o de un camión</header>
+        <header style="text-align: left;">Buscar las asignaciones de un motor o de un camión</header>
         <div class="radio-inputs">
           <label class="radio">
             <input type="radio" name="radio" value="asignByMotor" v-model="selectedOptionSearch" />
@@ -43,22 +43,26 @@
         </div>
 
         <div v-if="selectedOptionSearch === 'asignByMotor'">
-          <div class="input-box">
-            <label>Motor ID</label>
-            <input v-model="asign.motor_id" required placeholder="Ingrese el identificador del motor" type="text">
-          </div>
-          <div>
-          <button @click="getAsignByMotor">Buscar</button>
+          <div class="column">
+            <div class="input-box">
+              <label>Motor ID</label>
+              <input v-model="asign.motor_id" required placeholder="Ingrese el identificador del motor" type="text">
+            </div>
+            <div>
+            <button @click="getAsignByMotor">Buscar</button>
+            </div>
           </div>
         </div>
 
         <div v-else-if="selectedOptionSearch === 'asignByCamion'">
-          <div class="input-box">
-            <label>Camión ID</label>
-            <input v-model="asign.camion_id" required placeholder="Ingrese el identificador del camión" type="text">
-          </div>
-          <div>
-          <button @click="getAsignByCamion">Buscar</button>
+          <div class="column">
+            <div class="input-box">
+              <label>Camión ID</label>
+              <input v-model="asign.camion_id" required placeholder="Ingrese el identificador del camión" type="text">
+            </div>
+            <div>
+            <button @click="getAsignByCamion">Buscar</button>
+            </div>
           </div>
         </div>
 
@@ -121,9 +125,29 @@
 
           <button type="submit">Someter</button>
         </form>
-        <div v-if="responseData">
+
+        <div v-if="response_report">
           <h3>Incidencia creada :</h3>
-          <pre>{{ responseData }}</pre>
+          <table v-if="response_report">
+            <thead>
+              <tr>
+                <th>Motor ID</th>
+                <th>Fecha de incidencia</th>
+                <th>Descripción del problema</th>
+                <th>Mecánicos relacionados</th>
+                <th>Trabajo por hacer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ response_report.motor_id }}</td>
+                <td>{{ response_report.incident_date }}</td>
+                <td>{{ response_report.problem_description }}</td>
+                <td>{{ response_report.mechanics_associated }}</td>
+                <td>{{ response_report.work_to_do }}</td>
+              </tr> 
+            </tbody>
+          </table>
         </div>
       </section>
     </div>
@@ -134,34 +158,46 @@
   <div v-if="selectedOption === 'search'">
     <div class="containerGeneral">
       <section class="container">
-        <header>Todas las incidencias</header>
-        <div>
-          <button @click="getAllIncidents">Buscar</button>
+        <div class="nav">
+          <header>Ver las incidencias de un motor</header>
+          <div>
+            <button @click="searchAll">Todas</button>
+          </div>
         </div>
-        
+
+        <div class="column">
+          <div class="input-box">
+              <label for="search_motor_id">Motor ID</label>
+              <input v-model="search_motor_id" type="text" id="search_motor_id">
+          </div>
+          <button @click="searchByMotor">Buscar</button>
+        </div>
+
         <table v-if="incidentsList.length">
           <thead>
             <tr>
               <th>Motor ID</th>
-              <th>Mechanic ID</th>
-              <th>Incident Date</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Solved</th>
-              <th>Problem Description</th>
-              <th>Work To Do</th>
+              <th>Fecha de incidencia</th>
+              <th>Descripción del problema</th>
+              <th>Mecánicos relacionados</th>
+              <th>Trabajo por hacer</th>
+              <th>Mecánico asignado</th>
+              <th>Fecha inicio del trabajo</th>
+              <th>Fecha fin del trabajo</th>
+              <th>¿Solucionado?</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="incident in incidentsList" :key="incident.id">
               <td>{{ incident.motor_id }}</td>
-              <td>{{ incident.mechanic_id }}</td>
               <td>{{ incident.incident_date }}</td>
+              <td>{{ incident.problem_description }}</td>
+              <td>{{ incident.mechanics_associated }}</td>
+              <td>{{ incident.work_to_do }}</td>
+              <td>{{ incident.mechanic_id }}</td>
               <td>{{ incident.start_date }}</td>
               <td>{{ incident.end_date }}</td>
               <td>{{ incident.solved ? 'Yes' : 'No' }}</td>
-              <td>{{ incident.problem_description }}</td>
-              <td>{{ incident.work_to_do }}</td>
             </tr> 
           </tbody>
         </table>
@@ -211,11 +247,11 @@
           </div> -->
 
 
-
+<!--
   <div v-if="selectedOption === 'search'">
     <div class="containerGeneral">
       <section class="container">
-        <!--
+        
         <div>
           <label for="searchMotorId">Motor ID:</label>
           <input type="text" v-model="searchMotorId" id="searchMotorId">
@@ -248,11 +284,11 @@
             </tr>
           </tbody>
         </table>
-        <div v-else>No hay resultados</div>-->
+        <div v-else>No hay resultados</div>
       </section>
     </div>
   </div>
-
+-->
 
 
 
@@ -339,6 +375,7 @@ export default {
         motor_id: '',
         camion_id: ''
       },
+      asignList: [],
       report: {
         motor_id: '',
         incident_date: '',
@@ -346,17 +383,17 @@ export default {
         mechanics_associated: '',
         work_to_do: ''
       },
+      response_report: null,
+      search_motor_id: '',
+      incidentsList: [],
       message: '',
-      isSuccess: false,
-      responseData: null,
-      asignList: [],
-      incidentsList: []
+      isSuccess: false
     };
   },
   methods: {
     async getAsignByMotor() {
       try {
-        const response = await axios.get(`http://localhost:8000/api/asignaciones/?motor_id=${this.asign.motor_id}`);
+        const response = await axios.get(`http://localhost:8000/api/asigns/?motor_id=${this.asign.motor_id}`);
         this.asignList = response.data;
         this.message = `Se encontraron ${this.asignList.length} resultados.`;
       } catch (error) {
@@ -366,7 +403,7 @@ export default {
     },
     async getAsignByCamion() {
       try {
-        const response = await axios.get(`http://localhost:8000/api/asignaciones/?camion_id=${this.asign.camion_id}`);
+        const response = await axios.get(`http://localhost:8000/api/asigns/?camion_id=${this.asign.camion_id}`);
         this.asignList = response.data;
         this.message = `Se encontraron ${this.asignList.length} resultados.`;
       } catch (error) {
@@ -379,7 +416,7 @@ export default {
         const response = await axios.post('http://localhost:8000/api/incidents/submit/', this.report);
         this.message = 'Formulario enviado exitosamente.';
         this.isSuccess = true;
-        this.responseData = response.data;
+        this.response_report = response.data;
         /*this.resetForm();*/
       } catch (error) {
         const formString = JSON.stringify(this.form, null, 2);
@@ -388,9 +425,9 @@ export default {
         this.isSuccess = false;
       }
     },
-    async getAllIncidents() {
+    async searchAll() {
       try {
-        const response = await axios.get('http://localhost:8000/api/allincidents/');
+        const response = await axios.get('http://localhost:8000/api/incidents/all/');
         this.incidentsList = response.data;
         this.message = `Se encontraron ${this.incidentsList.length} resultados.`;
       } catch (error) {
@@ -398,10 +435,10 @@ export default {
         this.isSuccess = false;
       }
     },
-    async search() {
+    async searchByMotor() {
       try {
-        const response = await axios.get(`http://localhost:8000/api/search/?motor_id=${this.searchMotorId}`);
-        this.searchResults = response.data;
+        const response = await axios.get(`http://localhost:8000/api/incidents/?motor_id=${this.search_motor_id}`);
+        this.incidentsList = response.data;
         this.message = `Se encontraron ${response.data.length} resultados.`;
       } catch (error) {
         this.message = 'Error al buscar incidentes.';
@@ -601,6 +638,14 @@ a {
   display: flex;
   column-gap: 15px;
   justify-content: center;
+  width: 100%;
+}
+
+.nav {
+  margin-top: 10px;
+  display: flex;
+  column-gap: 15px;
+  justify-content: space-between;
   width: 100%;
 }
 

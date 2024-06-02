@@ -36,13 +36,11 @@ class IncidentSerializer(serializers.ModelSerializer):
         model = Incident
         fields = '__all__'
 
-    # Momentaneo para el hito 4, se sobreescribe el metodo save para guardar en la base de datos en JSON
     def save(self):
         import json
         with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
             data = json.load(incidentsDB)
         data.append(self.validated_data)
-
         with open('./inf236backend/tempDB/incidents.json', 'w') as newIncidentsDB:
 	        json.dump(data, newIncidentsDB)
 

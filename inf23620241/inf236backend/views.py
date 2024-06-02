@@ -25,17 +25,6 @@ class AsignacionMotorCamionViewSet(viewsets.ModelViewSet):
 ###################################### A partir de acá se hacen pruebas de conexión Controlador-Vista ####################################################################
 # Nueva vista para manejar la solicitud POST del formulario de incidencias
 
-@api_view(['POST'])
-
-def login_view(request):
-    rut = request.data.get('rut')
-    password = request.data.get('password')
-    
-    if rut == '123456789' and password == 'holamundo':
-        return Response({'success': True}, status=status.HTTP_200_OK)
-    else:
-        return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
-
 # Modificación momentánea para hito 4
 @api_view(['POST'])
 def handle_incident(request):
@@ -48,30 +37,28 @@ def handle_incident(request):
         print(f"Serializer errors: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-@api_view(['GET'])
-def getAllIncidents(request):
-    print("Getting all incidents from views.py")
-    incidents = Incident.all()
-    if incidents is not None:
-        serializer = IncidentSerializer(incidents, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response({'error': 'Motor ID no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET'])
-def search_incidents(request):
-    motor_id = request.query_params.get('motor_id', None)
-    if motor_id is not None:
-        incidents = Incident.objects.filter(motor_id=motor_id)
-        serializer = IncidentSerializer(incidents, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response({'error': 'Motor ID no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['GET'])
+# def search_incidents(request):
+#     motor_id = request.query_params.get('motor_id', None)
+#     if motor_id is not None:
+#         incidents = Incident.objects.filter(motor_id=motor_id)
+#         serializer = IncidentSerializer(incidents, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#     return Response({'error': 'Motor ID no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
 
 
+
+@api_view(['POST'])
+def login_view(request):
+    rut = request.data.get('rut')
+    password = request.data.get('password')
+    if rut == '123456789' and password == 'holamundo':
+        return Response({'success': True}, status=status.HTTP_200_OK)
+    else:
+        return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 
@@ -99,3 +86,22 @@ def submit_incident(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     print(f"Serializer errors: {serializer.errors}")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def getAllIncidents(request):
+    incidents = Incident.all()
+    if incidents is not None:
+        serializer = IncidentSerializer(incidents, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({'error': 'No incidencias encontradas'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def search_incidents(request):
+    motor_id = request.query_params.get('motor_id', None)
+    if motor_id is not None:
+        incidents = Incident.filterByMotor(motor_id=motor_id)
+        serializer = IncidentSerializer(incidents, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({'error': 'Motor ID no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
