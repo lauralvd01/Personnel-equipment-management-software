@@ -81,45 +81,6 @@
         </table>
 
         <div v-else>No hay asignaciones para este elemento</div>
-
-        
-<!--         
-        <div>
-          <label for="asign">Motor ID:</label>
-          <input type="text" v-model="searchMotorId" id="searchMotorId">
-        </div>
-        
-        <div>
-          <button @click="getAllIncidents">Buscar</button>
-        </div>
-        
-        <table v-if="incidentsList.length">
-          <thead>
-            <tr>
-              <th>Motor ID</th>
-              <th>Mechanic ID</th>
-              <th>Incident Date</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Solved</th>
-              <th>Problem Description</th>
-              <th>Work To Do</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="incident in incidentsList" :key="incident.id">
-              <td>{{ incident.motor_id }}</td>
-              <td>{{ incident.mechanic_id }}</td>
-              <td>{{ incident.incident_date }}</td>
-              <td>{{ incident.start_date }}</td>
-              <td>{{ incident.end_date }}</td>
-              <td>{{ incident.solved ? 'Yes' : 'No' }}</td>
-              <td>{{ incident.problem_description }}</td>
-              <td>{{ incident.work_to_do }}</td>
-            </tr> 
-          </tbody>
-        </table>
-        <div v-else>Todavia no hay incidencias</div> -->
       </section>
     </div>
   </div>
@@ -130,30 +91,49 @@
   <div v-if="selectedOption === 'report'">
     <div class="containerGeneral">
       <section class="container">
-        <header>Formulario de Incidencias</header>
+        <header>Formulario de Informe de una incidencia</header>
         <form @submit.prevent="submitForm">
-          <div class="input-box">
-            <label>Identificador de Motor</label>
-            <input v-model="form.motor_id" required placeholder="Ingrese el identificador del motor" type="text">
-          </div>
           <div class="column">
             <div class="input-box">
-              <label>Identificador Mecánico</label>
-              <input v-model="form.mechanic_id" required placeholder="Ingrese su identificador" type="text">
+              <label>Identificador del Motor</label>
+              <input v-model="form.motor_id" required placeholder="Ingrese el identificador del motor" type="text">
             </div>
             <div class="input-box">
-              <label>Fecha Incidencia</label>
+              <label>Fecha de la incidencia</label>
               <input v-model="form.incident_date" required placeholder="Inserte Fecha" type="date">
             </div>
           </div>
-          <div class="column">
+          <div class="input-box">
+            <label>Descripción del problema</label>
+            <textarea v-model="form.problem_description" required
+              placeholder="Describa el/los problemas asociados a la incidencia"></textarea>
+          </div>
+          <div class="input-box">
+            <label>Mecánicos relacionados con la incidencia</label>
+            <textarea v-model="form.mechanics_associated"
+              placeholder="Escribe los nombres y apellidos de los Mecánicos relacionados con la incidencia"></textarea>
+          </div>
+          <div class="input-box">
+            <label>Trabajo por realizar</label>
+            <textarea v-model="form.work_to_do" placeholder="Indique qué es lo que falta por hacer"></textarea>
+          </div>
+
+
+<!-- CUIDADO normalmente solo un Jefe de Motores puede ver esa posibilidad de asignar la incidencia a un Mecánico -->
+          <!-- <div class="input-box">
+            <label>Identificador del Mecánico asignado</label>
+            <input v-model="form.mechanic_id" placeholder="Ingrese el identificador del Mecánico asignado" type="text">
+          </div> -->
+
+<!-- CUIDADO eso aparece solo para la modificacion de incidencias ya existentes : esos datos no son conocidos cuando la incidencia se registra por primera vez -->
+          <!-- <div class="column">
             <div class="input-box">
               <label>Fecha Inicio Trabajo</label>
-              <input v-model="form.start_date" required placeholder="Inserte Fecha" type="date">
+              <input v-model="form.start_date" placeholder="Inserte Fecha" type="date">
             </div>
             <div class="input-box">
               <label>Fecha Fin Trabajo</label>
-              <input v-model="form.end_date" required placeholder="Inserte Fecha" type="date">
+              <input v-model="form.end_date" placeholder="Inserte Fecha" type="date">
             </div>
           </div>
           <div class="solution-box">
@@ -176,20 +156,13 @@
                 </label>
               </div>
             </div>
-          </div>
-          <div class="input-box">
-            <label>Descripción del problema</label>
-            <textarea v-model="form.problem_description" required
-              placeholder="Describa el/los problemas asociados a la incidencia"></textarea>
-          </div>
-          <div class="input-box">
-            <label>Trabajo por realizar</label>
-            <textarea v-model="form.work_to_do" required placeholder="Indique qué es lo que falta por hacer"></textarea>
-          </div>
-          <button type="submit">Submit</button>
+          </div> -->
+            
+
+          <button type="submit">Someter</button>
         </form>
         <div v-if="responseData">
-          <h3>Datos de la Respuesta:</h3>
+          <h3>Incidencia creada :</h3>
           <pre>{{ responseData }}</pre>
         </div>
       </section>
