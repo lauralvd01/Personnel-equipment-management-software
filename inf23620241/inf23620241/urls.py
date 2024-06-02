@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from inf236backend.views import MotorViewSet, CamionViewSet, AsignacionMotorCamionViewSet, handle_incident, login_view, search_incidents, getAllIncidents
+from inf236backend.views import MotorViewSet, CamionViewSet, AsignacionMotorCamionViewSet, handle_incident, login_view, search_incidents, getAllIncidents, search_asign
 
 
 router = DefaultRouter()
@@ -31,4 +31,5 @@ urlpatterns = [
     path('api/allincidents/', getAllIncidents, name='getAllIncidents'), #Path de Vista, linea de prueba
     path('api/login/', login_view, name='login_view'),
     path('api/search/', search_incidents, name='search_incidents'),
+    path('api/asignaciones/', search_asign, name='search_asign')
 ]

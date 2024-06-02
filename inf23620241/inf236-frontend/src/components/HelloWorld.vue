@@ -3,8 +3,8 @@
     <h2>Vista Home</h2>
     <div class="container">
       <form class="form" @submit.prevent="submitForm">
-        <div class="title">Por favor<br><span>Ingrese su rol y contraseña</span></div>
-        <input v-model="form.role" type="text" placeholder="Rol" name="role" class="input" required>
+        <div class="title">Por favor<br><span>Ingrese su rut y contraseña</span></div>
+        <input v-model="form.rut" type="text" placeholder="RUT" name="rut" class="input" required>
         <input v-model="form.password" type="password" placeholder="Contraseña" name="password" class="input" required>
         <button type="submit" class="button-confirm">Ingresar</button>
       </form>
@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       form: {
-        role: '',
+        rut: '',
         password: ''
       },
       msg: ''

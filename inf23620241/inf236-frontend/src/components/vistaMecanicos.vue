@@ -18,6 +18,10 @@
         <input type="radio" name="radio" value="todo" v-model="selectedOption" />
         <span class="name">Mis tareas</span>
       </label>
+      <label class="radio">
+        <input type="radio" name="radio" value="pass" v-model="selectedOption" />
+        <span class="name">Cambiar mi contraseña</span>
+      </label>
     </div>
   </div>
 
@@ -27,19 +31,16 @@
     <div class="containerGeneral">
       <section class="container">
         <header>Buscar las asignaciones de un motor o de un camión</header>
-        <h3>¿Buscar por motor o por camión?</h3>
-        <section class="container">
-          <div class="radio-inputs">
-            <label class="radio">
-              <input type="radio" name="radio" value="asignByMotor" v-model="selectedOptionSearch" />
-              <span class="name">Motor</span>
-            </label>
-            <label class="radio">
-              <input type="radio" name="radio" value="asignByCamion" v-model="selectedOptionSearch" />
-              <span class="name">Camión</span>
-            </label>
-          </div>
-        </section>
+        <div class="radio-inputs">
+          <label class="radio">
+            <input type="radio" name="radio" value="asignByMotor" v-model="selectedOptionSearch" />
+            <span class="name">Motor</span>
+          </label>
+          <label class="radio">
+            <input type="radio" name="radio" value="asignByCamion" v-model="selectedOptionSearch" />
+            <span class="name">Camión</span>
+          </label>
+        </div>
 
         <div v-if="selectedOptionSearch === 'asignByMotor'">
           <div class="input-box">
@@ -118,47 +119,6 @@
             <textarea v-model="form.work_to_do" placeholder="Indique qué es lo que falta por hacer"></textarea>
           </div>
 
-
-<!-- CUIDADO normalmente solo un Jefe de Motores puede ver esa posibilidad de asignar la incidencia a un Mecánico -->
-          <!-- <div class="input-box">
-            <label>Identificador del Mecánico asignado</label>
-            <input v-model="form.mechanic_id" placeholder="Ingrese el identificador del Mecánico asignado" type="text">
-          </div> -->
-
-<!-- CUIDADO eso aparece solo para la modificacion de incidencias ya existentes : esos datos no son conocidos cuando la incidencia se registra por primera vez -->
-          <!-- <div class="column">
-            <div class="input-box">
-              <label>Fecha Inicio Trabajo</label>
-              <input v-model="form.start_date" placeholder="Inserte Fecha" type="date">
-            </div>
-            <div class="input-box">
-              <label>Fecha Fin Trabajo</label>
-              <input v-model="form.end_date" placeholder="Inserte Fecha" type="date">
-            </div>
-          </div>
-          <div class="solution-box">
-            <label>¿Solucionado?</label>
-            <div class="radio-button-container">
-              <div class="radio-button">
-                <input v-model="form.solved" type="radio" class="radio-button__input" id="radio1" :value="true"
-                  name="radio-group">
-                <label class="radio-button__label" for="radio1">
-                  <span class="radio-button__custom"></span>
-                  Si
-                </label>
-              </div>
-              <div class="radio-button">
-                <input v-model="form.solved" type="radio" class="radio-button__input" id="radio2" :value="false"
-                  name="radio-group">
-                <label class="radio-button__label" for="radio2">
-                  <span class="radio-button__custom"></span>
-                  No
-                </label>
-              </div>
-            </div>
-          </div> -->
-            
-
           <button type="submit">Someter</button>
         </form>
         <div v-if="responseData">
@@ -211,6 +171,44 @@
   </div>
 
 
+<!-- CUIDADO normalmente solo un Jefe de Motores puede ver esa posibilidad de asignar la incidencia a un Mecánico -->
+          <!-- <div class="input-box">
+            <label>Identificador del Mecánico asignado</label>
+            <input v-model="form.mechanic_id" placeholder="Ingrese el identificador del Mecánico asignado" type="text">
+          </div> -->
+
+<!-- CUIDADO eso aparece solo para la modificacion de incidencias ya existentes : esos datos no son conocidos cuando la incidencia se registra por primera vez -->
+          <!-- <div class="column">
+            <div class="input-box">
+              <label>Fecha Inicio Trabajo</label>
+              <input v-model="form.start_date" placeholder="Inserte Fecha" type="date">
+            </div>
+            <div class="input-box">
+              <label>Fecha Fin Trabajo</label>
+              <input v-model="form.end_date" placeholder="Inserte Fecha" type="date">
+            </div>
+          </div>
+          <div class="solution-box">
+            <label>¿Solucionado?</label>
+            <div class="radio-button-container">
+              <div class="radio-button">
+                <input v-model="form.solved" type="radio" class="radio-button__input" id="radio1" :value="true"
+                  name="radio-group">
+                <label class="radio-button__label" for="radio1">
+                  <span class="radio-button__custom"></span>
+                  Si
+                </label>
+              </div>
+              <div class="radio-button">
+                <input v-model="form.solved" type="radio" class="radio-button__input" id="radio2" :value="false"
+                  name="radio-group">
+                <label class="radio-button__label" for="radio2">
+                  <span class="radio-button__custom"></span>
+                  No
+                </label>
+              </div>
+            </div>
+          </div> -->
 
 
 

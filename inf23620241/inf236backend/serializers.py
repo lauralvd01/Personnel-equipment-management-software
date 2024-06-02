@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Motor, Camion, AsignacionMotorCamion, Incident
+from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign
 
 
 # Serializers are in charge to render arbitrary data types (json, URL encode forms, XML's) to python-like objects
@@ -41,3 +41,8 @@ class IncidentSerializer(serializers.ModelSerializer):
 
         with open('./inf236backend/tempDB/incidents.json', 'w') as newIncidentsDB:
 	        json.dump(data, newIncidentsDB)
+
+class AsignSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Asign
+        fields = '__all__'

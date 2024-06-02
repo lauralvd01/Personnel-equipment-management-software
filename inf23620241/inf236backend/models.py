@@ -85,4 +85,25 @@ class Incident(models.Model):
         with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
             data = json.load(incidentsDB)
         return data
+
+
+class Asign(models.Model):
+    motor_id = models.CharField(max_length=100)
+    camion_id = models.CharField(max_length=100)
+    asign_date = models.CharField(max_length=100)
+    unassign_date = models.CharField(max_length=100,default="")
+
+    def filterByMotor(motor_id):
+        import json
+        with open('./inf236backend/tempDB/asign.json') as incidentsDB:
+            data = json.load(incidentsDB)
+        filtered_data = [asign for asign in data if f"{asign['motor_id']}" == motor_id]
+        return filtered_data
+    
+    def filterByCamion(camion_id):
+        import json
+        with open('./inf236backend/tempDB/asign.json') as incidentsDB:
+            data = json.load(incidentsDB)
+        filtered_data = [asign for asign in data if f"{asign['camion_id']}" == camion_id]
+        return filtered_data
     

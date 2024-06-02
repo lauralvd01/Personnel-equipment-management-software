@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Motor, Camion, AsignacionMotorCamion, Incident
-from .serializers import MotorSerializer, CamionSerializer, AsignacionMotorCamionSerializer, IncidentSerializer
+from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign
+from .serializers import MotorSerializer, CamionSerializer, AsignacionMotorCamionSerializer, IncidentSerializer, AsignSerializer
 
 
 
@@ -28,10 +28,10 @@ class AsignacionMotorCamionViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 
 def login_view(request):
-    role = request.data.get('role')
+    rut = request.data.get('rut')
     password = request.data.get('password')
     
-    if role == '123456789' and password == 'holamundo':
+    if rut == '123456789' and password == 'holamundo':
         return Response({'success': True}, status=status.HTTP_200_OK)
     else:
         return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
@@ -67,3 +67,18 @@ def search_incidents(request):
         serializer = IncidentSerializer(incidents, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response({'error': 'Motor ID no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def search_asign(request):
+    motor_id = request.query_params.get('motor_id', None)
+    camion_id = request.query_params.get('camion_id', None)
+    if motor_id is not None:
+        asigns = Asign.filterByMotor(motor_id=motor_id)
+        serializer = AsignSerializer(asigns, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    if camion_id is not None:
+        asigns = Asign.filterByCamion(camion_id=camion_id)
+        serializer = AsignSerializer(asigns, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({'error': 'Motor ID ni Camion ID no proporcionados'}, status=status.HTTP_400_BAD_REQUEST)
