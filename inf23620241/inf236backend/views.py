@@ -50,6 +50,16 @@ def handle_incident(request):
 
 
 @api_view(['GET'])
+def getAllIncidents(request):
+    print("Getting all incidents from views.py")
+    incidents = Incident.all()
+    if incidents is not None:
+        serializer = IncidentSerializer(incidents, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({'error': 'Motor ID no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
 def search_incidents(request):
     motor_id = request.query_params.get('motor_id', None)
     if motor_id is not None:

@@ -77,3 +77,12 @@ class Incident(models.Model):
 
     def __str__(self):
         return self.motor_id
+    
+    # Momentaneo para el hito 4, se sobreescribe el metodo Incidents.objects.all() para recuperar los datos desde la base de datos en JSON
+    def all():
+        print("Getting all incidents")
+        import json
+        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
+            data = json.load(incidentsDB)
+        return data
+    

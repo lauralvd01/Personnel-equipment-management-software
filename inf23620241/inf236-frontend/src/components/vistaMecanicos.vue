@@ -76,9 +76,6 @@
           </div>
           <button type="submit">Submit</button>
         </form>
-        <div v-if="message" :class="{ 'success': isSuccess, 'error': !isSuccess }">
-          {{ message }}
-        </div>
         <div v-if="responseData">
           <h3>Datos de la Respuesta:</h3>
           <pre>{{ responseData }}</pre>
@@ -88,9 +85,54 @@
   </div>
 
 
+  <div v-if="selectedOption === 'html'">
+    <div class="containerGeneral">
+      <section class="container">
+        <header>Todas las incidencias</header>
+        <div>
+          <button @click="getAllIncidents">Buscar</button>
+        </div>
+        
+        <table v-if="incidentsList.length">
+          <thead>
+            <tr>
+              <th>Motor ID</th>
+              <th>Mechanic ID</th>
+              <th>Incident Date</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Solved</th>
+              <th>Problem Description</th>
+              <th>Work To Do</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="incident in incidentsList" :key="incident.id">
+              <td>{{ incident.motor_id }}</td>
+              <td>{{ incident.mechanic_id }}</td>
+              <td>{{ incident.incident_date }}</td>
+              <td>{{ incident.start_date }}</td>
+              <td>{{ incident.end_date }}</td>
+              <td>{{ incident.solved ? 'Yes' : 'No' }}</td>
+              <td>{{ incident.problem_description }}</td>
+              <td>{{ incident.work_to_do }}</td>
+            </tr> 
+          </tbody>
+        </table>
+        <div v-else>Todavia no hay incidencias</div>
+      </section>
+    </div>
+  </div>
 
-
-
+  <div v-if="selectedOption === 'html'">
+    <div class="containerGeneral">
+      <section class="container">
+        <div v-if="message" :class="{ 'success': isSuccess, 'error': !isSuccess }">
+          {{ message }}
+        </div>
+      </section>
+    </div>
+  </div>
 
 
 
@@ -173,7 +215,8 @@ export default {
       },
       message: '',
       isSuccess: false,
-      responseData: null
+      responseData: null,
+      incidentsList: []
     };
   },
   methods: {
@@ -188,6 +231,16 @@ export default {
         const formString = JSON.stringify(this.form, null, 2);
         const serializerErrors = error.response && error.response.data ? JSON.stringify(error.response.data, null, 2) : 'No se pudo obtener los errores del servidor.';
         this.message = `Error al enviar el formulario. Datos del formulario: ${formString}. Errores del servidor: ${serializerErrors}`;
+        this.isSuccess = false;
+      }
+    },
+    async getAllIncidents() {
+      try {
+        const response = await axios.get('http://localhost:8000/api/allincidents/');
+        this.incidentsList = response.data;
+        this.message = `Se encontraron ${this.incidentsList.length} resultados.`;
+      } catch (error) {
+        this.message = 'Error al obtener las incidencias.';
         this.isSuccess = false;
       }
     },

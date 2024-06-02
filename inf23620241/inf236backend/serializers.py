@@ -25,7 +25,8 @@ class IncidentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Incident
         fields = '__all__'
-    
+
+    # Momentaneo para el hito 4, se sobreescribe el metodo save para guardar en la base de datos en JSON
     def save(self):
         import datetime
         for key, value in self.validated_data.items(): # Momentaneo formatamos las fechas a string para registrarlas en la (momentanea) base de datos en JSON
