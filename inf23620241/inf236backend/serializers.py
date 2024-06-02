@@ -20,7 +20,17 @@ class AsignacionMotorCamionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
+
+
 #Momentaneo solo para Hito 4
+
+class AsignSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Asign
+        fields = '__all__'
+
+
 class IncidentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Incident
@@ -28,12 +38,6 @@ class IncidentSerializer(serializers.ModelSerializer):
 
     # Momentaneo para el hito 4, se sobreescribe el metodo save para guardar en la base de datos en JSON
     def save(self):
-        import datetime
-        for key, value in self.validated_data.items(): # Momentaneo formatamos las fechas a string para registrarlas en la (momentanea) base de datos en JSON
-            if isinstance(value, datetime.date) :
-                date = value.strftime("%Y-%m-%d")
-                self.validated_data[key] = date
-        
         import json
         with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
             data = json.load(incidentsDB)
@@ -42,7 +46,3 @@ class IncidentSerializer(serializers.ModelSerializer):
         with open('./inf236backend/tempDB/incidents.json', 'w') as newIncidentsDB:
 	        json.dump(data, newIncidentsDB)
 
-class AsignSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Asign
-        fields = '__all__'

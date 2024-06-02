@@ -69,6 +69,13 @@ def search_incidents(request):
     return Response({'error': 'Motor ID no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
+
+
+
+
+
 @api_view(['GET'])
 def search_asign(request):
     motor_id = request.query_params.get('motor_id', None)
@@ -82,3 +89,13 @@ def search_asign(request):
         serializer = AsignSerializer(asigns, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response({'error': 'Motor ID ni Camion ID no proporcionados'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def submit_incident(request):
+    serializer = IncidentSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    print(f"Serializer errors: {serializer.errors}")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

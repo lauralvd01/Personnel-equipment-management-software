@@ -92,31 +92,31 @@
   <div v-if="selectedOption === 'report'">
     <div class="containerGeneral">
       <section class="container">
-        <header>Formulario de Informe de una incidencia</header>
-        <form @submit.prevent="submitForm">
+        <header>Formulario de informe de una incidencia</header>
+        <form @submit.prevent="submitReport">
           <div class="column">
             <div class="input-box">
               <label>Identificador del Motor</label>
-              <input v-model="form.motor_id" required placeholder="Ingrese el identificador del motor" type="text">
+              <input v-model="report.motor_id" required placeholder="Ingrese el identificador del motor" type="text">
             </div>
             <div class="input-box">
               <label>Fecha de la incidencia</label>
-              <input v-model="form.incident_date" required placeholder="Inserte Fecha" type="date">
+              <input v-model="report.incident_date" required placeholder="Inserte Fecha" type="date">
             </div>
           </div>
           <div class="input-box">
             <label>Descripción del problema</label>
-            <textarea v-model="form.problem_description" required
+            <textarea v-model="report.problem_description" required
               placeholder="Describa el/los problemas asociados a la incidencia"></textarea>
           </div>
           <div class="input-box">
             <label>Mecánicos relacionados con la incidencia</label>
-            <textarea v-model="form.mechanics_associated"
+            <textarea v-model="report.mechanics_associated"
               placeholder="Escribe los nombres y apellidos de los Mecánicos relacionados con la incidencia"></textarea>
           </div>
           <div class="input-box">
             <label>Trabajo por realizar</label>
-            <textarea v-model="form.work_to_do" placeholder="Indique qué es lo que falta por hacer"></textarea>
+            <textarea v-model="report.work_to_do" placeholder="Indique qué es lo que falta por hacer"></textarea>
           </div>
 
           <button type="submit">Someter</button>
@@ -339,14 +339,11 @@ export default {
         motor_id: '',
         camion_id: ''
       },
-      form: {
-        motor_id: '',  // Cambia a motor_id
-        mechanic_id: '',  // Cambia a mechanic_id
-        incident_date: '',  // Cambia a incident_date
-        start_date: '',
-        end_date: '',
-        solved: '',
+      report: {
+        motor_id: '',
+        incident_date: '',
         problem_description: '',
+        mechanics_associated: '',
         work_to_do: ''
       },
       message: '',
@@ -377,9 +374,9 @@ export default {
         this.isSuccess = false;
       }
     },
-    async submitForm() {
+    async submitReport() {
       try {
-        const response = await axios.post('http://localhost:8000/api/incidents/', this.form);
+        const response = await axios.post('http://localhost:8000/api/incidents/submit/', this.report);
         this.message = 'Formulario enviado exitosamente.';
         this.isSuccess = true;
         this.responseData = response.data;
