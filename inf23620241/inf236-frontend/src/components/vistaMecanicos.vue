@@ -3,19 +3,131 @@
   <div class="containerGeneral">
     <div class="radio-inputs">
       <label class="radio">
-        <input type="radio" name="radio" value="html" v-model="selectedOption" />
+        <input type="radio" name="radio" value="asign" v-model="selectedOption" />
+        <span class="name">Asignaciones</span>
+      </label>
+      <label class="radio">
+        <input type="radio" name="radio" value="report" v-model="selectedOption" />
         <span class="name">Ingresar Incidencia</span>
       </label>
       <label class="radio">
-        <input type="radio" name="radio" value="react" v-model="selectedOption" />
-        <span class="name">Revisar Incidencias</span>
+        <input type="radio" name="radio" value="search" v-model="selectedOption" />
+        <span class="name">Ver Incidencias</span>
       </label>
-
+      <label class="radio">
+        <input type="radio" name="radio" value="todo" v-model="selectedOption" />
+        <span class="name">Mis tareas</span>
+      </label>
     </div>
   </div>
 
 
-  <div v-if="selectedOption === 'html'">
+<!-- -------------------------------------------- Ver las asignaciones entre motores y camiones -->
+<div v-if="selectedOption === 'asign'">
+    <div class="containerGeneral">
+      <section class="container">
+        <header>Buscar las asignaciones de un motor o de un camión</header>
+        <h3>¿Buscar por motor o por camión?</h3>
+        <section class="container">
+          <div class="radio-inputs">
+            <label class="radio">
+              <input type="radio" name="radio" value="asignByMotor" v-model="selectedOptionSearch" />
+              <span class="name">Motor</span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="radio" value="asignByCamion" v-model="selectedOptionSearch" />
+              <span class="name">Camión</span>
+            </label>
+          </div>
+        </section>
+
+        <div v-if="selectedOptionSearch === 'asignByMotor'">
+          <div class="input-box">
+            <label>Motor ID</label>
+            <input v-model="asign.motor_id" required placeholder="Ingrese el identificador del motor" type="text">
+          </div>
+          <div>
+          <button @click="getAsignByMotor">Buscar</button>
+          </div>
+        </div>
+
+        <div v-else-if="selectedOptionSearch === 'asignByCamion'">
+          <div class="input-box">
+            <label>Camión ID</label>
+            <input v-model="asign.camion_id" required placeholder="Ingrese el identificador del camión" type="text">
+          </div>
+          <div>
+          <button @click="getAsignByCamion">Buscar</button>
+          </div>
+        </div>
+
+        <table v-if="asignList.length">
+          <thead>
+            <tr>
+              <th>Motor ID</th>
+              <th>Camión ID</th>
+              <th>Fecha asignación</th>
+              <th>Fecha desasignación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="asign in asignList" :key="asign.id">
+              <td>{{ asign.motor_id }}</td>
+              <td>{{ asign.camion_id }}</td>
+              <td>{{ asign.asign_date }}</td>
+              <td>{{ asign.unassign_date }}</td>
+            </tr> 
+          </tbody>
+        </table>
+
+        <div v-else>No hay asignaciones para este elemento</div>
+
+        
+<!--         
+        <div>
+          <label for="asign">Motor ID:</label>
+          <input type="text" v-model="searchMotorId" id="searchMotorId">
+        </div>
+        
+        <div>
+          <button @click="getAllIncidents">Buscar</button>
+        </div>
+        
+        <table v-if="incidentsList.length">
+          <thead>
+            <tr>
+              <th>Motor ID</th>
+              <th>Mechanic ID</th>
+              <th>Incident Date</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Solved</th>
+              <th>Problem Description</th>
+              <th>Work To Do</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="incident in incidentsList" :key="incident.id">
+              <td>{{ incident.motor_id }}</td>
+              <td>{{ incident.mechanic_id }}</td>
+              <td>{{ incident.incident_date }}</td>
+              <td>{{ incident.start_date }}</td>
+              <td>{{ incident.end_date }}</td>
+              <td>{{ incident.solved ? 'Yes' : 'No' }}</td>
+              <td>{{ incident.problem_description }}</td>
+              <td>{{ incident.work_to_do }}</td>
+            </tr> 
+          </tbody>
+        </table>
+        <div v-else>Todavia no hay incidencias</div> -->
+      </section>
+    </div>
+  </div>
+
+
+
+<!-- -------------------------------------------- Ingresar una incidencia -->
+  <div v-if="selectedOption === 'report'">
     <div class="containerGeneral">
       <section class="container">
         <header>Formulario de Incidencias</header>
@@ -85,7 +197,8 @@
   </div>
 
 
-  <div v-if="selectedOption === 'html'">
+<!-- -------------------------------------------- Ver las incidencias de un motor -->
+  <div v-if="selectedOption === 'search'">
     <div class="containerGeneral">
       <section class="container">
         <header>Todas las incidencias</header>
@@ -124,20 +237,11 @@
     </div>
   </div>
 
-  <div v-if="selectedOption === 'html'">
-    <div class="containerGeneral">
-      <section class="container">
-        <div v-if="message" :class="{ 'success': isSuccess, 'error': !isSuccess }">
-          {{ message }}
-        </div>
-      </section>
-    </div>
-  </div>
 
 
 
 
-  <div v-if="selectedOption === 'react'">
+  <div v-if="selectedOption === 'search'">
     <div class="containerGeneral">
       <section class="container">
         <!--
@@ -179,6 +283,64 @@
   </div>
 
 
+
+
+
+<!-- -------------------------------------------- Ver las incidencias asignadas al mecanico -->
+
+<div v-if="selectedOption === 'todo'">
+    <div class="containerGeneral">
+      <section class="container">
+        <!--
+        <div>
+          <label for="searchMotorId">Motor ID:</label>
+          <input type="text" v-model="searchMotorId" id="searchMotorId">
+          <button @click="search">Buscar</button>
+        </div>
+
+        <table v-if="searchResults.length">
+          <thead>
+            <tr>
+              <th>Motor ID</th>
+              <th>Mechanic ID</th>
+              <th>Incident Date</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Solved</th>
+              <th>Problem Description</th>
+              <th>Work To Do</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="incident in searchResults" :key="incident.id">
+              <td>{{ incident.motor_id }}</td>
+              <td>{{ incident.mechanic_id }}</td>
+              <td>{{ incident.incident_date }}</td>
+              <td>{{ incident.start_date }}</td>
+              <td>{{ incident.end_date }}</td>
+              <td>{{ incident.solved ? 'Yes' : 'No' }}</td>
+              <td>{{ incident.problem_description }}</td>
+              <td>{{ incident.work_to_do }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div v-else>No hay resultados</div>-->
+      </section>
+    </div>
+  </div>
+
+
+  <div>
+    <div class="containerGeneral">
+      <section class="container">
+        <div v-if="message" :class="{ 'success': isSuccess, 'error': !isSuccess }">
+          {{ message }}
+        </div>
+      </section>
+    </div>
+  </div>
+
+
 </template>
 
 
@@ -195,14 +357,17 @@ import axios from 'axios';
 export default {
   name: 'App',
   setup() {
-    const selectedOption = ref('html');
-
     return {
-      selectedOption
+      selectedOption: ref('asign'),
+      selectedOptionSearch: ref('asignByMotor')
     };
   },
   data() {
     return {
+      asign: {
+        motor_id: '',
+        camion_id: ''
+      },
       form: {
         motor_id: '',  // Cambia a motor_id
         mechanic_id: '',  // Cambia a mechanic_id
@@ -216,10 +381,31 @@ export default {
       message: '',
       isSuccess: false,
       responseData: null,
+      asignList: [],
       incidentsList: []
     };
   },
   methods: {
+    async getAsignByMotor() {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/asignaciones/?motor_id=${this.asign.motor_id}`);
+        this.asignList = response.data;
+        this.message = `Se encontraron ${this.asignList.length} resultados.`;
+      } catch (error) {
+        this.message = 'Error al buscar asignaciones.';
+        this.isSuccess = false;
+      }
+    },
+    async getAsignByCamion() {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/asignaciones/?camion_id=${this.asign.camion_id}`);
+        this.asignList = response.data;
+        this.message = `Se encontraron ${this.asignList.length} resultados.`;
+      } catch (error) {
+        this.message = 'Error al buscar asignaciones.';
+        this.isSuccess = false;
+      }
+    },
     async submitForm() {
       try {
         const response = await axios.post('http://localhost:8000/api/incidents/', this.form);
