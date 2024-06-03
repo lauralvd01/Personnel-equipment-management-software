@@ -31,16 +31,46 @@ class AsignSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+def readData(file):
+    import json
+    with open(file) as my_file:
+        data = json.load(my_file)
+    return data
+
+def saveData(file,data):
+    import json
+    with open(file, 'w') as new_file:
+        json.dump(data, new_file)
+
 class IncidentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Incident
         fields = '__all__'
-
+    
     def save(self):
-        import json
-        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
-            data = json.load(incidentsDB)
+        data = readData('./inf236backend/tempDB/incidents.json')
+        if len(data) == 0:
+            self.validated_data['id'] = 1
+        else:
+            self.validated_data['id'] = data[-1]['id'] + 1
         data.append(self.validated_data)
-        with open('./inf236backend/tempDB/incidents.json', 'w') as newIncidentsDB:
-	        json.dump(data, newIncidentsDB)
+        saveData('./inf236backend/tempDB/incidents.json',data)
+    
+    @staticmethod
+    def merge(self, old, data):
+        new_data = old
+        for key in data:
+            if key in data.keys() and data[key] is not None:
+                new_data[key] = data[key]
+        print("Merged data: of ",old," and ",data," = ",new_data)
+        return IncidentSerializer(data=new_data)
 
+    def update(self):
+        data = readData('./inf236backend/tempDB/incidents.json')
+        for index, incident in enumerate(data):
+            if incident['id'] == self.validated_data['id']:
+                print("Found incident to update: ",data[index])
+                data[index] = self.validated_data
+                print("Updated incident: ",data[index])
+                break
+        saveData('./inf236backend/tempDB/incidents.json',data)

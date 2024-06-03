@@ -105,3 +105,18 @@ def search_incidents(request):
         serializer = IncidentSerializer(incidents, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response({'error': 'Motor ID no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def edit_incident(request):
+    incident_id = request.query_params.get('incident_id', None)
+    if incident_id is not None:
+        incident = Incident.getById(incident_id)
+        if incident is None:
+            return Response({'error': 'Incidencia con este ID no encontrada'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = IncidentSerializer.merge(old=incident, data=request.data)
+        if serializer.is_valid():
+            serializer.update()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'error': 'ID de incidencia no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)

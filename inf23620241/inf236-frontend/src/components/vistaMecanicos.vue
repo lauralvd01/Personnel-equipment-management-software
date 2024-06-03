@@ -312,51 +312,6 @@
   </div>
 
 
-<!--
-  <div v-if="selectedOption === 'search'">
-    <div class="containerGeneral">
-      <section class="container">
-        
-        <div>
-          <label for="searchMotorId">Motor ID:</label>
-          <input type="text" v-model="searchMotorId" id="searchMotorId">
-          <button @click="search">Buscar</button>
-        </div>
-
-        <table v-if="searchResults.length">
-          <thead>
-            <tr>
-              <th>Motor ID</th>
-              <th>Mechanic ID</th>
-              <th>Incident Date</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Solved</th>
-              <th>Problem Description</th>
-              <th>Work To Do</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="incident in searchResults" :key="incident.id">
-              <td>{{ incident.motor_id }}</td>
-              <td>{{ incident.mechanic_id }}</td>
-              <td>{{ incident.incident_date }}</td>
-              <td>{{ incident.start_date }}</td>
-              <td>{{ incident.end_date }}</td>
-              <td>{{ incident.solved ? 'Yes' : 'No' }}</td>
-              <td>{{ incident.problem_description }}</td>
-              <td>{{ incident.work_to_do }}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div v-else>No hay resultados</div>
-      </section>
-    </div>
-  </div>
--->
-
-
-
 
 <!-- -------------------------------------------- Ver las incidencias asignadas al mecanico -->
 
@@ -453,15 +408,15 @@ export default {
       incidentsList: [],
       editIndex: null,
       edit: {
-        motor_id: '',
-        incident_date: '',
-        problem_description: '',
-        mechanics_associated: '',
-        work_to_do: '',
-        mechanic_id: '',
-        start_date: '',
-        end_date: '',
-        solved: ''
+        motor_id: null,
+        incident_date: null,
+        problem_description: null,
+        mechanics_associated: null,
+        work_to_do: null,
+        mechanic_id: null,
+        start_date: null,
+        end_date: null,
+        solved: null
       },
       message: '',
       isSuccess: false
@@ -529,17 +484,20 @@ export default {
     },
     async editReport() {
       try {
-        // TODO : find a way to specify wich incident to edit
-        // (this.editIndex is the index of the incident in the incidentsList array, not the id of the incident in the database)
-        // ==> We need to add an id field to the incident object in the database
-        const response = await axios.put(`http://localhost:8000/api/incidents/edit/${this.editIndex}/`, this.edit);
+        const response = await axios.put(`http://localhost:8000/api/incidents/edit/?incident_id=${this.incidentsList[this.editIndex].id}`, this.edit);
         this.message = 'Formulario enviado exitosamente.';
         this.isSuccess = true;
         this.response_report = response.data;
         this.editIndex = null;
+        this.reset(this.edit)
       } catch (error) {
         this.message = `Error al enviar el formulario.`;
         this.isSuccess = false;
+      }
+    },
+    reset(dict) {
+      for (const key in dict) {
+        dict[key] = null;
       }
     },
     resetForm() {

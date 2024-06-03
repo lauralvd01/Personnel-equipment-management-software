@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from inf236backend.views import MotorViewSet, CamionViewSet, AsignacionMotorCamionViewSet, handle_incident, login_view, search_incidents
-from inf236backend.views import search_asign, submit_incident, getAllIncidents, search_incidents
+from inf236backend.views import search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident
 
 router = DefaultRouter()
 router.register(r'motor',MotorViewSet)
@@ -36,4 +36,5 @@ urlpatterns = [
     path('api/incidents/submit/', submit_incident, name='submit_incident'),
     path('api/incidents/all/', getAllIncidents, name='getAllIncidents'),
     path('api/incidents/', search_incidents, name='search_incidents'),
+    path('api/incidents/edit/', edit_incident, name='edit_incident')
 ]
