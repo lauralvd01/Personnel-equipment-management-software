@@ -36,5 +36,5 @@ urlpatterns = [
     path('api/incidents/submit/', submit_incident, name='submit_incident'),
     path('api/incidents/all/', getAllIncidents, name='getAllIncidents'),
     path('api/incidents/', search_incidents, name='search_incidents'),
-    path('api/incidents/edit/', edit_incident, name='edit_incident')
+    path('api/incidents/editing/', edit_incident, name='edit_incident')
 ]

@@ -105,6 +105,7 @@ class Incident(models.Model):
     start_date = models.CharField(default="", blank=True, max_length=100)
     end_date = models.CharField(default="", blank=True, max_length=100)
     solved = models.BooleanField(default=False)
+    id = models.IntegerField(primary_key=True, default=0)
 
     # def __init__(self, report) :
     #     print("Creating incident with data: ", report)
@@ -142,5 +143,5 @@ class Incident(models.Model):
             data = json.load(incidentsDB)
         for incident in data:
             if incident['id'] == incident_id:
-                return Incident(incident)
+                return incident
         return None

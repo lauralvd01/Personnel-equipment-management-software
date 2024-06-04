@@ -416,7 +416,8 @@ export default {
         mechanic_id: null,
         start_date: null,
         end_date: null,
-        solved: null
+        solved: null,
+        id: null
       },
       message: '',
       isSuccess: false
@@ -481,15 +482,20 @@ export default {
     },
     updateIndex(index) {
       this.editIndex = index;
+      if (index)
+      {
+        this.edit.id = this.incidentsList[index].id
+      }
     },
     async editReport() {
       try {
-        const response = await axios.put(`http://localhost:8000/api/incidents/edit/?incident_id=${this.incidentsList[this.editIndex].id}`, this.edit);
+        const response = await axios.post(`http://localhost:8000/api/incidents/editing/`, this.edit);
         this.message = 'Formulario enviado exitosamente.';
         this.isSuccess = true;
         this.response_report = response.data;
         this.editIndex = null;
         this.reset(this.edit)
+        this.searchAll()
       } catch (error) {
         this.message = `Error al enviar el formulario.`;
         this.isSuccess = false;

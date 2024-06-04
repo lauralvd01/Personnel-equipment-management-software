@@ -57,20 +57,27 @@ class IncidentSerializer(serializers.ModelSerializer):
         saveData('./inf236backend/tempDB/incidents.json',data)
     
     @staticmethod
-    def merge(self, old, data):
-        new_data = old
-        for key in data:
-            if key in data.keys() and data[key] is not None:
-                new_data[key] = data[key]
-        print("Merged data: of ",old," and ",data," = ",new_data)
-        return IncidentSerializer(data=new_data)
-
-    def update(self):
+    def update_incident(new_data):
         data = readData('./inf236backend/tempDB/incidents.json')
         for index, incident in enumerate(data):
-            if incident['id'] == self.validated_data['id']:
+
+            if incident['id'] == new_data['id']:
                 print("Found incident to update: ",data[index])
-                data[index] = self.validated_data
+                data[index] = new_data
                 print("Updated incident: ",data[index])
                 break
         saveData('./inf236backend/tempDB/incidents.json',data)
+
+    @staticmethod
+    def merge(old, data):
+        new_data = {}
+        for key in data:
+            if key in old :
+                if data[key] is not None :
+                    new_data[key] = data[key]
+                else:
+                    new_data[key] = old[key]
+            else :
+                new_data[key] = data[key]
+        IncidentSerializer.update_incident(new_data)
+        return new_data

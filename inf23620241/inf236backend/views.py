@@ -82,6 +82,7 @@ def search_asign(request):
 def submit_incident(request):
     serializer = IncidentSerializer(data=request.data)
     if serializer.is_valid():
+        print(f"Serializer data: {serializer.validated_data}")
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     print(f"Serializer errors: {serializer.errors}")
@@ -106,17 +107,16 @@ def search_incidents(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response({'error': 'Motor ID no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['PUT'])
+@api_view(['POST'])
 def edit_incident(request):
-    incident_id = request.query_params.get('incident_id', None)
+    incident_id = request.data["id"]
     if incident_id is not None:
         incident = Incident.getById(incident_id)
         if incident is None:
             return Response({'error': 'Incidencia con este ID no encontrada'}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = IncidentSerializer.merge(old=incident, data=request.data)
-        if serializer.is_valid():
-            serializer.update()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    return Response({'error': 'ID de incidencia no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            new_incident = IncidentSerializer.merge(old=incident, data=request.data)
+            return Response(new_incident, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
