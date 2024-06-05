@@ -355,8 +355,25 @@
 <div v-if="selectedOption === 'settings'">
     <div class="containerGeneral">
       <section class="container">
-        <p>Cuenta del mecanico con el id </p>
-        <p>{{$route.params.id}}</p>
+        <div style="width: max-content;">
+          <button @click="updateMechanicId($route.params.id)">Cambiar mi contraseña</button>
+        </div>
+        <form @submit.prevent="changePassword" v-if="mechanic_id">
+          <div class="input-box">
+            <label>Contraseña actual</label>
+            <input v-model="editPassword.oldPassword" placeholder="Ingresa tu contraseña actual" type="password">
+          </div>
+          <div class="input-box">
+            <label>Nueva contraseña</label>
+            <input v-model="editPassword.newPassword" placeholder="Ingresa tu nueva contraseña" type="password">
+          </div>
+          <div class="input-box">
+            <label>Nueva contraseña validacion</label>
+            <input v-model="editPassword.validNewPassword" placeholder="Ingresa tu nueva contraseña una vez mas, para validarla" type="password">
+          </div>
+
+          <button type="submit">Cambiar</button>
+        </form>
       </section>
     </div>
   </div>
@@ -425,6 +442,13 @@ export default {
         id: null
       },
       tareasList: [],
+      mechanic_id: null,
+      editPassword: {
+        mechanic_id: null,
+        oldPassword: '',
+        newPassword: '',
+        validNewPassword: ''
+        },
       message: '',
       isSuccess: false
     };
@@ -498,7 +522,7 @@ export default {
     },
     async editReport() {
       try {
-        const response = await axios.post(`http://localhost:8000/api/incidents/editing/`, this.edit);
+        const response = await axios.post(`http://localhost:8000/api/incidents/edit/`, this.edit);
         this.message = 'Formulario enviado exitosamente.';
         this.isSuccess = true;
         this.response_report = response.data;
@@ -524,6 +548,22 @@ export default {
         this.tareasList = response.data;
       } catch (error) {
         this.message = 'Error al buscar tareas.';
+        this.isSuccess = false;
+      }
+    },
+    updateMechanicId(id) {
+      this.mechanic_id = id;
+      this.editPassword.mechanic_id = id;
+    },
+    async changePassword() {
+      try {
+        const response = await axios.post('http://localhost:8000/api/login/edit/', this.editPassword);
+        this.message = 'Contraseña cambiada exitosamente.'
+        this.isSuccess = response.success;
+        this.mechanic_id = null;
+        this.reset(this.editPassword)
+      } catch (error) {
+        this.message = 'Error al cambiar la contraseña.';
         this.isSuccess = false;
       }
     }

@@ -129,3 +129,25 @@ def edit_incident(request):
             return Response(new_incident, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def edit_password(request):
+    user_id = request.data["mechanic_id"]
+    old_password = request.data["oldPassword"]
+    new_password = request.data["newPassword"]
+    valid_new_password = request.data["validNewPassword"]
+    
+    import json
+    with open('inf236backend/tempDB/users.json') as my_file:
+        data = json.load(my_file)
+    
+    for user in data:
+        if f"{user['id_usuario']}" == user_id :
+            if user['contrasena'] == old_password and new_password == valid_new_password:
+                user['contrasena'] = new_password
+                with open('inf236backend/tempDB/users.json', 'w') as my_file:
+                    json.dump(data, my_file)
+                return Response({'success': True}, status=status.HTTP_200_OK)
+            else :
+                return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
+    return Response({'success': False}, status=status.HTTP_404_NOT_FOUND)
