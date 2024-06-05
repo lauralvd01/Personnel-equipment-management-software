@@ -19,7 +19,7 @@
         <span class="name">Mis tareas</span>
       </label>
       <label class="radio">
-        <input type="radio" name="radio" value="pass" v-model="selectedOption" />
+        <input type="radio" name="radio" value="settings" v-model="selectedOption" />
         <span class="name">Cambiar mi contraseña</span>
       </label>
     </div>
@@ -313,45 +313,46 @@
 
 
 
-<!-- -------------------------------------------- Ver las incidencias asignadas al mecanico -->
 
-<div v-if="selectedOption === 'todo'">
+<!-- -------------------------------------------- Ver las incidencias asignadas al mecanico -->
+  <div v-if="selectedOption === 'todo'">
     <div class="containerGeneral">
       <section class="container">
-        <!--
-        <div>
-          <label for="searchMotorId">Motor ID:</label>
-          <input type="text" v-model="searchMotorId" id="searchMotorId">
-          <button @click="search">Buscar</button>
-        </div>
-
-        <table v-if="searchResults.length">
+        <table v-if="tareasList.length">
           <thead>
             <tr>
               <th>Motor ID</th>
-              <th>Mechanic ID</th>
-              <th>Incident Date</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Solved</th>
-              <th>Problem Description</th>
-              <th>Work To Do</th>
+              <th>Fecha de incidencia</th>
+              <th>Descripción del problema</th>
+              <th>Mecánicos relacionados</th>
+              <th>Trabajo por hacer</th>
+              <th>Fecha inicio del trabajo</th>
+              <th>Fecha fin del trabajo</th>
+              <th>¿Solucionado?</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="incident in searchResults" :key="incident.id">
-              <td>{{ incident.motor_id }}</td>
-              <td>{{ incident.mechanic_id }}</td>
-              <td>{{ incident.incident_date }}</td>
-              <td>{{ incident.start_date }}</td>
-              <td>{{ incident.end_date }}</td>
-              <td>{{ incident.solved ? 'Yes' : 'No' }}</td>
-              <td>{{ incident.problem_description }}</td>
-              <td>{{ incident.work_to_do }}</td>
-            </tr>
+            <tr v-for="(tarea,index) in tareasList" :key="index">
+              <td>{{ tarea.motor_id }}</td>
+              <td>{{ tarea.incident_date }}</td>
+              <td>{{ tarea.problem_description }}</td>
+              <td>{{ tarea.mechanics_associated }}</td>
+              <td>{{ tarea.work_to_do }}</td>
+              <td>{{ tarea.start_date }}</td>
+              <td>{{ tarea.end_date }}</td>
+              <td>{{ tarea.solved ? 'Yes' : 'No' }}</td>
+            </tr> 
           </tbody>
         </table>
-        <div v-else>No hay resultados</div>-->
+      </section>
+    </div>
+  </div>
+
+<!-- -------------------------------------------- Modificar la contrasena del mecanico -->
+<div v-if="selectedOption === 'settings'">
+    <div class="containerGeneral">
+      <section class="container">
+
       </section>
     </div>
   </div>
@@ -390,6 +391,7 @@ export default {
     };
   },
   data() {
+    //this.getIncidentsToDo();
     return {
       asign: {
         motor_id: '',
@@ -419,6 +421,7 @@ export default {
         solved: null,
         id: null
       },
+      tareasList: [],
       message: '',
       isSuccess: false
     };
@@ -450,7 +453,6 @@ export default {
         this.message = 'Formulario enviado exitosamente.';
         this.isSuccess = true;
         this.response_report = response.data;
-        /*this.resetForm();*/
       } catch (error) {
         const formString = JSON.stringify(this.form, null, 2);
         const serializerErrors = error.response && error.response.data ? JSON.stringify(error.response.data, null, 2) : 'No se pudo obtener los errores del servidor.';
@@ -506,17 +508,15 @@ export default {
         dict[key] = null;
       }
     },
-    resetForm() {
-      this.form = {
-        motor_id: '',  // Cambia de 'motorId' a 'motor_id'
-        mechanic_id: '',  // Cambia de 'mechanicId' a 'mechanic_id'
-        incident_date: '',  // Cambia de 'incidentDate' a 'incident_date'
-        start_date: '',
-        end_date: '',
-        solved: '',
-        problem_description: '',
-        work_to_do: ''
-      };
+    async getIncidentsToDo() {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/incidents/${this.mechanic_id}`);
+        this.tareasList = response.data;
+        this.message = `Se encontraron ${this.tareasList.length} resultados.`;
+      } catch (error) {
+        this.message = 'Error al buscar tareas.';
+        this.isSuccess = false;
+      }
     }
   }
 };
