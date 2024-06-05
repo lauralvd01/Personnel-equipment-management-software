@@ -402,13 +402,16 @@
 <script>
 import { ref } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'App',
   setup() {
+    const router = useRouter();
     return {
       selectedOption: ref('asign'),
-      selectedOptionSearch: ref('asignByMotor')
+      selectedOptionSearch: ref('asignByMotor'),
+      router
     };
   },
   data() {
@@ -558,10 +561,15 @@ export default {
     async changePassword() {
       try {
         const response = await axios.post('http://localhost:8000/api/login/edit/', this.editPassword);
+        this.isSuccess = true;
         this.message = 'Contraseña cambiada exitosamente.'
-        this.isSuccess = response.success;
-        this.mechanic_id = null;
-        this.reset(this.editPassword)
+        if (response.data.success) {
+          this.mechanic_id = null;
+          this.reset(this.editPassword)
+          this.$router.push('/');
+        } else {
+          this.msg = 'Al menos una de las contraseñas es incorrecta';
+        }
       } catch (error) {
         this.message = 'Error al cambiar la contraseña.';
         this.isSuccess = false;
