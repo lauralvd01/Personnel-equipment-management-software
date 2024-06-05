@@ -43,7 +43,7 @@ export default {
           this.msg = 'Usuario o contraseña incorrectos';
         }
       } catch (error) {
-        this.msg = 'Error al enviar el formulario';
+        this.msg = 'Usuario o contraseña incorrectos';
       }
     }
   }

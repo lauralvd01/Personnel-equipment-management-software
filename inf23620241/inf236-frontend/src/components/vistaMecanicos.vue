@@ -1,6 +1,16 @@
 <template>
   <h2>Vista Mecánico</h2>
+  <div class="posicionboton">
+    <nav>
+      <button @click="logout">
+        <span class="button_top"> Cerrar Sesión
+        </span>
+      </button>
+    </nav>
+    <RouterView />
+  </div>
   <div class="containerGeneral">
+
     <div class="radio-inputs">
       <label class="radio">
         <input type="radio" name="radio" value="asign" v-model="selectedOption" />
@@ -26,8 +36,8 @@
   </div>
 
 
-<!-- -------------------------------------------- Ver las asignaciones entre motores y camiones -->
-<div v-if="selectedOption === 'asign'">
+  <!-- -------------------------------------------- Ver las asignaciones entre motores y camiones -->
+  <div v-if="selectedOption === 'asign'">
     <div class="containerGeneral">
       <section class="container">
         <header style="text-align: left;">Buscar las asignaciones de un motor o de un camión</header>
@@ -49,7 +59,7 @@
               <input v-model="asign.motor_id" required placeholder="Ingrese el identificador del motor" type="text">
             </div>
             <div>
-            <button @click="getAsignByMotor">Buscar</button>
+              <button @click="getAsignByMotor">Buscar</button>
             </div>
           </div>
         </div>
@@ -61,7 +71,7 @@
               <input v-model="asign.camion_id" required placeholder="Ingrese el identificador del camión" type="text">
             </div>
             <div>
-            <button @click="getAsignByCamion">Buscar</button>
+              <button @click="getAsignByCamion">Buscar</button>
             </div>
           </div>
         </div>
@@ -81,7 +91,7 @@
               <td>{{ asign.camion_id }}</td>
               <td>{{ asign.asign_date }}</td>
               <td>{{ asign.unassign_date }}</td>
-            </tr> 
+            </tr>
           </tbody>
         </table>
 
@@ -92,7 +102,7 @@
 
 
 
-<!-- -------------------------------------------- Ingresar una incidencia -->
+  <!-- -------------------------------------------- Ingresar una incidencia -->
   <div v-if="selectedOption === 'report'">
     <div class="containerGeneral">
       <section class="container">
@@ -123,7 +133,7 @@
             <textarea v-model="report.work_to_do" placeholder="Indique qué es lo que falta por hacer"></textarea>
           </div>
 
-          <button type="submit">Someter</button>
+          <button type="submit">Ingresar</button>
         </form>
 
         <div v-if="response_report">
@@ -145,7 +155,7 @@
                 <td>{{ response_report.problem_description }}</td>
                 <td>{{ response_report.mechanics_associated }}</td>
                 <td>{{ response_report.work_to_do }}</td>
-              </tr> 
+              </tr>
             </tbody>
           </table>
         </div>
@@ -154,7 +164,7 @@
   </div>
 
 
-<!-- -------------------------------------------- Ver las incidencias de un motor -->
+  <!-- -------------------------------------------- Ver las incidencias de un motor -->
   <div v-if="selectedOption === 'search'">
     <div class="containerGeneral">
       <section class="container">
@@ -167,8 +177,8 @@
 
         <div class="column">
           <div class="input-box">
-              <label for="search_motor_id">Motor ID</label>
-              <input v-model="search_motor_id" type="text" id="search_motor_id">
+            <label for="search_motor_id">Motor ID</label>
+            <input v-model="search_motor_id" type="text" id="search_motor_id">
           </div>
           <button @click="searchByMotor">Buscar</button>
         </div>
@@ -189,7 +199,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(incident,index) in incidentsList" :key="index">
+            <tr v-for="(incident, index) in incidentsList" :key="index">
               <td>{{ incident.motor_id }}</td>
               <td>{{ incident.incident_date }}</td>
               <td>{{ incident.problem_description }}</td>
@@ -202,14 +212,14 @@
               <td>
                 <button @click="updateIndex(index)">Editar</button>
               </td>
-            </tr> 
+            </tr>
           </tbody>
         </table>
-        <div v-else>Todavia no hay incidencias</div>
+        <div v-else>Todavía no hay incidencias</div>
       </section>
     </div>
 
-<!-- -------------------------------------------- Modificar una incidencia -->
+    <!-- -------------------------------------------- Modificar una incidencia -->
     <div class="containerGeneral">
       <section class="container" v-if="editIndex || editIndex === 0">
         <table>
@@ -237,7 +247,7 @@
               <td>{{ incidentsList[editIndex].start_date }}</td>
               <td>{{ incidentsList[editIndex].end_date }}</td>
               <td>{{ incidentsList[editIndex].solved ? 'Yes' : 'No' }}</td>
-            </tr> 
+            </tr>
           </tbody>
         </table>
 
@@ -255,18 +265,20 @@
           </div>
           <div class="input-box">
             <label>Descripción del problema</label>
-            <textarea v-model="edit.problem_description" :placeholder="[[incidentsList[editIndex].problem_description]]"></textarea>
+            <textarea v-model="edit.problem_description"
+              :placeholder="[[incidentsList[editIndex].problem_description]]"></textarea>
           </div>
           <div class="input-box">
             <label>Mecánicos relacionados con la incidencia</label>
-            <textarea v-model="edit.mechanics_associated" :placeholder="[[incidentsList[editIndex].mechanics_associated]]"></textarea>
+            <textarea v-model="edit.mechanics_associated"
+              :placeholder="[[incidentsList[editIndex].mechanics_associated]]"></textarea>
           </div>
           <div class="input-box">
             <label>Trabajo por realizar</label>
             <textarea v-model="edit.work_to_do" :placeholder="[[incidentsList[editIndex].work_to_do]]"></textarea>
           </div>
 
-<!-- CUIDADO normalmente solo un Jefe de Motores puede ver esa posibilidad de asignar la incidencia a un Mecánico --> 
+          <!-- CUIDADO normalmente solo un Jefe de Motores puede ver esa posibilidad de asignar la incidencia a un Mecánico -->
           <!-- <div class="input-box">
             <label>Identificador del Mecánico asignado</label>
             <input v-model="edit.mechanic_id" placeholder="Ingrese el identificador del Mecánico asignado" type="text">
@@ -314,7 +326,7 @@
 
 
 
-<!-- -------------------------------------------- Ver las incidencias asignadas al mecanico -->
+  <!-- -------------------------------------------- Ver las incidencias asignadas al mecanico -->
   <div v-if="selectedOption === 'todo'">
     <div class="containerGeneral">
       <section class="container">
@@ -335,7 +347,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(tarea,index) in tareasList" :key="index">
+            <tr v-for="(tarea, index) in tareasList" :key="index">
               <td>{{ tarea.motor_id }}</td>
               <td>{{ tarea.incident_date }}</td>
               <td>{{ tarea.problem_description }}</td>
@@ -344,15 +356,15 @@
               <td>{{ tarea.start_date }}</td>
               <td>{{ tarea.end_date }}</td>
               <td>{{ tarea.solved ? 'Yes' : 'No' }}</td>
-            </tr> 
+            </tr>
           </tbody>
         </table>
       </section>
     </div>
   </div>
 
-<!-- -------------------------------------------- Modificar la contrasena del mecanico -->
-<div v-if="selectedOption === 'settings'">
+  <!-- -------------------------------------------- Modificar la contrasena del mecanico -->
+  <div v-if="selectedOption === 'settings'">
     <div class="containerGeneral">
       <section class="container">
         <div style="width: max-content;">
@@ -361,15 +373,18 @@
         <form @submit.prevent="changePassword" v-if="mechanic_id">
           <div class="input-box">
             <label>Contraseña actual</label>
-            <input v-model="editPassword.oldPassword" required placeholder="Ingresa tu contraseña actual" type="password">
+            <input v-model="editPassword.oldPassword" required placeholder="Ingresa tu contraseña actual"
+              type="password">
           </div>
           <div class="input-box">
             <label>Nueva contraseña</label>
-            <input v-model="editPassword.newPassword" required placeholder="Ingresa tu nueva contraseña" type="password">
+            <input v-model="editPassword.newPassword" required placeholder="Ingresa tu nueva contraseña"
+              type="password">
           </div>
           <div class="input-box">
-            <label>Nueva contraseña validacion</label>
-            <input v-model="editPassword.validNewPassword" required placeholder="Ingresa tu nueva contraseña una vez mas, para validarla" type="password">
+            <label>Repite la contraseña</label>
+            <input v-model="editPassword.validNewPassword" required
+              placeholder="Repetir contraseña" type="password">
           </div>
 
           <button type="submit">Cambiar</button>
@@ -378,7 +393,7 @@
     </div>
   </div>
 
-<!-- 
+  <!-- 
   <div>
     <div class="containerGeneral">
       <section class="container">
@@ -451,7 +466,7 @@ export default {
         oldPassword: '',
         newPassword: '',
         validNewPassword: ''
-        },
+      },
       message: '',
       isSuccess: false
     };
@@ -518,10 +533,12 @@ export default {
     },
     updateIndex(index) {
       this.editIndex = index;
-      if (index || index === 0)
-      {
+      if (index || index === 0) {
         this.edit.id = this.incidentsList[index].id
       }
+    },
+    logout() {
+      this.$router.push('/');
     },
     async editReport() {
       try {
@@ -606,6 +623,18 @@ export default {
 
 
 <style scoped>
+.posicionboton{
+  position: relative;
+  max-width: 1000px;
+  /* Ajustado para permitir que el contenedor se expanda */
+  width: 100%;
+  padding-left: 25%;
+  /*border-radius: 8px;*/
+}
+.button_top{
+  max-width: 100px;
+  margin-left: 0px;
+}
 .radio-inputs {
   position: relative;
   display: flex;
