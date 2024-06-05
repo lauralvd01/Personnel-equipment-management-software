@@ -55,11 +55,15 @@ def handle_incident(request):
 def login_view(request):
     rut = request.data.get('rut')
     password = request.data.get('password')
-    if rut == '123456789' and password == 'holamundo':
-        return Response({'success': True}, status=status.HTTP_200_OK)
-    else:
-        return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
 
+    import json
+    with open('inf236backend/tempDB/users.json') as my_file:
+        data = json.load(my_file)
+    
+    for user in data:
+        if user['rut'] == rut and user['contrasena'] == password:
+            return Response({'success': True}, status=status.HTTP_200_OK)
+    return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 
