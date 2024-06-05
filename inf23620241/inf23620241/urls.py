@@ -17,8 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from inf236backend.views import MotorViewSet, CamionViewSet, AsignacionMotorCamionViewSet, handle_incident, login_view, search_incidents, getAllIncidents
-
+from inf236backend.views import MotorViewSet, CamionViewSet, AsignacionMotorCamionViewSet, handle_incident, login_view, search_incidents
+from inf236backend.views import search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password
 
 router = DefaultRouter()
 router.register(r'motor',MotorViewSet)
@@ -27,8 +27,16 @@ router.register(r'asignacion',AsignacionMotorCamionViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     #path('admin/', admin.site.urls),
-    path('api/incidents/', handle_incident, name='handle_incident'), #Path de Vista, linea de prueba
-    path('api/allincidents/', getAllIncidents, name='getAllIncidents'), #Path de Vista, linea de prueba
+    #path('api/incidents/', handle_incident, name='handle_incident'), #Path de Vista, linea de prueba
+    #path('api/allincidents/', getAllIncidents, name='getAllIncidents'), #Path de Vista, linea de prueba
+    #path('api/search/', search_incidents, name='search_incidents'),
+
     path('api/login/', login_view, name='login_view'),
-    path('api/search/', search_incidents, name='search_incidents'),
+    path('api/asigns/', search_asign, name='search_asign'),
+    path('api/incidents/submit/', submit_incident, name='submit_incident'),
+    path('api/incidents/all/', getAllIncidents, name='getAllIncidents'),
+    path('api/incidents/', search_incidents, name='search_incidents'),
+    path('api/incidents/edit/', edit_incident, name='edit_incident'),
+    path('api/login/edit/', edit_password, name='edit_password')
+
 ]

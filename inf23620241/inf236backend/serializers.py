@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Motor, Camion, AsignacionMotorCamion, Incident
+from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign
 
 
 # Serializers are in charge to render arbitrary data types (json, URL encode forms, XML's) to python-like objects
@@ -20,24 +20,64 @@ class AsignacionMotorCamionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
+
+
 #Momentaneo solo para Hito 4
+
+class AsignSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Asign
+        fields = '__all__'
+
+
+def readData(file):
+    import json
+    with open(file) as my_file:
+        data = json.load(my_file)
+    return data
+
+def saveData(file,data):
+    import json
+    with open(file, 'w') as new_file:
+        json.dump(data, new_file)
+
 class IncidentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Incident
         fields = '__all__'
-
-    # Momentaneo para el hito 4, se sobreescribe el metodo save para guardar en la base de datos en JSON
+    
     def save(self):
-        import datetime
-        for key, value in self.validated_data.items(): # Momentaneo formatamos las fechas a string para registrarlas en la (momentanea) base de datos en JSON
-            if isinstance(value, datetime.date) :
-                date = value.strftime("%Y-%m-%d")
-                self.validated_data[key] = date
-        
-        import json
-        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
-            data = json.load(incidentsDB)
+        data = readData('./inf236backend/tempDB/incidents.json')
+        if len(data) == 0:
+            self.validated_data['id'] = 1
+        else:
+            self.validated_data['id'] = data[-1]['id'] + 1
         data.append(self.validated_data)
+        saveData('./inf236backend/tempDB/incidents.json',data)
+    
+    @staticmethod
+    def update_incident(new_data):
+        data = readData('./inf236backend/tempDB/incidents.json')
+        for index, incident in enumerate(data):
 
-        with open('./inf236backend/tempDB/incidents.json', 'w') as newIncidentsDB:
-	        json.dump(data, newIncidentsDB)
+            if incident['id'] == new_data['id']:
+                print("Found incident to update: ",data[index])
+                data[index] = new_data
+                print("Updated incident: ",data[index])
+                break
+        saveData('./inf236backend/tempDB/incidents.json',data)
+
+    @staticmethod
+    def merge(old, data):
+        new_data = {}
+        for key in data:
+            if key in old :
+                if data[key] is not None :
+                    new_data[key] = data[key]
+                else:
+                    new_data[key] = old[key]
+            else :
+                new_data[key] = data[key]
+        IncidentSerializer.update_incident(new_data)
+        return new_data

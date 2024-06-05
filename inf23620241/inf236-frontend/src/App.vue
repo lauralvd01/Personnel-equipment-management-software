@@ -1,13 +1,13 @@
 <template>
   <HelloWorld msg="Sistema de monitoreo de fallas en motores mineros"/>
-  <p><strong>Current route path:</strong> {{ $route.fullPath }}</p>
+  <!-- <p><strong>Current route path:</strong> {{ $route.fullPath }}</p>
   <nav>
     <RouterLink to="/">Home</RouterLink>
     <p> </p>
-    <RouterLink to="/vistamecanico">Vista Mecánico</RouterLink>
+    <RouterLink to="/vistaMecanico">Vista Mecánico</RouterLink>
     <p> </p>
-    <RouterLink to="/vistajefemotores">Vista Jefe motores</RouterLink>
-  </nav>
+    <RouterLink to="/vistaJefemotores">Vista Jefe motores</RouterLink>
+  </nav> -->
   <main>
     <RouterView />
   </main>

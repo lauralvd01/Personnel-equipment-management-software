@@ -1,3 +1,4 @@
+from typing import Any
 from django.db import models
 
 # Create your models here.
@@ -63,26 +64,92 @@ class Incidencia(models.Model):
     solucionado = models.BooleanField(default=False)
 
 
-# Modelo para Hito 4, en un futuro se eliminará y se trabajarán con los modelos vistos arriba
+
+
+
+
+
+
+
+
+# Modelos para Hito 4, en un futuro se eliminarán y se trabajarán con los modelos vistos arriba
+
+class Asign(models.Model):
+    motor_id = models.CharField(default="", max_length=100)
+    camion_id = models.CharField(default="", max_length=100)
+    asign_date = models.CharField(default="", max_length=100)
+    unassign_date = models.CharField(default="", max_length=100)
+
+    def filterByMotor(motor_id):
+        import json
+        with open('./inf236backend/tempDB/asign.json') as incidentsDB:
+            data = json.load(incidentsDB)
+        filtered_data = [asign for asign in data if f"{asign['motor_id']}" == motor_id]
+        return filtered_data
+    
+    def filterByCamion(camion_id):
+        import json
+        with open('./inf236backend/tempDB/asign.json') as incidentsDB:
+            data = json.load(incidentsDB)
+        filtered_data = [asign for asign in data if f"{asign['camion_id']}" == camion_id]
+        return filtered_data
+
 
 class Incident(models.Model):
-    motor_id = models.CharField(max_length=100)
-    mechanic_id = models.CharField(max_length=100)
-    incident_date = models.DateField()
-    start_date = models.DateField()
-    end_date = models.DateField()
-    solved = models.BooleanField()
-    problem_description = models.TextField()
-    work_to_do = models.TextField()
+    motor_id = models.CharField(default="", blank=True, max_length=100)
+    incident_date = models.CharField(default="", blank=True, max_length=100)
+    problem_description = models.TextField(default="", blank=True)
+    mechanics_associated = models.TextField(default="", blank=True)
+    work_to_do = models.TextField(default="", blank=True)
+    mechanic_id = models.CharField(default="", blank=True, max_length=100)
+    start_date = models.CharField(default="", blank=True, max_length=100)
+    end_date = models.CharField(default="", blank=True, max_length=100)
+    solved = models.BooleanField(default=False)
+    id = models.IntegerField(primary_key=True, default=0)
 
-    def __str__(self):
-        return self.motor_id
-    
-    # Momentaneo para el hito 4, se sobreescribe el metodo Incidents.objects.all() para recuperar los datos desde la base de datos en JSON
+    # def __init__(self, report) :
+    #     print("Creating incident with data: ", report)
+    #     import datetime
+    #     self.motor_id = report['motor_id']
+    #     if isinstance(report['incident_date'], datetime.date) :
+    #             date = report['incident_date'].strftime("%Y-%m-%d")
+    #             self.incident_date = date
+    #     else:
+    #         self.incident_date = report['incident_date']
+    #     self.problem_description = report['problem_description']
+    #     self.mechanics_associated = report['mechanics_associated']
+    #     self.work_to_do = report['work_to_do']
+    #     self.mechanic_id = ""
+    #     self.start_date = ""
+    #     self.end_date = ""
+    #     self.solved = False
+
     def all():
-        print("Getting all incidents")
         import json
         with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
             data = json.load(incidentsDB)
         return data
     
+    def filterByMotor(motor_id):
+        import json
+        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
+            data = json.load(incidentsDB)
+        filtered_data = [incident for incident in data if f"{incident['motor_id']}" == motor_id]
+        return filtered_data
+    
+    def filterByMechanic(mechanic_id):
+        import json
+        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
+            data = json.load(incidentsDB)
+        print(data)
+        filtered_data = [incident for incident in data if 'mechanic_id' in incident.keys() and f"{incident['mechanic_id']}" == mechanic_id]
+        return filtered_data
+    
+    def getById(incident_id):
+        import json
+        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
+            data = json.load(incidentsDB)
+        for incident in data:
+            if incident['id'] == incident_id:
+                return incident
+        return None
