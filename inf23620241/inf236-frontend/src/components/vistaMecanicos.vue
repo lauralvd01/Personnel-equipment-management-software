@@ -361,15 +361,15 @@
         <form @submit.prevent="changePassword" v-if="mechanic_id">
           <div class="input-box">
             <label>Contraseña actual</label>
-            <input v-model="editPassword.oldPassword" placeholder="Ingresa tu contraseña actual" type="password">
+            <input v-model="editPassword.oldPassword" required placeholder="Ingresa tu contraseña actual" type="password">
           </div>
           <div class="input-box">
             <label>Nueva contraseña</label>
-            <input v-model="editPassword.newPassword" placeholder="Ingresa tu nueva contraseña" type="password">
+            <input v-model="editPassword.newPassword" required placeholder="Ingresa tu nueva contraseña" type="password">
           </div>
           <div class="input-box">
             <label>Nueva contraseña validacion</label>
-            <input v-model="editPassword.validNewPassword" placeholder="Ingresa tu nueva contraseña una vez mas, para validarla" type="password">
+            <input v-model="editPassword.validNewPassword" required placeholder="Ingresa tu nueva contraseña una vez mas, para validarla" type="password">
           </div>
 
           <button type="submit">Cambiar</button>
@@ -378,7 +378,7 @@
     </div>
   </div>
 
-
+<!-- 
   <div>
     <div class="containerGeneral">
       <section class="container">
@@ -387,7 +387,7 @@
         </div>
       </section>
     </div>
-  </div>
+  </div> -->
 
 
 </template>
@@ -518,7 +518,7 @@ export default {
     },
     updateIndex(index) {
       this.editIndex = index;
-      if (index)
+      if (index || index === 0)
       {
         this.edit.id = this.incidentsList[index].id
       }

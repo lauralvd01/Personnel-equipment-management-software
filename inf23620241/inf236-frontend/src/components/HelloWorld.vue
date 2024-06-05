@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h2>Vista Home</h2>
+    <h2>Sistema de monitoreo de fallas en motores mineros</h2>
     <div class="container">
       <form class="form" @submit.prevent="submitForm">
         <div class="title">Por favor<br><span>Ingrese su rut y contraseña</span></div>

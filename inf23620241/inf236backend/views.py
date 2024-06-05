@@ -118,6 +118,7 @@ def search_incidents(request):
 
 @api_view(['POST'])
 def edit_incident(request):
+    print(request.data)
     incident_id = request.data["id"]
     if incident_id is not None:
         incident = Incident.getById(incident_id)
@@ -129,6 +130,7 @@ def edit_incident(request):
             return Response(new_incident, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response({'error: Incidencia con este ID no encontrada'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 def edit_password(request):
