@@ -62,7 +62,7 @@ def login_view(request):
     
     for user in data:
         if user['rut'] == rut and user['contrasena'] == password:
-            return Response({'success': True}, status=status.HTTP_200_OK)
+            return Response({'success': True, 'id': user['id_usuario']}, status=status.HTTP_200_OK)
     return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
 
 

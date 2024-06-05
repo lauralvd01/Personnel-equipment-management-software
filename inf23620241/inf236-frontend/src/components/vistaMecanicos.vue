@@ -352,7 +352,8 @@
 <div v-if="selectedOption === 'settings'">
     <div class="containerGeneral">
       <section class="container">
-
+        <p>Cuenta del mecanico con el id </p>
+        <p>{{$route.params.id}}</p>
       </section>
     </div>
   </div>
@@ -391,6 +392,8 @@ export default {
     };
   },
   data() {
+    console.log("Data")
+    //console.log($route.params)
     //this.getIncidentsToDo();
     return {
       asign: {

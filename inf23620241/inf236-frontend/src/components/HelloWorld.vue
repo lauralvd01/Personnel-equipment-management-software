@@ -36,8 +36,9 @@ export default {
     async submitForm() {
       try {
         const response = await axios.post('http://localhost:8000/api/login/', this.form);
+        console.log(response.data)
         if (response.data.success) {
-          this.$router.push('/vistamecanico'); // Redirigir a la vista del mecánico
+          this.$router.push('/vistaMecanico/' + response.data.id);
         } else {
           this.msg = 'Usuario o contraseña incorrectos';
         }
