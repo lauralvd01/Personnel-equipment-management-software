@@ -36,7 +36,7 @@ docker-compose up
 
 ¡Listo!
 
-Se puede abrir el localhost:7777 para ver el framework Vue.js sobre el cual se trabajará la creación del front-end. Por el momento nuestro código se muestra en "Hola Mundo" abajo de la página.
+Se puede abrir el localhost:7777 para ver el framework Vue.js sobre el cual se está trabajando el front-end. Actualmente, en la página se puede ver el inicio de sesión e ingresando con un usuario autorizado, ingresa a la vista que corresponda según el rol (Los usuarios con acceso se pueden encontrar en grupo001\inf23620241\inf236backend\tempDB\users.json). 
 
 
 ## Herramientas
