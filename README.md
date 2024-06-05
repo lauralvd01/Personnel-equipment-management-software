@@ -13,6 +13,10 @@ Este es el repositorio del *Grupo 1*, cuyos integrantes son:
 
 Puede acceder a la Wiki mediante el siguiente [enlace](https://gitlab.com/inf236-2024-1/grupo001/-/wikis/home)
 
+## Video Prototipo
+
+Se puede acceder al prototipo de la vista de un Mecánico en el siguiente video: https://youtu.be/oqKZcD7FfYY
+
 ## Instalación
 
 * Instalar y activar [Docker](https://docs.docker.com/engine/install/).
