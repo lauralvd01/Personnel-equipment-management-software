@@ -109,6 +109,11 @@ def search_incidents(request):
         incidents = Incident.filterByMotor(motor_id=motor_id)
         serializer = IncidentSerializer(incidents, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    mechanic_id = request.query_params.get('mechanic_id', None)
+    if mechanic_id is not None:
+        incidents = Incident.filterByMechanic(mechanic_id=mechanic_id)
+        serializer = IncidentSerializer(incidents, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     return Response({'error': 'Motor ID no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])

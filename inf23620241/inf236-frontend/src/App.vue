@@ -4,9 +4,9 @@
   <nav>
     <RouterLink to="/">Home</RouterLink>
     <p> </p>
-    <RouterLink to="/vistamecanico">Vista Mecánico</RouterLink>
+    <RouterLink to="/vistaMecanico/4">Vista Mecánico</RouterLink>
     <p> </p>
-    <RouterLink to="/vistajefemotores">Vista Jefe motores</RouterLink>
+    <RouterLink to="/vistaJefemotores">Vista Jefe motores</RouterLink>
   </nav>
   <main>
     <RouterView />

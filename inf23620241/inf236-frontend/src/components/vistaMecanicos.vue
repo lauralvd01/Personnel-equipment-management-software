@@ -318,6 +318,9 @@
   <div v-if="selectedOption === 'todo'">
     <div class="containerGeneral">
       <section class="container">
+        <div style="width: max-content;">
+          <button @click="getIncidentsToDo($route.params.id)">Ver mis tareas</button>
+        </div>
         <table v-if="tareasList.length">
           <thead>
             <tr>
@@ -392,9 +395,6 @@ export default {
     };
   },
   data() {
-    console.log("Data")
-    //console.log($route.params)
-    //this.getIncidentsToDo();
     return {
       asign: {
         motor_id: '',
@@ -435,6 +435,7 @@ export default {
         const response = await axios.get(`http://localhost:8000/api/asigns/?motor_id=${this.asign.motor_id}`);
         this.asignList = response.data;
         this.message = `Se encontraron ${this.asignList.length} resultados.`;
+        this.success = true;
       } catch (error) {
         this.message = 'Error al buscar asignaciones.';
         this.isSuccess = false;
@@ -445,6 +446,7 @@ export default {
         const response = await axios.get(`http://localhost:8000/api/asigns/?camion_id=${this.asign.camion_id}`);
         this.asignList = response.data;
         this.message = `Se encontraron ${this.asignList.length} resultados.`;
+        this.success = true;
       } catch (error) {
         this.message = 'Error al buscar asignaciones.';
         this.isSuccess = false;
@@ -469,6 +471,7 @@ export default {
         const response = await axios.get('http://localhost:8000/api/incidents/all/');
         this.incidentsList = response.data;
         this.message = `Se encontraron ${this.incidentsList.length} resultados.`;
+        this.success = true;
       } catch (error) {
         this.message = 'Error al obtener las incidencias.';
         this.isSuccess = false;
@@ -480,6 +483,7 @@ export default {
         const response = await axios.get(`http://localhost:8000/api/incidents/?motor_id=${this.search_motor_id}`);
         this.incidentsList = response.data;
         this.message = `Se encontraron ${response.data.length} resultados.`;
+        this.success = true;
       } catch (error) {
         this.message = 'Error al buscar incidentes.';
         this.isSuccess = false;
@@ -511,11 +515,13 @@ export default {
         dict[key] = null;
       }
     },
-    async getIncidentsToDo() {
+    async getIncidentsToDo(mechanic_id) {
+      console.log(mechanic_id)
       try {
-        const response = await axios.get(`http://localhost:8000/api/incidents/${this.mechanic_id}`);
+        const response = await axios.get(`http://localhost:8000/api/incidents/?mechanic_id=${mechanic_id}`);
+        this.message = `Se encontraron ${response.data.length} resultados.`;
+        this.success = true;
         this.tareasList = response.data;
-        this.message = `Se encontraron ${this.tareasList.length} resultados.`;
       } catch (error) {
         this.message = 'Error al buscar tareas.';
         this.isSuccess = false;

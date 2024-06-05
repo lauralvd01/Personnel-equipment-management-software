@@ -137,6 +137,14 @@ class Incident(models.Model):
         filtered_data = [incident for incident in data if f"{incident['motor_id']}" == motor_id]
         return filtered_data
     
+    def filterByMechanic(mechanic_id):
+        import json
+        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
+            data = json.load(incidentsDB)
+        print(data)
+        filtered_data = [incident for incident in data if 'mechanic_id' in incident.keys() and f"{incident['mechanic_id']}" == mechanic_id]
+        return filtered_data
+    
     def getById(incident_id):
         import json
         with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
