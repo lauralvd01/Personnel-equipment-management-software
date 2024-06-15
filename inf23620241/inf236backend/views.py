@@ -51,22 +51,6 @@ def handle_incident(request):
 
 
 
-@api_view(['POST'])
-def login_view(request):
-    rut = request.data.get('rut')
-    password = request.data.get('password')
-
-    import json
-    with open('inf236backend/tempDB/users.json') as my_file:
-        data = json.load(my_file)
-    
-    for user in data:
-        if user['rut'] == rut and user['contrasena'] == password:
-            return Response({'success': True, 'id': user['id_usuario']}, status=status.HTTP_200_OK)
-    return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
-
-
-
 @api_view(['GET'])
 def search_asign(request):
     motor_id = request.query_params.get('motor_id', None)
@@ -165,3 +149,11 @@ def creacion_usuario(request):
     print(f"Serializer errors: {serializer.errors}")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+@api_view(['POST'])
+def login_bdd(request):
+    serializer= IncidentSerializer(data = request.data)
+    print(request.data)
+    if serializer.is_valid():
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    print(f"Serializer errors: {serializer.errors}")

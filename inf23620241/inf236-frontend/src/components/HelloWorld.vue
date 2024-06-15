@@ -2,20 +2,13 @@
   <div class="hello">
     <h2>Sistema de monitoreo de fallas en motores mineros</h2>
     <div class="container">
-      <form class="form" @submit.prevent="submitForm">
-        <div class="title">Por favor<br><span>Ingrese su rut y contraseña</span></div>
-        <input v-model="form.rut" type="text" placeholder="Rut" name="rut" class="input" required>
-        <input v-model="form.password" type="password" placeholder="Contraseña" name="password" class="input" required>
-        <button type="submit" class="button-confirm">Ingresar</button>
-      </form>
       <!-- Para trabajar el GET en BDD original -->
       <form class="form" @submit.prevent="submitForm">
         <div class="title">Por favor<br><span>Ingrese su rut y contraseña</span></div>
-        <input v-model="form.rut" type="text" placeholder="Rut" name="rut" class="input" required>
-        <input v-model="form.password" type="password" placeholder="Contraseña" name="password" class="input" required>
-        <button type="submit" class="button-confirm">Ingresar</button>
+        <input v-model="form.rut1" type="text" placeholder="Rut en bdd" name="rut_en_bdd" class="input" required>
+        <input v-model="form.password1" type="password" placeholder="Contraseña en bdd" name="password_en_bdd" class="input" required>
+        <button @click="login_bdd" class="button-confirm">Ingresar</button>
       </form>
-      
     </div>
     <p>{{ msg }}</p> <!-- Para mostrar el mensaje de éxito o error -->
   </div>
@@ -28,6 +21,15 @@ import { useRouter } from 'vue-router';
 export default {
   data() {
     return {
+      usuario:{
+        rut: '',
+        contrasena:'',
+        nombre: '',
+        apellido: '',
+        fecha_registro:'',
+        rol:'',
+        turno:''
+      },
       form: {
         rut: '',
         password: ''
@@ -52,6 +54,27 @@ export default {
       } catch (error) {
         this.msg = 'Usuario o contraseña incorrectos';
       }
+    },
+    async create_user(){
+      try{
+        axios.post('http://localhost:8000/api/usuario/', this.usuario);        
+      } catch (error) {
+        this.message = 'Error al crear usuario';
+      }
+    },
+    async login_bdd(){
+      try{
+        const response = await axios.post('http://localhost:8000/api/sesion/');
+        this.message = JSON.stringify(response);
+        if (response.data.success) {
+            this.$router.push('/vistaMecanico/' + response.data.id);
+          } else {
+            this.msg = 'Usuario o contraseña incorrectos';
+          }
+      } catch (error) {
+        this.msg = 'Usuario o contraseña incorrectos';
+      }
+
     }
   }
 };
