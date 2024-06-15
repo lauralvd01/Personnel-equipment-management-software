@@ -153,3 +153,15 @@ def edit_password(request):
             else :
                 return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
     return Response({'success': False}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+def creacion_usuario(request):
+    print(request.data)
+    serializer = IncidentSerializer(data=request.data)
+    if serializer.is_valid():
+        print(f"Serializer data: {serializer.validated_data}")
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    print(f"Serializer errors: {serializer.errors}")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    

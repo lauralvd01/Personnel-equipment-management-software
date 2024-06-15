@@ -34,6 +34,18 @@
       </label>
     </div>
   </div>
+  <form class="form" @submit.prevent="submitForm">
+        <div class="title">Por favor<br><span>Ingrese datos del nuevo mecánico</span></div>
+        <input v-model="usuario.nombre" type="text" placeholder="Nombre" name="nombre" class="input" required>
+        <input v-model="usuario.apellido" type="text" placeholder="Apellido" name="apellido" class="input" required>
+        <input v-model="usuario.rut" type="text" placeholder="Rut" name="rut" class="input" required>
+        <input v-model="usuario.password" type="password" placeholder="Contraseña" name="password" class="input" required>
+        <input v-model="usuario.fecha_registro" required placeholder="Fecha de registro" type="date">
+        <input v-model="usuario.rol" type="text" placeholder="Rol" name="rol" class="input" required>
+        <input v-model="usuario.turno" type="text" placeholder="Ingrese turno" name="turno" class="input" required>
+        <button @click="create_user" class="button-confirm">Ingresar</button>
+      </form>
+  
 
 
   <!-- -------------------------------------------- Ver las asignaciones entre motores y camiones -->
@@ -467,6 +479,15 @@ export default {
         newPassword: '',
         validNewPassword: ''
       },
+      usuario:{
+        rut: '',
+        contrasena:'',
+        nombre: '',
+        apellido: '',
+        fecha_registro:'',
+        rol:'',
+        turno:''
+      },
       message: '',
       isSuccess: false
     };
@@ -590,6 +611,13 @@ export default {
       } catch (error) {
         this.message = 'Error al cambiar la contraseña.';
         this.isSuccess = false;
+      }
+    },
+    async create_user(){
+      try{
+        axios.post('http://localhost:8000/api/usuario/', this.usuario);        
+      } catch (error) {
+        this.message = 'Error al crear usuario';
       }
     }
   }
