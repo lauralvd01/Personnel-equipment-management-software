@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign
+from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign, Usuario
 
 
 # Serializers are in charge to render arbitrary data types (json, URL encode forms, XML's) to python-like objects
@@ -81,3 +81,8 @@ class IncidentSerializer(serializers.ModelSerializer):
                 new_data[key] = data[key]
         IncidentSerializer.update_incident(new_data)
         return new_data
+
+class UsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ['id_usuario', 'rut', 'contrasena', 'nombre', 'apellido', 'fecha_registro', 'rol', 'turno']

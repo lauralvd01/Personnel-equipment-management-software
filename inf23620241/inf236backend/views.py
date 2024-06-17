@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign
-from .serializers import MotorSerializer, CamionSerializer, AsignacionMotorCamionSerializer, IncidentSerializer, AsignSerializer
+from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign, Usuario
+from .serializers import MotorSerializer, CamionSerializer, AsignacionMotorCamionSerializer, IncidentSerializer, AsignSerializer, UsuarioSerializer
 
 
 
@@ -151,9 +151,16 @@ def creacion_usuario(request):
     
 @api_view(['POST'])
 def login_bdd(request):
-    serializer= IncidentSerializer(data = request.data)
-    print(request.data)
-    if serializer.is_valid():
-        
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    print(f"Serializer errors: {serializer.errors}")
+    rut = request.data.get('rut')
+    contrasena = request.data.get('contrasena')
+    #print(f"Datos recibidos: rut={rut}, contrasena={contrasena}")
+    try:
+        usuario = Usuario.objects.get(rut=rut)
+        print(f"Usuario encontrado: rut={usuario.rut}, contrasena={usuario.contrasena}")
+        if usuario.contrasena == contrasena:  # Si la contraseña está hasheada, usar check_password
+            serializer = UsuarioSerializer(usuario)
+            return Response({'success': True, 'id': usuario.id_usuario}, status=status.HTTP_200_OK)
+        else:
+            return Response({'success': False, 'message': 'Usuario o contraseña incorrectos'}, status=status.HTTP_401_UNAUTHORIZED)
+    except Usuario.DoesNotExist:
+        return Response({'success': False, 'message': 'Usuario o contraseña incorrectos'}, status=status.HTTP_401_UNAUTHORIZED)

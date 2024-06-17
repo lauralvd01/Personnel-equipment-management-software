@@ -3,10 +3,10 @@
     <h2>Sistema de monitoreo de fallas en motores mineros</h2>
     <div class="container">
       <!-- Para trabajar el GET en BDD original -->
-      <form class="form" @submit.prevent="submitForm">
+      <form class="form" @submit.prevent="login_bdd">
         <div class="title">Por favor<br><span>Ingrese su rut y contraseña</span></div>
-        <input v-model="form.rut1" type="text" placeholder="Rut en bdd" name="rut_en_bdd" class="input" required>
-        <input v-model="form.password1" type="password" placeholder="Contraseña en bdd" name="password_en_bdd" class="input" required>
+        <input v-model="usuario.rut" type="text" placeholder="Rut en bdd" name="rut_en_bdd" class="input" required>
+        <input v-model="usuario.contrasena" type="password" placeholder="Contraseña en bdd" name="password_en_bdd" class="input" required>
         <button @click="login_bdd" class="button-confirm">Ingresar</button>
       </form>
     </div>
@@ -30,10 +30,6 @@ export default {
         rol:'',
         turno:''
       },
-      form: {
-        rut: '',
-        password: ''
-      },
       msg: ''
     };
   },
@@ -42,29 +38,12 @@ export default {
     return { router };
   },
   methods: {
-    async submitForm() {
-      try {
-        const response = await axios.post('http://localhost:8000/api/login/', this.form);
-        console.log(response.data)
-        if (response.data.success) {
-          this.$router.push('/vistaMecanico/' + response.data.id);
-        } else {
-          this.msg = 'Usuario o contraseña incorrectos';
-        }
-      } catch (error) {
-        this.msg = 'Usuario o contraseña incorrectos';
-      }
-    },
-    async create_user(){
-      try{
-        axios.post('http://localhost:8000/api/usuario/', this.usuario);        
-      } catch (error) {
-        this.message = 'Error al crear usuario';
-      }
-    },
     async login_bdd(){
       try{
-        const response = await axios.post('http://localhost:8000/api/sesion/');
+        const response = await axios.post('http://localhost:8000/api/sesion/',{
+          rut: this.usuario.rut,
+          contrasena: this.usuario.contrasena
+        });
         this.message = JSON.stringify(response);
         if (response.data.success) {
             this.$router.push('/vistaMecanico/' + response.data.id);
