@@ -47,26 +47,6 @@ class IncidentSerializer(serializers.ModelSerializer):
         model = Incident
         fields = '__all__'
     
-    def save(self):
-        data = readData('./inf236backend/tempDB/incidents.json')
-        if len(data) == 0:
-            self.validated_data['id'] = 1
-        else:
-            self.validated_data['id'] = data[-1]['id'] + 1
-        data.append(self.validated_data)
-        saveData('./inf236backend/tempDB/incidents.json',data)
-    
-    @staticmethod
-    def update_incident(new_data):
-        data = readData('./inf236backend/tempDB/incidents.json')
-        for index, incident in enumerate(data):
-
-            if incident['id'] == new_data['id']:
-                print("Found incident to update: ",data[index])
-                data[index] = new_data
-                print("Updated incident: ",data[index])
-                break
-        saveData('./inf236backend/tempDB/incidents.json',data)
 
     @staticmethod
     def merge(old, data):

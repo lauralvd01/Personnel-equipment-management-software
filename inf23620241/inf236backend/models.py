@@ -51,7 +51,7 @@ class Usuario(models.Model):
     rol = models.CharField(max_length=256, default="")
     turno = models.CharField(max_length=256, default="")
 
-
+# No se usa No se usa No se usa
 class Incidencia(models.Model):
     id_incidencia = models.AutoField(primary_key=True)
     motor = models.ForeignKey(Motor, on_delete=models.CASCADE)
@@ -62,7 +62,7 @@ class Incidencia(models.Model):
     fecha_inicio_trabajo = models.DateTimeField(null=True, blank=True)
     fecha_fin_trabajo = models.DateTimeField(null=True, blank=True)
     solucionado = models.BooleanField(default=False)
-
+# No se usa No se usa No se usa
 
 
 
@@ -80,6 +80,7 @@ class Asign(models.Model):
     asign_date = models.CharField(default="", max_length=100)
     unassign_date = models.CharField(default="", max_length=100)
 
+# Definiciones de funciones NO usadas
     def filterByMotor(motor_id):
         import json
         with open('./inf236backend/tempDB/asign.json') as incidentsDB:
@@ -93,7 +94,7 @@ class Asign(models.Model):
             data = json.load(incidentsDB)
         filtered_data = [asign for asign in data if f"{asign['camion_id']}" == camion_id]
         return filtered_data
-
+#Definiciones de funciones NO usadas
 
 class Incident(models.Model):
     motor_id = models.CharField(default="", blank=True, max_length=100)

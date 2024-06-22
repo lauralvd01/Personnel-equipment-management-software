@@ -34,11 +34,11 @@
       </label>
     </div>
   </div>
-  
-  
 
 
-  <!-- -------------------------------------------- Ver las asignaciones entre motores y camiones -->
+
+
+  <!-- -------------------------------------------- Ver las asignaciones entre motores y camiones (Ya mudado a BBDD)-->
   <div v-if="selectedOption === 'asign'">
     <div class="containerGeneral">
       <section class="container">
@@ -81,18 +81,20 @@
         <table v-if="asignList.length">
           <thead>
             <tr>
+              <th>ID Asignación</th>
               <th>Motor ID</th>
               <th>Camión ID</th>
-              <th>Fecha asignación</th>
-              <th>Fecha desasignación</th>
+              <th>Fecha Asignación</th>
+              <th>Fecha Desasignación</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="asign in asignList" :key="asign.id">
-              <td>{{ asign.motor_id }}</td>
-              <td>{{ asign.camion_id }}</td>
-              <td>{{ asign.asign_date }}</td>
-              <td>{{ asign.unassign_date }}</td>
+            <tr v-for="asignacion in asignList" :key="asignacion.id_asignacion">
+              <td>{{ asignacion.id_asignacion }}</td>
+              <td>{{ asignacion.motor }}</td>
+              <td>{{ asignacion.camion }}</td>
+              <td>{{ asignacion.fecha_asignacion }}</td>
+              <td>{{ asignacion.fecha_desasignacion }}</td>
             </tr>
           </tbody>
         </table>
@@ -385,8 +387,7 @@
           </div>
           <div class="input-box">
             <label>Repite la contraseña</label>
-            <input v-model="editPassword.validNewPassword" required
-              placeholder="Repetir contraseña" type="password">
+            <input v-model="editPassword.validNewPassword" required placeholder="Repetir contraseña" type="password">
           </div>
 
           <button type="submit">Cambiar</button>
@@ -477,6 +478,7 @@ export default {
     async getAsignByMotor() {
       try {
         const response = await axios.get(`http://localhost:8000/api/asigns/?motor_id=${this.asign.motor_id}`);
+        console.log(response.data);
         this.asignList = response.data;
         this.message = `Se encontraron ${this.asignList.length} resultados.`;
         this.success = true;
@@ -593,7 +595,7 @@ export default {
         this.message = 'Error al cambiar la contraseña.';
         this.isSuccess = false;
       }
-    }    
+    }
   }
 };
 </script>
@@ -625,7 +627,7 @@ export default {
 
 
 <style scoped>
-.posicionboton{
+.posicionboton {
   position: relative;
   max-width: 1000px;
   /* Ajustado para permitir que el contenedor se expanda */
@@ -633,10 +635,12 @@ export default {
   padding-left: 25%;
   /*border-radius: 8px;*/
 }
-.button_top{
+
+.button_top {
   max-width: 100px;
   margin-left: 0px;
 }
+
 .radio-inputs {
   position: relative;
   display: flex;

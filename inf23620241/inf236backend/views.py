@@ -55,15 +55,40 @@ def handle_incident(request):
 def search_asign(request):
     motor_id = request.query_params.get('motor_id', None)
     camion_id = request.query_params.get('camion_id', None)
-    if motor_id is not None:
-        asigns = Asign.filterByMotor(motor_id=motor_id)
-        serializer = AsignSerializer(asigns, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    if camion_id is not None:
-        asigns = Asign.filterByCamion(camion_id=camion_id)
-        serializer = AsignSerializer(asigns, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response({'error': 'Motor ID ni Camion ID no proporcionados'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        if motor_id is not None:
+            asignaciones = AsignacionMotorCamion.objects.filter(motor_id=motor_id)
+            serializer = AsignacionMotorCamionSerializer(asignaciones, many=True)
+            print(asignaciones)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        if camion_id is not None:
+            asignaciones = AsignacionMotorCamion.objects.filter(camion_id=camion_id)
+            serializer = AsignacionMotorCamionSerializer(asignaciones, many=True)
+            print(asignaciones)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+    
+    except AsignacionMotorCamion.DoesNotExist:
+        return Response({'error': 'No se encontraron asignaciones para el ID proporcionado'}, status=status.HTTP_404_NOT_FOUND)
+
+#@api_view(['POST'])
+#def login_bdd(request):
+#    rut = request.data.get('rut')
+#    contrasena = request.data.get('contrasena')
+#    #print(f"Datos recibidos: rut={rut}, contrasena={contrasena}")
+#    try:
+#        usuario = Usuario.objects.get(rut=rut)
+#        print(f"Usuario encontrado: rut={usuario.rut}, contrasena={usuario.contrasena}")
+#        if usuario.contrasena == contrasena:  # Si la contraseña está hasheada, usar check_password
+#            serializer = UsuarioSerializer(usuario)
+#            return Response({'success': True, 'id': usuario.id_usuario}, status=status.HTTP_200_OK)
+#        else:
+#            return Response({'success': False, 'message': 'Usuario o contraseña incorrectos'}, status=status.HTTP_401_UNAUTHORIZED)
+#    except Usuario.DoesNotExist:
+#        return Response({'success': False, 'message': 'Usuario o contraseña incorrectos'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
 
 
 @api_view(['POST'])
