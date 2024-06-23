@@ -51,7 +51,7 @@ class Usuario(models.Model):
     rol = models.CharField(max_length=256, default="")
     turno = models.CharField(max_length=256, default="")
 
-# No se usa No se usa No se usa
+# Se está utilizando  
 class Incidencia(models.Model):
     id_incidencia = models.AutoField(primary_key=True)
     motor = models.ForeignKey(Motor, on_delete=models.CASCADE)
@@ -62,7 +62,7 @@ class Incidencia(models.Model):
     fecha_inicio_trabajo = models.DateTimeField(null=True, blank=True)
     fecha_fin_trabajo = models.DateTimeField(null=True, blank=True)
     solucionado = models.BooleanField(default=False)
-# No se usa No se usa No se usa
+    mecanicos_asociados = models.TextField(default="", blank=True)
 
 
 
@@ -70,7 +70,7 @@ class Incidencia(models.Model):
 
 
 
-
+################################################################################
 
 # Modelos para Hito 4, en un futuro se eliminarán y se trabajarán con los modelos vistos arriba
 
@@ -96,17 +96,18 @@ class Asign(models.Model):
         return filtered_data
 #Definiciones de funciones NO usadas
 
-class Incident(models.Model):
-    motor_id = models.CharField(default="", blank=True, max_length=100)
-    incident_date = models.CharField(default="", blank=True, max_length=100)
-    problem_description = models.TextField(default="", blank=True)
-    mechanics_associated = models.TextField(default="", blank=True)
-    work_to_do = models.TextField(default="", blank=True)
-    mechanic_id = models.CharField(default="", blank=True, max_length=100)
-    start_date = models.CharField(default="", blank=True, max_length=100)
-    end_date = models.CharField(default="", blank=True, max_length=100)
-    solved = models.BooleanField(default=False)
-    id = models.IntegerField(primary_key=True)
+####################################################
+#class Incident(models.Model):
+#    motor_id = models.CharField(default="", blank=True, max_length=100)
+#    incident_date = models.CharField(default="", blank=True, max_length=100)
+#    problem_description = models.TextField(default="", blank=True)
+#    mechanics_associated = models.TextField(default="", blank=True)
+#    work_to_do = models.TextField(default="", blank=True)
+#    mechanic_id = models.CharField(default="", blank=True, max_length=100)
+#    start_date = models.CharField(default="", blank=True, max_length=100)
+#    end_date = models.CharField(default="", blank=True, max_length=100)
+#    solved = models.BooleanField(default=False)
+#    id = models.IntegerField(primary_key=True)
 
     # def __init__(self, report) :
     #     print("Creating incident with data: ", report)
@@ -125,32 +126,34 @@ class Incident(models.Model):
     #     self.end_date = ""
     #     self.solved = False
 
-    def all():
-        import json
-        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
-            data = json.load(incidentsDB)
-        return data
-    
-    def filterByMotor(motor_id):
-        import json
-        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
-            data = json.load(incidentsDB)
-        filtered_data = [incident for incident in data if f"{incident['motor_id']}" == motor_id]
-        return filtered_data
-    
-    def filterByMechanic(mechanic_id):
-        import json
-        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
-            data = json.load(incidentsDB)
-        print(data)
-        filtered_data = [incident for incident in data if 'mechanic_id' in incident.keys() and f"{incident['mechanic_id']}" == mechanic_id]
-        return filtered_data
-    
-    def getById(incident_id):
-        import json
-        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
-            data = json.load(incidentsDB)
-        for incident in data:
-            if incident['id'] == incident_id:
-                return incident
-        return None
+
+######################################################
+#    def all():
+#        import json
+#        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
+#            data = json.load(incidentsDB)
+#        return data
+#    
+#    def filterByMotor(motor_id):
+#        import json
+#        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
+#            data = json.load(incidentsDB)
+#        filtered_data = [incident for incident in data if f"{incident['motor_id']}" == motor_id]
+#        return filtered_data
+#    
+#    def filterByMechanic(mechanic_id):
+#        import json
+#        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
+#            data = json.load(incidentsDB)
+#        print(data)
+#        filtered_data = [incident for incident in data if 'mechanic_id' in incident.keys() and f"{incident['mechanic_id']}" == mechanic_id]
+#        return filtered_data
+#    
+#    def getById(incident_id):
+#        import json
+#        with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
+#            data = json.load(incidentsDB)
+#        for incident in data:
+#            if incident['id'] == incident_id:
+#                return incident
+#        return None

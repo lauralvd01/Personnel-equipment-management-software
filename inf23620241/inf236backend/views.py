@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign, Usuario
-from .serializers import MotorSerializer, CamionSerializer, AsignacionMotorCamionSerializer, IncidentSerializer, AsignSerializer, UsuarioSerializer
+from .models import Motor, Camion, AsignacionMotorCamion,  Asign, Usuario, Incidencia
+from .serializers import MotorSerializer, CamionSerializer, AsignacionMotorCamionSerializer,  AsignSerializer, UsuarioSerializer, IncidenciaSerializer
 
 
 
@@ -30,7 +30,7 @@ class AsignacionMotorCamionViewSet(viewsets.ModelViewSet):
 def handle_incident(request):
     if request.method == 'POST':
         print(f"Request data: {request.data}")
-        serializer = IncidentSerializer(data=request.data)
+        serializer = IncidenciaSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -93,7 +93,7 @@ def search_asign(request):
 
 @api_view(['POST'])
 def submit_incident(request):
-    serializer = IncidentSerializer(data=request.data)
+    serializer = IncidenciaSerializer(data=request.data)
     if serializer.is_valid():
         print(f"Serializer data: {serializer.validated_data}")
         serializer.save()
@@ -104,9 +104,9 @@ def submit_incident(request):
 
 @api_view(['GET'])
 def getAllIncidents(request):
-    incidents = Incident.all()
+    incidents = Incidencia.all()
     if incidents is not None:
-        serializer = IncidentSerializer(incidents, many=True)
+        serializer = IncidenciaSerializer(incidents, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response({'error': 'No incidencias encontradas'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -115,13 +115,13 @@ def getAllIncidents(request):
 def search_incidents(request):
     motor_id = request.query_params.get('motor_id', None)
     if motor_id is not None:
-        incidents = Incident.filterByMotor(motor_id=motor_id)
-        serializer = IncidentSerializer(incidents, many=True)
+        incidents = Incidencia.filterByMotor(motor_id=motor_id)
+        serializer = IncidenciaSerializer(incidents, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     mechanic_id = request.query_params.get('mechanic_id', None)
     if mechanic_id is not None:
-        incidents = Incident.filterByMechanic(mechanic_id=mechanic_id)
-        serializer = IncidentSerializer(incidents, many=True)
+        incidents = Incidencia.filterByMechanic(mechanic_id=mechanic_id)
+        serializer = IncidenciaSerializer(incidents, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response({'error': 'Motor ID no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -130,12 +130,12 @@ def edit_incident(request):
     print(request.data)
     incident_id = request.data["id"]
     if incident_id is not None:
-        incident = Incident.getById(incident_id)
+        incident = Incidencia.getById(incident_id)
         if incident is None:
             return Response({'error': 'Incidencia con este ID no encontrada'}, status=status.HTTP_404_NOT_FOUND)
         
         try:
-            new_incident = IncidentSerializer.merge(old=incident, data=request.data)
+            new_incident = IncidenciaSerializer.merge(old=incident, data=request.data)
             return Response(new_incident, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -166,7 +166,7 @@ def edit_password(request):
 @api_view(['POST'])
 def creacion_usuario(request):
     print(request.data)
-    serializer = IncidentSerializer(data=request.data)
+    serializer = IncidenciaSerializer(data=request.data)
     if serializer.is_valid():
         print(f"Serializer data: {serializer.validated_data}")
         serializer.save()

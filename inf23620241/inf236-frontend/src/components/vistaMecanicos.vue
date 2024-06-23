@@ -115,26 +115,27 @@
           <div class="column">
             <div class="input-box">
               <label>Identificador del Motor</label>
-              <input v-model="report.motor_id" required placeholder="Ingrese el identificador del motor" type="text">
+              <input v-model="report.motor" required placeholder="Ingrese el identificador del motor" type="text">
             </div>
             <div class="input-box">
               <label>Fecha de la incidencia</label>
-              <input v-model="report.incident_date" required placeholder="Inserte Fecha" type="date">
+              <input v-model="report.fecha_incidencia" required placeholder="Inserte Fecha" type="datetime-local">
             </div>
           </div>
           <div class="input-box">
             <label>Descripción del problema</label>
-            <textarea v-model="report.problem_description" required
+            <textarea v-model="report.descripcion_problema" required
               placeholder="Describa el/los problemas asociados a la incidencia"></textarea>
           </div>
+          
           <div class="input-box">
             <label>Mecánicos relacionados con la incidencia</label>
-            <textarea v-model="report.mechanics_associated"
+            <textarea v-model="report.mecanicos_asociados"
               placeholder="Escribe los nombres y apellidos de los Mecánicos relacionados con la incidencia"></textarea>
           </div>
           <div class="input-box">
             <label>Trabajo por realizar</label>
-            <textarea v-model="report.work_to_do" placeholder="Indique qué es lo que falta por hacer"></textarea>
+            <textarea v-model="report.descripcion_trabajo_necesario" placeholder="Indique qué es lo que falta por hacer"></textarea>
           </div>
 
           <button type="submit">Ingresar</button>
@@ -154,11 +155,11 @@
             </thead>
             <tbody>
               <tr>
-                <td>{{ response_report.motor_id }}</td>
-                <td>{{ response_report.incident_date }}</td>
-                <td>{{ response_report.problem_description }}</td>
-                <td>{{ response_report.mechanics_associated }}</td>
-                <td>{{ response_report.work_to_do }}</td>
+                <td>{{ response_report.motor }}</td>
+                <td>{{ response_report.fecha_incidencia }}</td>
+                <td>{{ response_report.descripcion_problema }}</td>
+                <td>{{ response_report.mecanicos_asociados }}</td>
+                <td>{{ response_report.descripcion_trabajo_necesario }}</td>
               </tr>
             </tbody>
           </table>
@@ -440,11 +441,11 @@ export default {
       },
       asignList: [],
       report: {
-        motor_id: '',
-        incident_date: '',
-        problem_description: '',
-        mechanics_associated: '',
-        work_to_do: ''
+        motor: '',
+        fecha_incidencia: '',
+        descripcion_problema: '',
+        mecanicos_asociados: '',
+        descripcion_trabajo_necesario: ''
       },
       response_report: null,
       search_motor_id: '',
@@ -500,7 +501,19 @@ export default {
     },
     async submitReport() {
       try {
-        const response = await axios.post('http://localhost:8000/api/incidents/submit/', this.report);
+        const incidentData={
+          motor: this.report.motor,
+          fecha_incidencia: this.report.fecha_incidencia,
+          descripcion_problema: this.report.descripcion_problema,
+          descripcion_trabajo_necesario: this.report.descripcion_trabajo_necesario,
+          mecanicos_asociados: this.report.mecanicos_asociados || null,
+          usuario: null,
+          fecha_inicio_trabajo: null,
+          fecha_fin_trabajo: null,
+          solucionado: false
+        }
+
+        const response = await axios.post('http://localhost:8000/api/incidents/submit/', incidentData);
         this.message = 'Formulario enviado exitosamente.';
         this.isSuccess = true;
         this.response_report = response.data;

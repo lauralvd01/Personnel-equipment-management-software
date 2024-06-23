@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign, Usuario
+from .models import Motor, Camion, AsignacionMotorCamion, Incidencia, Asign, Usuario
 
 
 # Serializers are in charge to render arbitrary data types (json, URL encode forms, XML's) to python-like objects
@@ -19,6 +19,12 @@ class AsignacionMotorCamionSerializer(serializers.ModelSerializer):
         model = AsignacionMotorCamion
         fields = '__all__'
 
+
+class IncidenciaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Incidencia
+        fields = '__all__'
+        read_only_fields = ('id_incidencia',)
 
 
 
@@ -42,25 +48,25 @@ def saveData(file,data):
     with open(file, 'w') as new_file:
         json.dump(data, new_file)
 
-class IncidentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Incident
-        fields = '__all__'
-    
-
-    @staticmethod
-    def merge(old, data):
-        new_data = {}
-        for key in data:
-            if key in old :
-                if data[key] is not None :
-                    new_data[key] = data[key]
-                else:
-                    new_data[key] = old[key]
-            else :
-                new_data[key] = data[key]
-        IncidentSerializer.update_incident(new_data)
-        return new_data
+#class IncidentSerializer(serializers.ModelSerializer):
+#    class Meta:
+#        model = Incident
+#        fields = '__all__'
+#   
+#
+#    @staticmethod
+#    def merge(old, data):
+#        new_data = {}
+#        for key in data:
+#            if key in old :
+#                if data[key] is not None :
+#                    new_data[key] = data[key]
+#                else:
+#                    new_data[key] = old[key]
+#            else :
+#                new_data[key] = data[key]
+#        IncidentSerializer.update_incident(new_data)
+#        return new_data
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
