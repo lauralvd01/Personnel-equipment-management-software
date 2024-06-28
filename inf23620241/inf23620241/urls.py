@@ -17,13 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from inf236backend.views import MotorViewSet, CamionViewSet, AsignacionMotorCamionViewSet, handle_incident, search_incidents
-from inf236backend.views import search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password, creacion_usuario, login_bdd
+from inf236backend.views import MotorViewSet, SistemaViewSet, ComponenteViewSet, CamionViewSet, AsignacionMotorCamionViewSet, UsuarioViewSet, IncidenciaViewSet
+
+from inf236backend.views import handle_incident, search_incidents, search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password, creacion_usuario, login_bdd
 
 router = DefaultRouter()
 router.register(r'motor',MotorViewSet)
+router.register(r'sistema',SistemaViewSet)
+router.register(r'componente',ComponenteViewSet)
 router.register(r'camion',CamionViewSet)
 router.register(r'asignacion',AsignacionMotorCamionViewSet)
+router.register(r'usuario',UsuarioViewSet)
+router.register(r'incidencia',IncidenciaViewSet)
+
 urlpatterns = [
     path('', include(router.urls)),
     #path('admin/', admin.site.urls),
@@ -38,6 +44,8 @@ urlpatterns = [
     path('api/incidents/edit/', edit_incident, name='edit_incident'),
     path('api/login/edit/', edit_password, name='edit_password'),
     path('api/usuario/', creacion_usuario, name='creacion_usuario'),
-    path('api/sesion/', login_bdd, name='login_bdd')
 
+
+    ######## Work with original BBDD #####
+    path('api/sesion/', login_bdd, name='login_bdd')
 ]
