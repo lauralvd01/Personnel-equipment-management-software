@@ -94,7 +94,9 @@ class IncidenciaViewSet(viewsets.ModelViewSet):
             incidencia = Incidencia.objects.get(id_incidencia=serializer.data['id_incidencia'])
             incidencia.motor = motor
             incidencia.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            new_serializer = IncidenciaSerializer(incidencia)
+            return Response(new_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

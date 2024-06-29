@@ -5,6 +5,7 @@
       <button @click="logout">
         <span class="button_top"> Cerrar Sesión
         </span>
+        <br/>
       </button>
     </nav>
     <RouterView />
@@ -37,16 +38,15 @@
     <div class="containerGeneral">
       <section class="container">
         <header>Formulario de informe de una incidencia</header>
+
+        <form @submit.prevent="submit_incidencia">
           <div class="input-box">
             <label>Camión</label>
-            <button @click="getCamiones">Actualizar</button>
-            <select class="form-control" v-model="incidencia.camion">
+            <select class="form-control" required v-model="incidencia.camion">
               <option value="null">Seleccione un camión</option>
               <option v-for="camion in camiones" :key="camion.id_camion" :value="camion.id_camion" >{{ camion.placa }}</option>
             </select>
           </div>
-
-        <form @submit.prevent="submit_incidencia">
           
           <div class="input-box">
             <label>Descripción de la causa (falla / tarea programada)</label>
@@ -72,16 +72,18 @@
           <table v-if="incidencia_creada">
             <thead>
               <tr>
-                <th>Camión</th>
+                <th>Placa del camión</th>
+                <th>N°serie del motor</th>
                 <th>Fecha informe</th>
-                <th>Causa</th>
+                <th>Descripción</th>
                 <th>Mecánicos relacionados</th>
                 <th>Trabajo por hacer</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>{{ incidencia_creada.camion }}</td>
+                <td>{{ camiones.filter((camion) => camion.id_camion == incidencia_creada.camion)[0].placa }}</td>
+                <td>{{ motores.filter((motor) => motor.id_motor == incidencia_creada.motor)[0].n_serie }}</td>
                 <td>{{ formatDate(incidencia_creada.fecha_incidencia) }}</td>
                 <td>{{ incidencia_creada.descripcion_problema }}</td>
                 <td>{{ incidencia_creada.mecanicos_asociados }}</td>
@@ -348,24 +350,6 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import { onMounted } from 'vue';
-
-
-onMounted(() => {
-  console.log('mounted');
-  async function getCamiones() {
-    try {
-      console.log('getCamiones');
-      const response = await axios.get('http://localhost:8000/camion/');
-      this.camiones = response.data;
-      console.log(this.camiones);
-    } catch (error) {
-      this.message = 'Error al obtener los camiones.';
-      this.isSuccess = false;
-    }
-  }
-  getCamiones();
-});
 
 export default {
   name: 'App',
@@ -378,7 +362,7 @@ export default {
   },
   data() {
     return {
-
+      motores: [],
       camiones: [],
       incidencia: {
         camion: null,
@@ -419,12 +403,19 @@ export default {
     },
     async getCamiones() {
       try {
-        console.log('getCamiones');
         const response = await axios.get('http://localhost:8000/camion/');
         this.camiones = response.data;
-        console.log(this.camiones);
       } catch (error) {
         this.message = 'Error al obtener los camiones.';
+        this.isSuccess = false;
+      }
+    },
+    async getMotores() {
+      try {
+        const response = await axios.get('http://localhost:8000/motor/');
+        this.motores = response.data;
+      } catch (error) {
+        this.message = 'Error al obtener los motores.';
         this.isSuccess = false;
       }
     },
@@ -441,6 +432,7 @@ export default {
         this.message = 'Formulario enviado exitosamente.';
         this.isSuccess = true;
         this.incidencia_creada = response.data;
+        console.log(this.incidencia_creada);
       } catch (error) {
         this.message = 'Error al enviar el formulario.';
         this.isSuccess = false;
@@ -532,6 +524,10 @@ export default {
         this.isSuccess = false;
       }
     }
+  },
+  mounted() {
+    this.getCamiones();
+    this.getMotores();
   }
 };
 </script>
