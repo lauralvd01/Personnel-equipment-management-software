@@ -13,153 +13,79 @@
 
     <div class="radio-inputs">
       <label class="radio">
-        <input type="radio" name="radio" value="asign" v-model="selectedOption" />
-        <span class="name">Asignaciones</span>
-      </label>
-      <label class="radio">
-        <input type="radio" name="radio" value="report" v-model="selectedOption" />
+        <input type="radio" name="radio" value="incidencia" v-model="selectedOption" />
         <span class="name">Ingresar Incidencia</span>
       </label>
       <label class="radio">
         <input type="radio" name="radio" value="search" v-model="selectedOption" />
-        <span class="name">Ver Incidencias</span>
+        <span class="name">Historial incidencias</span>
       </label>
       <label class="radio">
         <input type="radio" name="radio" value="todo" v-model="selectedOption" />
-        <span class="name">Mis tareas</span>
+        <span class="name">Incidencias pendientes</span>
       </label>
       <label class="radio">
         <input type="radio" name="radio" value="settings" v-model="selectedOption" />
-        <span class="name">Cambiar mi contraseña</span>
+        <span class="name">Parametros</span>
       </label>
     </div>
   </div>
 
 
-
-
-  <!-- -------------------------------------------- Ver las asignaciones entre motores y camiones (Ya mudado a BBDD)-->
-  <div v-if="selectedOption === 'asign'">
-    <div class="containerGeneral">
-      <section class="container">
-        <header style="text-align: left;">Buscar las asignaciones de un motor o de un camión</header>
-        <div class="radio-inputs">
-          <label class="radio">
-            <input type="radio" name="radio" value="asignByMotor" v-model="selectedOptionSearch" />
-            <span class="name">Motor</span>
-          </label>
-          <label class="radio">
-            <input type="radio" name="radio" value="asignByCamion" v-model="selectedOptionSearch" />
-            <span class="name">Camión</span>
-          </label>
-        </div>
-
-        <div v-if="selectedOptionSearch === 'asignByMotor'">
-          <div class="column">
-            <div class="input-box">
-              <label>Motor ID</label>
-              <input v-model="asign.motor_id" required placeholder="Ingrese el identificador del motor" type="text">
-            </div>
-            <div>
-              <button @click="getAsignByMotor">Buscar</button>
-            </div>
-          </div>
-        </div>
-
-        <div v-else-if="selectedOptionSearch === 'asignByCamion'">
-          <div class="column">
-            <div class="input-box">
-              <label>Camión ID</label>
-              <input v-model="asign.camion_id" required placeholder="Ingrese el identificador del camión" type="text">
-            </div>
-            <div>
-              <button @click="getAsignByCamion">Buscar</button>
-            </div>
-          </div>
-        </div>
-
-        <table v-if="asignList.length">
-          <thead>
-            <tr>
-              <th>ID Asignación</th>
-              <th>Motor ID</th>
-              <th>Camión ID</th>
-              <th>Fecha Asignación</th>
-              <th>Fecha Desasignación</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="asignacion in asignList" :key="asignacion.id_asignacion">
-              <td>{{ asignacion.id_asignacion }}</td>
-              <td>{{ asignacion.motor }}</td>
-              <td>{{ asignacion.camion }}</td>
-              <td>{{ asignacion.fecha_asignacion }}</td>
-              <td>{{ asignacion.fecha_desasignacion }}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div v-else>No hay asignaciones para este elemento</div>
-      </section>
-    </div>
-  </div>
-
-
-
   <!-- -------------------------------------------- Ingresar una incidencia -->
-  <div v-if="selectedOption === 'report'">
+  <div v-if="selectedOption === 'incidencia'">
     <div class="containerGeneral">
       <section class="container">
         <header>Formulario de informe de una incidencia</header>
-        <form @submit.prevent="submitReport">
-          <div class="column">
-            <div class="input-box">
-              <label>Identificador del Motor</label>
-              <input v-model="report.motor" required placeholder="Ingrese el identificador del motor" type="text">
-            </div>
-            <div class="input-box">
-              <label>Fecha de la incidencia</label>
-              <input v-model="report.fecha_incidencia" required placeholder="Inserte Fecha" type="datetime-local">
-            </div>
-          </div>
           <div class="input-box">
-            <label>Descripción del problema</label>
-            <textarea v-model="report.descripcion_problema" required
-              placeholder="Describa el/los problemas asociados a la incidencia"></textarea>
+            <label>Camión</label>
+            <button @click="getCamiones">Actualizar</button>
+            <select class="form-control" v-model="incidencia.camion">
+              <option value="null">Seleccione un camión</option>
+              <option v-for="camion in camiones" :key="camion.id_camion" :value="camion.id_camion" >{{ camion.placa }}</option>
+            </select>
+          </div>
+
+        <form @submit.prevent="submit_incidencia">
+          
+          <div class="input-box">
+            <label>Descripción de la causa (falla / tarea programada)</label>
+            <textarea v-model="incidencia.descripcion_problema" required
+              placeholder="Describa el(los) problema(s) o la(s) tarea(s) asociado(s) a la incidencia"></textarea>
           </div>
           
           <div class="input-box">
             <label>Mecánicos relacionados con la incidencia</label>
-            <textarea v-model="report.mecanicos_asociados"
-              placeholder="Escribe los nombres y apellidos de los Mecánicos relacionados con la incidencia"></textarea>
+            <textarea v-model="incidencia.mecanicos_asociados"
+              placeholder="Escribe los nombres y apellidos de los Mecánicos relacionados con la incidencia, separados por una coma"></textarea>
           </div>
           <div class="input-box">
             <label>Trabajo por realizar</label>
-            <textarea v-model="report.descripcion_trabajo_necesario" placeholder="Indique qué es lo que falta por hacer"></textarea>
+            <textarea v-model="incidencia.descripcion_trabajo_necesario" placeholder="Indique qué es lo que falta por hacer"></textarea>
           </div>
 
           <button type="submit">Ingresar</button>
         </form>
 
-        <div v-if="response_report">
+        <div v-if="incidencia_creada">
           <h3>Incidencia creada :</h3>
-          <table v-if="response_report">
+          <table v-if="incidencia_creada">
             <thead>
               <tr>
-                <th>Motor ID</th>
-                <th>Fecha de incidencia</th>
-                <th>Descripción del problema</th>
+                <th>Camión</th>
+                <th>Fecha informe</th>
+                <th>Causa</th>
                 <th>Mecánicos relacionados</th>
                 <th>Trabajo por hacer</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>{{ response_report.motor }}</td>
-                <td>{{ response_report.fecha_incidencia }}</td>
-                <td>{{ response_report.descripcion_problema }}</td>
-                <td>{{ response_report.mecanicos_asociados }}</td>
-                <td>{{ response_report.descripcion_trabajo_necesario }}</td>
+                <td>{{ incidencia_creada.camion }}</td>
+                <td>{{ formatDate(incidencia_creada.fecha_incidencia) }}</td>
+                <td>{{ incidencia_creada.descripcion_problema }}</td>
+                <td>{{ incidencia_creada.mecanicos_asociados }}</td>
+                <td>{{ incidencia_creada.descripcion_trabajo_necesario }}</td>
               </tr>
             </tbody>
           </table>
@@ -193,7 +119,7 @@
             <tr>
               <th>Motor ID</th>
               <th>Fecha de incidencia</th>
-              <th>Descripción del problema</th>
+              <th>Descripción de la causa</th>
               <th>Mecánicos relacionados</th>
               <th>Trabajo por hacer</th>
               <th>Mecánico asignado</th>
@@ -213,7 +139,7 @@
               <td>{{ incident.mechanic_id }}</td>
               <td>{{ incident.start_date }}</td>
               <td>{{ incident.end_date }}</td>
-              <td>{{ incident.solved ? 'Yes' : 'No' }}</td>
+              <td>{{ incident.solved ? 'Si' : 'No' }}</td>
               <td>
                 <button @click="updateIndex(index)">Editar</button>
               </td>
@@ -232,7 +158,7 @@
             <tr>
               <th>Motor ID</th>
               <th>Fecha de incidencia</th>
-              <th>Descripción del problema</th>
+              <th>Descripción de la causa</th>
               <th>Mecánicos relacionados</th>
               <th>Trabajo por hacer</th>
               <th>Mecánico asignado</th>
@@ -251,13 +177,13 @@
               <td>{{ incidentsList[editIndex].mechanic_id }}</td>
               <td>{{ incidentsList[editIndex].start_date }}</td>
               <td>{{ incidentsList[editIndex].end_date }}</td>
-              <td>{{ incidentsList[editIndex].solved ? 'Yes' : 'No' }}</td>
+              <td>{{ incidentsList[editIndex].solved ? 'Si' : 'No' }}</td>
             </tr>
           </tbody>
         </table>
 
         <header style="margin-top: 2%;">Modificar los datos de la incidencia</header>
-        <form @submit.prevent="editReport">
+        <form @submit.prevent="edit_incidencia">
           <div class="column">
             <div class="input-box">
               <label>Identificador del Motor</label>
@@ -269,7 +195,7 @@
             </div>
           </div>
           <div class="input-box">
-            <label>Descripción del problema</label>
+            <label>Descripción de la causa (falla / tarea programada)</label>
             <textarea v-model="edit.problem_description"
               :placeholder="[[incidentsList[editIndex].problem_description]]"></textarea>
           </div>
@@ -343,7 +269,7 @@
             <tr>
               <th>Motor ID</th>
               <th>Fecha de incidencia</th>
-              <th>Descripción del problema</th>
+              <th>Descripción de la causa</th>
               <th>Mecánicos relacionados</th>
               <th>Trabajo por hacer</th>
               <th>Fecha inicio del trabajo</th>
@@ -360,7 +286,7 @@
               <td>{{ tarea.work_to_do }}</td>
               <td>{{ tarea.start_date }}</td>
               <td>{{ tarea.end_date }}</td>
-              <td>{{ tarea.solved ? 'Yes' : 'No' }}</td>
+              <td>{{ tarea.solved ? 'Si' : 'No' }}</td>
             </tr>
           </tbody>
         </table>
@@ -422,32 +348,45 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import { onMounted } from 'vue';
+
+
+onMounted(() => {
+  console.log('mounted');
+  async function getCamiones() {
+    try {
+      console.log('getCamiones');
+      const response = await axios.get('http://localhost:8000/camion/');
+      this.camiones = response.data;
+      console.log(this.camiones);
+    } catch (error) {
+      this.message = 'Error al obtener los camiones.';
+      this.isSuccess = false;
+    }
+  }
+  getCamiones();
+});
 
 export default {
   name: 'App',
   setup() {
     const router = useRouter();
     return {
-      selectedOption: ref('asign'),
-      selectedOptionSearch: ref('asignByMotor'),
+      selectedOption: ref('incidencia'),
       router
     };
   },
   data() {
     return {
-      asign: {
-        motor_id: '',
-        camion_id: ''
+
+      camiones: [],
+      incidencia: {
+        camion: null,
+        descripcion_problema: null,
+        descripcion_trabajo_necesario: null,
+        mecanicos_asociados: null
       },
-      asignList: [],
-      report: {
-        motor: '',
-        fecha_incidencia: '',
-        descripcion_problema: '',
-        mecanicos_asociados: '',
-        descripcion_trabajo_necesario: ''
-      },
-      response_report: null,
+      incidencia_creada: null,
       search_motor_id: '',
       incidentsList: [],
       editIndex: null,
@@ -475,55 +414,39 @@ export default {
       isSuccess: false
     };
   },
-  methods: {
-    async getAsignByMotor() {
+  methods: {formatDate(date) {
+      return new Date(date).toLocaleDateString();
+    },
+    async getCamiones() {
       try {
-        const response = await axios.get(`http://localhost:8000/api/asigns/?motor_id=${this.asign.motor_id}`);
-        console.log(response.data);
-        this.asignList = response.data;
-        this.message = `Se encontraron ${this.asignList.length} resultados.`;
-        this.success = true;
+        console.log('getCamiones');
+        const response = await axios.get('http://localhost:8000/camion/');
+        this.camiones = response.data;
+        console.log(this.camiones);
       } catch (error) {
-        this.message = 'Error al buscar asignaciones.';
+        this.message = 'Error al obtener los camiones.';
         this.isSuccess = false;
       }
     },
-    async getAsignByCamion() {
+    async submit_incidencia() {
       try {
-        const response = await axios.get(`http://localhost:8000/api/asigns/?camion_id=${this.asign.camion_id}`);
-        this.asignList = response.data;
-        this.message = `Se encontraron ${this.asignList.length} resultados.`;
-        this.success = true;
-      } catch (error) {
-        this.message = 'Error al buscar asignaciones.';
-        this.isSuccess = false;
-      }
-    },
-    async submitReport() {
-      try {
-        const incidentData={
-          motor: this.report.motor,
-          fecha_incidencia: this.report.fecha_incidencia,
-          descripcion_problema: this.report.descripcion_problema,
-          descripcion_trabajo_necesario: this.report.descripcion_trabajo_necesario,
-          mecanicos_asociados: this.report.mecanicos_asociados || null,
-          usuario: null,
-          fecha_inicio_trabajo: null,
-          fecha_fin_trabajo: null,
+        const incidenciaData={
+          camion: this.incidencia.camion,
+          descripcion_problema: this.incidencia.descripcion_problema,
+          descripcion_trabajo_necesario: this.incidencia.descripcion_trabajo_necesario,
+          mecanicos_asociados: this.incidencia.mecanicos_asociados || null,
           solucionado: false
         }
-
-        const response = await axios.post('http://localhost:8000/api/incidents/submit/', incidentData);
+        const response = await axios.post('http://localhost:8000/incidencia/', incidenciaData);
         this.message = 'Formulario enviado exitosamente.';
         this.isSuccess = true;
-        this.response_report = response.data;
+        this.incidencia_creada = response.data;
       } catch (error) {
-        const formString = JSON.stringify(this.form, null, 2);
-        const serializerErrors = error.response && error.response.data ? JSON.stringify(error.response.data, null, 2) : 'No se pudo obtener los errores del servidor.';
-        this.message = `Error al enviar el formulario. Datos del formulario: ${formString}. Errores del servidor: ${serializerErrors}`;
+        this.message = 'Error al enviar el formulario.';
         this.isSuccess = false;
       }
     },
+
     async searchAll() {
       this.updateIndex(null);
       try {
@@ -557,12 +480,12 @@ export default {
     logout() {
       this.$router.push('/');
     },
-    async editReport() {
+    async edit_incidencia() {
       try {
         const response = await axios.post(`http://localhost:8000/api/incidents/edit/`, this.edit);
         this.message = 'Formulario enviado exitosamente.';
         this.isSuccess = true;
-        this.response_report = response.data;
+        this.incidencia_creada = response.data;
         this.editIndex = null;
         this.reset(this.edit)
         this.searchAll()

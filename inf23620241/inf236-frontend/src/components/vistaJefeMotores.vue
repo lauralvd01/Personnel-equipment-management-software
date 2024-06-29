@@ -3,7 +3,7 @@
     <div class="containerGeneral">
     <div class="radio-inputs">
     <label class="radio">
-      <input type="radio" name="radio" value="html" v-model="selectedOption" />
+      <input type="radio" name="radio" value="asign" v-model="selectedOption" />
       <span class="name">Asignar Motor a Camión</span>
     </label>
     <label class="radio">
@@ -17,6 +17,73 @@
     </div>
   </div>
 
+
+  
+  <!-- -------------------------------------------- Ver las asignaciones entre motores y camiones (Ya mudado a BBDD)-->
+  <div v-if="selectedOption === 'asign'">
+    <div class="containerGeneral">
+      <section class="container">
+        <header style="text-align: left;">Buscar las asignaciones de un motor o de un camión</header>
+        <div class="radio-inputs">
+          <label class="radio">
+            <input type="radio" name="radio" value="asignByMotor" v-model="selectedOptionSearch" />
+            <span class="name">Motor</span>
+          </label>
+          <label class="radio">
+            <input type="radio" name="radio" value="asignByCamion" v-model="selectedOptionSearch" />
+            <span class="name">Camión</span>
+          </label>
+        </div>
+
+        <div v-if="selectedOptionSearch === 'asignByMotor'">
+          <div class="column">
+            <div class="input-box">
+              <label>Motor ID</label>
+              <input v-model="asign.motor_id" required placeholder="Ingrese el identificador del motor" type="text">
+            </div>
+            <div>
+              <button @click="getAsignByMotor">Buscar</button>
+            </div>
+          </div>
+        </div>
+
+        <div v-else-if="selectedOptionSearch === 'asignByCamion'">
+          <div class="column">
+            <div class="input-box">
+              <label>Camión ID</label>
+              <input v-model="asign.camion_id" required placeholder="Ingrese el identificador del camión" type="text">
+            </div>
+            <div>
+              <button @click="getAsignByCamion">Buscar</button>
+            </div>
+          </div>
+        </div>
+
+        <table v-if="asignList.length">
+          <thead>
+            <tr>
+              <th>ID Asignación</th>
+              <th>Motor ID</th>
+              <th>Camión ID</th>
+              <th>Fecha Asignación</th>
+              <th>Fecha Desasignación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="asignacion in asignList" :key="asignacion.id_asignacion">
+              <td>{{ asignacion.id_asignacion }}</td>
+              <td>{{ asignacion.motor }}</td>
+              <td>{{ asignacion.camion }}</td>
+              <td>{{ asignacion.fecha_asignacion }}</td>
+              <td>{{ asignacion.fecha_desasignacion }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div v-else>No hay asignaciones para este elemento</div>
+      </section>
+    </div>
+  </div>
 
     <div v-if="selectedOption === 'html'">
       <div class="containerGeneral">
@@ -139,6 +206,29 @@ export default {
     };
   },
   methods: {
+    // async getAsignByMotor() {
+    //   try {
+    //     const response = await axios.get(`http://localhost:8000/api/asigns/?motor_id=${this.asign.motor_id}`);
+    //     console.log(response.data);
+    //     this.asignList = response.data;
+    //     this.message = `Se encontraron ${this.asignList.length} resultados.`;
+    //     this.success = true;
+    //   } catch (error) {
+    //     this.message = 'Error al buscar asignaciones.';
+    //     this.isSuccess = false;
+    //   }
+    // },
+    // async getAsignByCamion() {
+    //   try {
+    //     const response = await axios.get(`http://localhost:8000/api/asigns/?camion_id=${this.asign.camion_id}`);
+    //     this.asignList = response.data;
+    //     this.message = `Se encontraron ${this.asignList.length} resultados.`;
+    //     this.success = true;
+    //   } catch (error) {
+    //     this.message = 'Error al buscar asignaciones.';
+    //     this.isSuccess = false;
+    //   }
+    // },
     async submitForm() {
       try {
         const response = await axios.post('http://localhost:8000/api/incidents/', this.form);

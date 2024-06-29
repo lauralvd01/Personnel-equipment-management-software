@@ -56,6 +56,7 @@ class Incidencia(models.Model):
     id_incidencia = models.AutoField(primary_key=True)
     fecha_incidencia = models.DateTimeField(auto_now_add=True, blank=True)
     camion = models.ForeignKey(Camion, on_delete=models.CASCADE)
+    motor = models.ForeignKey(Motor, on_delete=models.CASCADE, null=True)
     mecanicos_asociados = models.TextField(default="", null=True, blank=True)
     descripcion_problema = models.TextField(default="", null=True, blank=True)
     descripcion_trabajo_necesario = models.TextField(default="", null=True, blank=True)

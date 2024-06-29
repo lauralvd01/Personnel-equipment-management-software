@@ -18,8 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from inf236backend.views import MotorViewSet, SistemaViewSet, ComponenteViewSet, CamionViewSet, AsignacionMotorCamionViewSet, UsuarioViewSet, IncidenciaViewSet
+from inf236backend.views import login
 
-from inf236backend.views import handle_incident, search_incidents, search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password, creacion_usuario, login_bdd
+from inf236backend.views import handle_incident, search_incidents, search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password, creacion_usuario
 
 router = DefaultRouter()
 router.register(r'motor',MotorViewSet)
@@ -47,5 +48,5 @@ urlpatterns = [
 
 
     ######## Work with original BBDD #####
-    path('api/sesion/', login_bdd, name='login_bdd')
+    path('api/sesion/', login, name='login')
 ]

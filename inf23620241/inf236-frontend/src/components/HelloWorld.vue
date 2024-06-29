@@ -2,15 +2,14 @@
   <div class="hello">
     <h2>Sistema de monitoreo de fallas en motores mineros</h2>
     <div class="container">
-      <!-- Para trabajar el GET en BDD original -->
-      <form class="form" @submit.prevent="login_bdd">
+      <form class="form" @submit.prevent="login">
         <div class="title">Por favor<br><span>Ingrese su rut y contraseña</span></div>
         <input v-model="usuario.rut" type="text" placeholder="Rut en bdd" name="rut_en_bdd" class="input" required>
         <input v-model="usuario.contrasena" type="password" placeholder="Contraseña en bdd" name="password_en_bdd" class="input" required>
         <button @click="login_bdd" class="button-confirm">Ingresar</button>
       </form>
     </div>
-    <p>{{ msg }}</p> <!-- Para mostrar el mensaje de éxito o error -->
+    <p>{{ msg }}</p>
   </div>
 </template>
 
@@ -23,12 +22,7 @@ export default {
     return {
       usuario:{
         rut: '',
-        contrasena:'',
-        nombre: '',
-        apellido: '',
-        fecha_registro:'',
-        rol:'',
-        turno:''
+        contrasena:''
       },
       msg: ''
     };
@@ -38,7 +32,7 @@ export default {
     return { router };
   },
   methods: {
-    async login_bdd(){
+    async login(){
       try{
         const response = await axios.post('http://localhost:8000/api/sesion/',{
           rut: this.usuario.rut,
@@ -46,14 +40,17 @@ export default {
         });
         this.message = JSON.stringify(response);
         if (response.data.success) {
+          if (response.data.rol == 'mecanico') {
             this.$router.push('/vistaMecanico/' + response.data.id);
           } else {
-            this.msg = 'Usuario o contraseña incorrectos';
+            this.$router.push('/vistaJefeMotores/' + response.data.id); 
           }
+        } else {
+          this.msg = 'Usuario o contraseña incorrectos';
+        }
       } catch (error) {
         this.msg = 'Usuario o contraseña incorrectos';
       }
-
     }
   }
 };

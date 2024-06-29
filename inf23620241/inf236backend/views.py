@@ -90,20 +90,23 @@ class IncidenciaViewSet(viewsets.ModelViewSet):
             motor.operativo = False
             motor.save()
 
+            # Actualizar incidencia con el motor
+            incidencia = Incidencia.objects.get(id_incidencia=serializer.data['id_incidencia'])
+            incidencia.motor = motor
+            incidencia.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 ############################ LOGIN ########################################
 @api_view(['POST'])
-def login_bdd(request):
+def login(request):
     rut = request.data.get('rut')
     contrasena = request.data.get('contrasena')
     try:
         usuario = Usuario.objects.get(rut=rut)
-        if usuario.contrasena == contrasena:  # Si la contraseña está hasheada, usar check_password
-            serializer = UsuarioSerializer(usuario)
-            return Response({'success': True, 'id': usuario.id_usuario}, status=status.HTTP_200_OK)
+        if usuario.contrasena == contrasena:
+            return Response({'success': True, 'id': usuario.id_usuario, 'rol': usuario.rol}, status=status.HTTP_200_OK)
         else:
             return Response({'success': False, 'message': 'Usuario o contraseña incorrectos'}, status=status.HTTP_401_UNAUTHORIZED)
     except Usuario.DoesNotExist:
