@@ -2,6 +2,7 @@
     <h2>Vista Jefe Motores</h2>
     <div class="containerGeneral">
     <div class="radio-inputs">
+    <!--pestañistas de arriba -->
     <label class="radio">
       <input type="radio" name="radio" value="asign" v-model="selectedOption" />
       <span class="name">Asignar Motor a Camión</span>
@@ -13,6 +14,10 @@
     <label class="radio">
       <input type="radio" name="radio" value="vue" v-model="selectedOption" />
       <span class="name">Gráficos y Análisis</span>
+    </label>
+    <label class="radio">
+      <input type="radio" name="radio" value="graphics" v-model="selectedOption" />
+      <span class="name">Graficos</span>
     </label>
     </div>
   </div>

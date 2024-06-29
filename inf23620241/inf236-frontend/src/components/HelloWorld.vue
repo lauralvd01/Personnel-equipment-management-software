@@ -6,7 +6,7 @@
         <div class="title">Por favor<br><span>Ingrese su rut y contraseña</span></div>
         <input v-model="usuario.rut" type="text" placeholder="Rut en bdd" name="rut_en_bdd" class="input" required>
         <input v-model="usuario.contrasena" type="password" placeholder="Contraseña en bdd" name="password_en_bdd" class="input" required>
-        <button @click="login_bdd" class="button-confirm">Ingresar</button>
+        <button @click="login" class="button-confirm">Ingresar</button>
       </form>
     </div>
     <p>{{ msg }}</p>
