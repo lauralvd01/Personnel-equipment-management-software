@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
@@ -100,7 +101,7 @@ class IncidenciaViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-############################ LOGIN ########################################
+###################################### LOGIN ######################################################
 @api_view(['POST'])
 def login(request):
     rut = request.data.get('rut')
@@ -113,6 +114,49 @@ def login(request):
             return Response({'success': False, 'message': 'Usuario o contraseña incorrectos'}, status=status.HTTP_401_UNAUTHORIZED)
     except Usuario.DoesNotExist:
         return Response({'success': False, 'message': 'Usuario o contraseña incorrectos'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+###################################### FILTRAR INCIDENCIAS ########################################
+@api_view(['GET'])
+def filtrar_incidencias(request):
+    camion_id = request.query_params.get('camion', None)
+    motor_id = request.query_params.get('motor', None)
+    fecha = request.query_params.get('fecha', None)
+    if (camion_id is not None) and (motor_id is not None) and (fecha is not None):
+        incidencias = Incidencia.objects.filter(camion=camion_id, motor=motor_id, fecha_incidencia__date=fecha)
+        serializer = IncidenciaSerializer(incidencias, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    if (camion_id is not None) and (motor_id is not None):
+        incidencias = Incidencia.objects.filter(camion=camion_id, motor=motor_id)
+        serializer = IncidenciaSerializer(incidencias, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    if (camion_id is not None) and (fecha is not None):
+        incidencias = Incidencia.objects.filter(camion=camion_id, fecha_incidencia__date=fecha)
+        serializer = IncidenciaSerializer(incidencias, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    if (motor_id is not None) and (fecha is not None):
+        incidencias = Incidencia.objects.filter(motor=motor_id, fecha_incidencia__date=fecha)
+        serializer = IncidenciaSerializer(incidencias, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    if camion_id is not None:
+        incidencias = Incidencia.objects.filter(camion=camion_id)
+        serializer = IncidenciaSerializer(incidencias, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    if motor_id is not None:
+        incidencias = Incidencia.objects.filter(motor=motor_id)
+        serializer = IncidenciaSerializer(incidencias, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    if fecha is not None:
+        incidencias = Incidencia.objects.filter(fecha_incidencia__date=fecha)
+        serializer = IncidenciaSerializer(incidencias, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    incidencias = Incidencia.objects.all()
+    serializer = IncidenciaSerializer(incidencias, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
 
 
 

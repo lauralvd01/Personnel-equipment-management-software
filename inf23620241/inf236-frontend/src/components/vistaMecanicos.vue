@@ -97,58 +97,65 @@
   </div>
 
 
-  <!-- -------------------------------------------- Ver las incidencias de un motor -->
+  <!-- -------------------------------------------- Buscar las incidencias por camion, motor, o fecha -->
   <div v-if="selectedOption === 'search'">
     <div class="containerGeneral">
       <section class="container">
         <div class="nav">
-          <header>Ver las incidencias de un motor</header>
-          <div>
-            <button @click="searchAll">Todas</button>
-          </div>
+          <header>Buscar las incidencias por camión, motor o fecha</header>
         </div>
 
-        <div class="column">
-          <div class="input-box">
-            <label for="search_motor_id">Motor ID</label>
-            <input v-model="search_motor_id" type="text" id="search_motor_id">
-          </div>
-          <button @click="searchByMotor">Buscar</button>
+        <div class="input-box">
+          <label>Placa del camión</label>
+          <select class="form-control" v-model="filtro_historial.camion" @change="get_incidencias_filtradas">
+            <option value="null">Seleccione un camión</option>
+            <option v-for="camion in camiones" :key="camion.id_camion" :value="camion.id_camion" >{{ camion.placa }}</option>
+          </select>
+        </div>
+        <div class="input-box">
+          <label>N°serie del motor</label>
+          <select class="form-control" v-model="filtro_historial.motor" @change="get_incidencias_filtradas">
+            <option value="null">Seleccione un motor</option>
+            <option v-for="motor in motores" :key="motor.id_motor" :value="motor.id_motor" >{{ motor.n_serie }}</option>
+          </select>
+        </div>
+        <div class="input-box">
+          <label>Fecha de reporte de la incidencia</label>
+          <input v-model="filtro_historial.fecha" type="date" @change="get_incidencias_filtradas">
         </div>
 
-        <table v-if="incidentsList.length">
+        <table v-if="incidencias_filtradas.length">
           <thead>
             <tr>
-              <th>Motor ID</th>
-              <th>Fecha de incidencia</th>
-              <th>Descripción de la causa</th>
+              <th>Camión</th>
+              <th>Motor</th>
+              <th>Fecha de reporte</th>
+              <th>Descripción</th>
               <th>Mecánicos relacionados</th>
               <th>Trabajo por hacer</th>
               <th>Mecánico asignado</th>
+              <th>Trabajo hecho</th>
               <th>Fecha inicio del trabajo</th>
               <th>Fecha fin del trabajo</th>
               <th>¿Solucionado?</th>
-              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(incident, index) in incidentsList" :key="index">
-              <td>{{ incident.motor_id }}</td>
-              <td>{{ incident.incident_date }}</td>
-              <td>{{ incident.problem_description }}</td>
-              <td>{{ incident.mechanics_associated }}</td>
-              <td>{{ incident.work_to_do }}</td>
-              <td>{{ incident.mechanic_id }}</td>
-              <td>{{ incident.start_date }}</td>
-              <td>{{ incident.end_date }}</td>
-              <td>{{ incident.solved ? 'Si' : 'No' }}</td>
-              <td>
-                <button @click="updateIndex(index)">Editar</button>
-              </td>
+            <tr v-for="incidencia_filtrada in incidencias_filtradas" :key="incidencia_filtrada.id_incidencia">
+              <td>{{ camiones.filter((camion) => camion.id_camion == incidencia_filtrada.camion)[0].placa  }}</td>
+              <td>{{ motores.filter((motor) => motor.id_motor == incidencia_filtrada.motor)[0].n_serie  }}</td>
+              <td>{{ formatDate(incidencia_filtrada.fecha_incidencia) }}</td>
+              <td>{{ incidencia_filtrada.descripcion_problema }}</td>
+              <td>{{ incidencia_filtrada.mecanicos_asociados }}</td>
+              <td>{{ incidencia_filtrada.descripcion_trabajo_necesario }}</td>
+              <td>{{ incidencia_filtrada.mecanico_asignado }}</td>
+              <td>{{ incidencia_filtrada.fecha_inicio_trabajo }}</td>
+              <td>{{ incidencia_filtrada.fecha_termino_trabajo }}</td>
+              <td>{{ incidencia_filtrada.solucionado ? 'Si' : 'No' }}</td>
             </tr>
           </tbody>
         </table>
-        <div v-else>Todavía no hay incidencias</div>
+        <div v-else>Ninguna incidencia corresponde</div>
       </section>
     </div>
 
@@ -371,6 +378,13 @@ export default {
         mecanicos_asociados: null
       },
       incidencia_creada: null,
+      filtro_historial: {
+        camion: null,
+        motor: null,
+        fecha: null
+      },
+      incidencias_filtradas: [],
+
       search_motor_id: '',
       incidentsList: [],
       editIndex: null,
@@ -432,12 +446,27 @@ export default {
         this.message = 'Formulario enviado exitosamente.';
         this.isSuccess = true;
         this.incidencia_creada = response.data;
-        console.log(this.incidencia_creada);
       } catch (error) {
         this.message = 'Error al enviar el formulario.';
         this.isSuccess = false;
       }
     },
+    async get_incidencias_filtradas() {
+      try {
+        if (this.filtro_historial.camion && this.filtro_historial.camion == "null") this.filtro_historial.camion = null;
+        if (this.filtro_historial.motor && this.filtro_historial.motor == "null") this.filtro_historial.motor = null;
+        if (this.filtro_historial.fecha && this.filtro_historial.motor == "") this.filtro_historial.fecha = null;
+        const response = await axios.get(`http://localhost:8000/api/incidencias/${this.filtro_historial.camion ? '?camion='+this.filtro_historial.camion : ''}${this.filtro_historial.motor ? `${this.filtro_historial.camion ? '&' : '?'}motor=`+this.filtro_historial.motor : ''}${this.filtro_historial.fecha ? `${this.filtro_historial.camion || this.filtro_historial.motor ? '&' : '?'}fecha=`+this.filtro_historial.fecha : ''}`);
+        this.incidencias_filtradas = response.data;
+        this.message = `Se encontraron ${this.incidencias_filtradas.length} resultados.`;
+        this.success = true;
+      } catch (error) {
+        this.message = 'Error al obtener las incidencias.';
+        this.isSuccess = false;
+      }
+    },    
+
+
 
     async searchAll() {
       this.updateIndex(null);
