@@ -119,6 +119,17 @@ def login(request):
 ###################################### FILTRAR INCIDENCIAS ########################################
 @api_view(['GET'])
 def filtrar_incidencias(request):
+    print(request.query_params)
+
+    ######################################################### Get tareas pendientes
+    mecanico_id = request.query_params.get('mecanico_asignado', None)
+    solucionado = request.query_params.get('solucionado', None)
+    if (mecanico_id is not None) and (solucionado is not None):
+        incidencias = Incidencia.objects.filter(mecanico_asignado=mecanico_id, solucionado=solucionado)
+        serializer = IncidenciaSerializer(incidencias, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    ######################################################### Filtro por camion, motor y fecha
     camion_id = request.query_params.get('camion', None)
     motor_id = request.query_params.get('motor', None)
     fecha = request.query_params.get('fecha', None)

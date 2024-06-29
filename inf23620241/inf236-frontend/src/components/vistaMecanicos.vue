@@ -149,8 +149,8 @@
               <td>{{ incidencia_filtrada.mecanicos_asociados }}</td>
               <td>{{ incidencia_filtrada.descripcion_trabajo_necesario }}</td>
               <td>{{ incidencia_filtrada.mecanico_asignado }}</td>
-              <td>{{ incidencia_filtrada.fecha_inicio_trabajo }}</td>
-              <td>{{ incidencia_filtrada.fecha_termino_trabajo }}</td>
+              <td>{{ formatDate(incidencia_filtrada.fecha_inicio_trabajo) }}</td>
+              <td>{{ formatDate(incidencia_filtrada.fecha_termino_trabajo) }}</td>
               <td>{{ incidencia_filtrada.solucionado ? 'Si' : 'No' }}</td>
             </tr>
           </tbody>
@@ -265,37 +265,59 @@
 
 
 
-
-  <!-- -------------------------------------------- Ver las incidencias asignadas al mecanico -->
+  <!-- -------------------------------------------- Ver las incidencias asignadas al mecanico que no son solucionadas -->
   <div v-if="selectedOption === 'todo'">
     <div class="containerGeneral">
       <section class="container">
-        <div style="width: max-content;">
-          <button @click="getIncidentsToDo($route.params.id)">Ver mis tareas</button>
-        </div>
         <table v-if="tareasList.length">
           <thead>
             <tr>
-              <th>Motor ID</th>
-              <th>Fecha de incidencia</th>
-              <th>Descripción de la causa</th>
+              <th>Camión</th>
+              <th>Motor</th>
+              <th>Fecha de reporte</th>
+              <th>Descripción</th>
               <th>Mecánicos relacionados</th>
               <th>Trabajo por hacer</th>
               <th>Fecha inicio del trabajo</th>
+              <th>Trabajo hecho</th>
               <th>Fecha fin del trabajo</th>
               <th>¿Solucionado?</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(tarea, index) in tareasList" :key="index">
-              <td>{{ tarea.motor_id }}</td>
-              <td>{{ tarea.incident_date }}</td>
-              <td>{{ tarea.problem_description }}</td>
-              <td>{{ tarea.mechanics_associated }}</td>
-              <td>{{ tarea.work_to_do }}</td>
-              <td>{{ tarea.start_date }}</td>
-              <td>{{ tarea.end_date }}</td>
-              <td>{{ tarea.solved ? 'Si' : 'No' }}</td>
+            <tr v-for="incidencia_pendiente in incidencias_pendientes" :key="incidencia_pendiente.id_incidencia">
+              <td>{{ camiones.filter((camion) => camion.id_camion == incidencia_pendiente.camion)[0].placa  }}</td>
+              <td>{{ motores.filter((motor) => motor.id_motor == incidencia_pendiente.motor)[0].n_serie  }}</td>
+              <td>{{ formatDate(incidencia_pendiente.fecha_incidencia) }}</td>
+              <td>{{ incidencia_pendiente.descripcion_problema }}</td>
+              <td>{{ incidencia_pendiente.mecanicos_asociados }}</td>
+              <td>{{ incidencia_pendiente.descripcion_trabajo_necesario }}</td>
+              {
+                incidencia_pendiente.fecha_inicio_trabajo ? 
+                <td>{{ formatDate(incidencia_pendiente.fecha_inicio_trabajo) }}</td>
+              } else {
+                <td>
+                  <button @click="() => {console.log(incidencia_pendiente)}">
+                    Iniciar
+                  </button>
+                </td>
+              }
+              <td>
+                <button @click="() => {console.log(incidencia_pendiente.descripcion_trabajo_hecho)}">
+                  {{ incidencia_pendiente.descripcion_trabajo_hecho }}
+                </button>
+              </td>
+              {
+                incidencia_pendiente.fecha_termino_trabajo ? 
+                <td>{{ formatDate(incidencia_pendiente.fecha_termino_trabajo) }}</td>
+              } else {
+                <td>
+                  <button @click="() => {console.log(incidencia_pendiente)}">
+                    Finalizar
+                  </button>
+                </td>
+              }
+              <td>{{ incidencia_pendiente.solucionado ? 'Si' : 'No' }}</td>
             </tr>
           </tbody>
         </table>
@@ -384,6 +406,8 @@ export default {
         fecha: null
       },
       incidencias_filtradas: [],
+      usuario_id: null,
+      incidencias_pendientes: [],
 
       search_motor_id: '',
       incidentsList: [],
@@ -464,8 +488,20 @@ export default {
         this.message = 'Error al obtener las incidencias.';
         this.isSuccess = false;
       }
-    },    
-
+    },
+    async get_incidencias_pendientes() {
+      console.log(this.usuario_id)
+      try {
+        const response = await axios.get(`http://localhost:8000/api/incidencias/?mecanico_asignado=${this.usuario_id}&solucionado=False`);
+        this.incidencias_pendientes = response.data;
+        this.message = `Se encontraron ${this.incidencias_pendientes.length} resultados.`;
+        this.success = true;
+      } catch (error) {
+        this.message = 'Error al obtener las incidencias.';
+        this.isSuccess = false;
+      }
+    },
+    
 
 
     async searchAll() {
@@ -557,6 +593,8 @@ export default {
   mounted() {
     this.getCamiones();
     this.getMotores();
+    this.usuario_id = this.$route.params.id;
+    this.get_incidencias_pendientes();
   }
 };
 </script>
