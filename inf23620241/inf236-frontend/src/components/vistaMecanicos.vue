@@ -330,10 +330,7 @@
   <div v-if="selectedOption === 'todo'">
     <div class="containerGeneral">
       <section class="container">
-        <div style="width: max-content;">
-          <button @click="getIncidentsToDo($route.params.id)">Ver mis tareas</button>
-        </div>
-        <table v-if="tareasList.length">
+        <table v-if="incidencias_pendientes.length">
           <thead>
             <tr>
               <th>Motor ID</th>
@@ -347,15 +344,31 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(tarea, index) in tareasList" :key="index">
-              <td>{{ tarea.motor_id }}</td>
-              <td>{{ tarea.incident_date }}</td>
-              <td>{{ tarea.problem_description }}</td>
-              <td>{{ tarea.mechanics_associated }}</td>
-              <td>{{ tarea.work_to_do }}</td>
-              <td>{{ tarea.start_date }}</td>
-              <td>{{ tarea.end_date }}</td>
-              <td>{{ tarea.solved ? 'Yes' : 'No' }}</td>
+            <tr v-for="incidencia_pendiente in incidencias_pendientes" :key="incidencia_pendiente.id_incidencia">
+              <td>{{ camiones.filter((camion) => camion.id_camion == incidencia_pendiente.camion)[0].placa  }}</td>
+              <td>{{ motores.filter((motor) => motor.id_motor == incidencia_pendiente.motor)[0].n_serie  }}</td>
+              <td>{{ formatDate(incidencia_pendiente.fecha_incidencia) }}</td>
+              <td>{{ incidencia_pendiente.descripcion_problema }}</td>
+              <td>{{ incidencia_pendiente.mecanicos_asociados }}</td>
+              <td>{{ incidencia_pendiente.descripcion_trabajo_necesario }}</td>
+              <td v-if="incidencia_pendiente.fecha_inicio_trabajo">{{ formatDate(incidencia_pendiente.fecha_inicio_trabajo) }}</td>
+              <td v-else>
+                <button @click="() => {console.log(incidencia_pendiente)}"> <!-- Agregar funcionalidad para actualizar la fecha -> enviar peticion de patch al IncidenciaViewSet para update la fecha con datetime.now() -->
+                  Iniciar
+                </button>
+              </td>
+              <td>
+                <button @click="() => {console.log(incidencia_pendiente.descripcion_trabajo_hecho)}"> <!-- Agregar funcionalidad para editar el texto (como lo que era usando antes pero solo para modificar el texto del trabajo hecho)  -->
+                  {{ incidencia_pendiente.descripcion_trabajo_hecho || "Nada por el momento" }}
+                </button>
+              </td>
+              <td v-if="incidencia_pendiente.fecha_termino_trabajo">{{ formatDate(incidencia_pendiente.fecha_termino_trabajo) }}</td>
+              <td v-else>
+                <button @click="() => {console.log(incidencia_pendiente)}"> <!-- Agregar funcionalidad para actualizar la fecha -> enviar peticion de patch al IncidenciaViewSet para update la fecha con datetime.now() -->
+                  Finalizar
+                </button>
+              </td>
+              <td>{{ incidencia_pendiente.solucionado ? 'Si' : 'No' }}</td>
             </tr>
           </tbody>
         </table>
@@ -364,7 +377,7 @@
   </div>
 
   <!-- -------------------------------------------- Modificar la contrasena del mecanico -->
-  <div v-if="selectedOption === 'settings'">
+  <!-- <div v-if="selectedOption === 'settings'">
     <div class="containerGeneral">
       <section class="container">
         <div style="width: max-content;">
@@ -391,7 +404,7 @@
         </form>
       </section>
     </div>
-  </div>
+  </div> -->
 
   <!-- 
   <div>
@@ -443,30 +456,33 @@ export default {
         mechanics_associated: '',
         work_to_do: ''
       },
-      response_report: null,
-      search_motor_id: '',
-      incidentsList: [],
-      editIndex: null,
-      edit: {
-        motor_id: null,
-        incident_date: null,
-        problem_description: null,
-        mechanics_associated: null,
-        work_to_do: null,
-        mechanic_id: null,
-        start_date: null,
-        end_date: null,
-        solved: null,
-        id: null
-      },
-      tareasList: [],
-      mechanic_id: null,
-      editPassword: {
-        mechanic_id: null,
-        oldPassword: '',
-        newPassword: '',
-        validNewPassword: ''
-      },
+      incidencias_filtradas: [],
+      usuario_id: null,
+      incidencias_pendientes: [],
+
+      // search_motor_id: '',
+      // incidentsList: [],
+      // editIndex: null,
+      // edit: {
+      //   motor_id: null,
+      //   incident_date: null,
+      //   problem_description: null,
+      //   mechanics_associated: null,
+      //   work_to_do: null,
+      //   mechanic_id: null,
+      //   start_date: null,
+      //   end_date: null,
+      //   solved: null,
+      //   id: null
+      // },
+      // tareasList: [],
+      // mechanic_id: null,
+      // editPassword: {
+      //   mechanic_id: null,
+      //   oldPassword: '',
+      //   newPassword: '',
+      //   validNewPassword: ''
+      // },
       message: '',
       isSuccess: false
     };
@@ -507,91 +523,40 @@ export default {
         this.isSuccess = false;
       }
     },
-    async searchAll() {
-      this.updateIndex(null);
+    async get_incidencias_filtradas() {
       try {
-        const response = await axios.get('http://localhost:8000/api/incidents/all/');
-        this.incidentsList = response.data;
-        this.message = `Se encontraron ${this.incidentsList.length} resultados.`;
+        if (this.filtro_historial.camion && this.filtro_historial.camion == "null") this.filtro_historial.camion = null;
+        if (this.filtro_historial.motor && this.filtro_historial.motor == "null") this.filtro_historial.motor = null;
+        if (this.filtro_historial.fecha && this.filtro_historial.motor == "") this.filtro_historial.fecha = null;
+        const response = await axios.get(`http://localhost:8000/api/incidencias/${this.filtro_historial.camion ? '?camion='+this.filtro_historial.camion : ''}${this.filtro_historial.motor ? `${this.filtro_historial.camion ? '&' : '?'}motor=`+this.filtro_historial.motor : ''}${this.filtro_historial.fecha ? `${this.filtro_historial.camion || this.filtro_historial.motor ? '&' : '?'}fecha=`+this.filtro_historial.fecha : ''}`);
+        this.incidencias_filtradas = response.data;
+        this.message = `Se encontraron ${this.incidencias_filtradas.length} resultados.`;
         this.success = true;
       } catch (error) {
         this.message = 'Error al obtener las incidencias.';
         this.isSuccess = false;
       }
     },
-    async searchByMotor() {
-      this.updateIndex(null);
+    async get_incidencias_pendientes() {
+      console.log(this.usuario_id)
       try {
-        const response = await axios.get(`http://localhost:8000/api/incidents/?motor_id=${this.search_motor_id}`);
-        this.incidentsList = response.data;
-        this.message = `Se encontraron ${response.data.length} resultados.`;
+        const response = await axios.get(`http://localhost:8000/api/incidencias/?mecanico_asignado=${this.usuario_id}&solucionado=False`);
+        this.incidencias_pendientes = response.data;
+        console.log(this.incidencias_pendientes)
+        this.message = `Se encontraron ${this.incidencias_pendientes.length} resultados.`;
         this.success = true;
       } catch (error) {
-        this.message = 'Error al buscar incidentes.';
+        this.message = 'Error al obtener las incidencias.';
         this.isSuccess = false;
       }
     },
-    updateIndex(index) {
-      this.editIndex = index;
-      if (index || index === 0) {
-        this.edit.id = this.incidentsList[index].id
-      }
-    },
-    logout() {
-      this.$router.push('/');
-    },
-    async editReport() {
-      try {
-        const response = await axios.post(`http://localhost:8000/api/incidents/edit/`, this.edit);
-        this.message = 'Formulario enviado exitosamente.';
-        this.isSuccess = true;
-        this.response_report = response.data;
-        this.editIndex = null;
-        this.reset(this.edit)
-        this.searchAll()
-      } catch (error) {
-        this.message = `Error al enviar el formulario.`;
-        this.isSuccess = false;
-      }
-    },
-    reset(dict) {
-      for (const key in dict) {
-        dict[key] = null;
-      }
-    },
-    async getIncidentsToDo(mechanic_id) {
-      console.log(mechanic_id)
-      try {
-        const response = await axios.get(`http://localhost:8000/api/incidents/?mechanic_id=${mechanic_id}`);
-        this.message = `Se encontraron ${response.data.length} resultados.`;
-        this.success = true;
-        this.tareasList = response.data;
-      } catch (error) {
-        this.message = 'Error al buscar tareas.';
-        this.isSuccess = false;
-      }
-    },
-    updateMechanicId(id) {
-      this.mechanic_id = id;
-      this.editPassword.mechanic_id = id;
-    },
-    async changePassword() {
-      try {
-        const response = await axios.post('http://localhost:8000/api/login/edit/', this.editPassword);
-        this.isSuccess = true;
-        this.message = 'Contraseña cambiada exitosamente.'
-        if (response.data.success) {
-          this.mechanic_id = null;
-          this.reset(this.editPassword)
-          this.$router.push('/');
-        } else {
-          this.msg = 'Al menos una de las contraseñas es incorrecta';
-        }
-      } catch (error) {
-        this.message = 'Error al cambiar la contraseña.';
-        this.isSuccess = false;
-      }
-    }
+    
+  },
+  mounted() {
+    this.getCamiones();
+    this.getMotores();
+    this.usuario_id = this.$route.params.id;
+    this.get_incidencias_pendientes();
   }
 };
 </script>

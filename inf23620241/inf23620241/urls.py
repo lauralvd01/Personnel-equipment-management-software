@@ -20,7 +20,8 @@ from rest_framework.routers import DefaultRouter
 from inf236backend.views import MotorViewSet, SistemaViewSet, ComponenteViewSet, CamionViewSet, AsignacionMotorCamionViewSet, UsuarioViewSet, IncidenciaViewSet
 from inf236backend.views import login, filtrar_incidencias
 
-from inf236backend.views import getAllMotores, asignacionMotorCamion, getAllCamiones, handle_incident, search_incidents, search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password, creacion_usuario, creacion_motor, creacion_camion
+# from inf236backend.views import handle_incident, search_incidents, search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password, creacion_usuario
+from inf236backend.views import creacion_motor, creacion_camion, getAllCamiones, getAllMotores, asignacionMotorCamion
 
 router = DefaultRouter()
 router.register(r'motor',MotorViewSet)
@@ -38,13 +39,13 @@ urlpatterns = [
     #path('api/allincidents/', getAllIncidents, name='getAllIncidents'), #Path de Vista, linea de prueba
     #path('api/search/', search_incidents, name='search_incidents'),
 
-    path('api/asigns/', search_asign, name='search_asign'),
-    path('api/incidents/submit/', submit_incident, name='submit_incident'),
-    path('api/incidents/all/', getAllIncidents, name='getAllIncidents'),
-    path('api/incidents/', search_incidents, name='search_incidents'),
-    path('api/incidents/edit/', edit_incident, name='edit_incident'),
-    path('api/login/edit/', edit_password, name='edit_password'),
-    path('api/usuario/', creacion_usuario, name='creacion_usuario'),
+    # path('api/asigns/', search_asign, name='search_asign'),
+    # path('api/incidents/submit/', submit_incident, name='submit_incident'),
+    # path('api/incidents/all/', getAllIncidents, name='getAllIncidents'),
+    # path('api/incidents/', search_incidents, name='search_incidents'),
+    # path('api/incidents/edit/', edit_incident, name='edit_incident'),
+    # path('api/login/edit/', edit_password, name='edit_password'),
+    # path('api/usuario/', creacion_usuario, name='creacion_usuario'),
 
 
     ######## Work with original BBDD #####
