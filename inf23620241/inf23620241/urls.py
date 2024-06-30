@@ -21,6 +21,7 @@ from inf236backend.views import MotorViewSet, SistemaViewSet, ComponenteViewSet,
 from inf236backend.views import login, filtrar_incidencias
 
 # from inf236backend.views import handle_incident, search_incidents, search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password, creacion_usuario
+from inf236backend.views import creacion_motor, creacion_camion, getAllCamiones, getAllMotores, asignacionMotorCamion
 
 router = DefaultRouter()
 router.register(r'motor',MotorViewSet)
@@ -49,5 +50,10 @@ urlpatterns = [
 
     ######## Work with original BBDD #####
     path('api/sesion/', login, name='login'),
-    path('api/incidencias/', filtrar_incidencias, name='filtrar_incidencias')
+    path('api/incidencias/', filtrar_incidencias, name='filtrar_incidencias'),
+    path('api/motor/create', creacion_motor, name='creacion_motor'),
+    path('api/camion/create', creacion_camion, name='creacion_camion'),
+    path('api/camion/all', getAllCamiones, name='getAllCamiones'),
+    path('api/motor/all', getAllMotores, name='getAllMotores'),
+    path('api/asignacionmotorcamion', asignacionMotorCamion, name='asignacionMotorCamion')
 ]
