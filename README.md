@@ -72,7 +72,8 @@ Se buscó una solución, y encontramos la propuesta de reemplazar `--default-aut
 
 Todavia no sabemos porqué lo que funcionó la primera vez con el proyecto_base que no funciona ahora, ni con nuestro proyecto ni con el proyecto_base, pero esta solución parece un menor cambio que aun nos permite hacer funcionar el backend.
 
-##Código ejemplo creación usuario "Jefe de motor" y "Mecánico" en la base de datos
+## Código ejemplo creación usuario "Jefe de motor" y "Mecánico" en la base de datos
+
 Utilizar el comando: **python manage.py shell**
 
 Dentro del archivo se crean los usuarios utilizando el siguiente modelo:
