@@ -324,4 +324,54 @@ def creacion_usuario(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     print(f"Serializer errors: {serializer.errors}")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+@api_view(['POST'])
+def creacion_motor(request):
+    print(request.data)
+    serializer = MotorSerializer(data=request.data)
+    if serializer.is_valid():
+        print(f"Serializer data: {serializer.validated_data}")
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    print(f"Serializer errors: {serializer.errors}")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def creacion_camion(request):
+    print(request.data)
+    serializer = CamionSerializer(data=request.data)
+    if serializer.is_valid():
+        print(f"Serializer data: {serializer.validated_data}")
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    print(f"Serializer errors: {serializer.errors}")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
+
+@api_view(['GET'])
+def getAllCamiones(request):
+    serializer = CamionSerializer
+    camiones = Camion.objects.all()
+    if camiones is not None:
+        serializer = CamionSerializer(camiones, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({'error': 'No hay camiones creados'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getAllMotores(request):
+    serializer = MotorSerializer
+    motores = Motor.objects.all()
+    if motores is not None:
+        serializer = MotorSerializer(motores, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({'error': 'No hay motores creados'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def asignacionMotorCamion(request):
+    serializer = AsignacionMotorCamionSerializer(data=request.data)
+    if serializer.is_valid():
+        print(f"Serializer data: {serializer.validated_data}")
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    print(f"Serializer errors: {serializer.errors}")
+    return Response(serializer.errors, status=status.   HTTP_400_BAD_REQUEST)  
