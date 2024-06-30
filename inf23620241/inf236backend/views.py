@@ -375,13 +375,22 @@ def getAllMotores(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response({'error': 'No hay motores creados'}, status=status.HTTP_400_BAD_REQUEST)
 
-
-@api_view(['POST'])
-def asignacionMotorCamion(request):
+@api_view(['GET'])
+def getAllAsignaciones(request):
     serializer = AsignacionMotorCamionSerializer(data=request.data)
-    if serializer.is_valid():
-        print(f"Serializer data: {serializer.validated_data}")
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    print(f"Serializer errors: {serializer.errors}")
-    return Response(serializer.errors, status=status.   HTTP_400_BAD_REQUEST)  
+    asignaciones = AsignacionMotorCamion.objects.all()
+    if asignaciones is not None:
+        serializer = AsignacionMotorCamionSerializer(asignaciones, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({'error': 'No hay motores creados'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+#@api_view(['POST'])
+#def asignacionMotorCamion(request):
+ #   serializer = AsignacionMotorCamionSerializer(data=request.data)
+  #  if serializer.is_valid():
+    #    print(f"Serializer data: {serializer.validated_data}")
+   #     serializer.save()
+    #    return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #print(f"Serializer errors: {serializer.errors}")
+    #return Response(serializer.errors, status=status.   HTTP_400_BAD_REQUEST)  

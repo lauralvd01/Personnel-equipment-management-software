@@ -1,5 +1,14 @@
 <template>
     <h2>Vista Jefe Motores</h2>
+    <div class="posicionboton">
+    <nav>
+      <button @click="logout">
+        <span class="button_top"> Cerrar Sesión
+        </span>
+      </button>
+    </nav>
+    <RouterView />
+  </div>
     <div class="containerGeneral">
     <div class="radio-inputs">
     <!--pestañistas de arriba -->
@@ -132,12 +141,6 @@
         <form @submit.prevent="asignMotor">
           <div class="column">
             <div class="input-box">
-              <label>Fecha Desasignacion Motor</label>
-              <input v-model="asignacioncamionmotor.fecha_desasignacion" required placeholder="(fecha)" type="date" />
-            </div>
-          </div>
-          <div class="column">
-            <div class="input-box">
               <label>Camiones Disponibles</label>
               <select v-model="asignacioncamionmotor.camion">
                 <option v-for="camion in camiones" :key="camion.id_camion" :value="camion.id_camion">
@@ -154,8 +157,25 @@
               </select>
             </div>
           </div>
-          <button type="submit">Submit</button>
+          <button type="submit">Asignar Motor a Camión</button>
         </form>
+
+        <form @submit.prevent="desasignMotor">
+          <div class="column">
+            <div class="input-box">
+              <label>Camiones Asignados</label>
+              <select v-model="desaginacionmotorcamion.id_aborrar">
+                <option v-for="asignacioncamionmotor in asignacioncamionmotores" :key="asignacioncamionmotor.id_asignacion" :value="asignacioncamionmotor.id_asignacion">
+                  {{ asignacioncamionmotor.motor }} 
+                </option>
+              </select>
+              <h1>Detalles de Asignación de Motor</h1>
+              <p>Id Motor a desasignar: {{ desaginacionmotorcamion.placa }}</p>
+            </div>
+          </div>
+          <button type="submit">Borrar Asignacion</button>
+        </form>
+
         <div v-if="message" :class="{'success': isSuccess, 'error': !isSuccess}">
           {{ message }}
         </div>
@@ -186,6 +206,13 @@ export default{
     return {
       motores: [],
       camiones: [],
+      asignacioncamionmotores: [],
+      desaginacionmotorcamion: {
+        id_aborrar:'',
+        fecha_desasignacion: null,
+        motor:'',
+        camion: ''
+      },
       form: {
         motorId: '',
         mechanicId: '',
@@ -211,10 +238,9 @@ export default{
         durabilidad: 0
       },
       asignacioncamionmotor: {
+        fecha_desasignacion: null,
         motor:'',
-        camion: '',
-        fecha_asignacion: '',
-        fecha_desasignacion: ''
+        camion: ''
       },
       message: '',
       isSuccess: false,
@@ -237,6 +263,7 @@ export default{
         }
       }
     },
+
     async submitMotor() {
       try {
         const response = await axios.post('http://localhost:8000/api/motor/create', this.motor);
@@ -283,13 +310,23 @@ export default{
         console.error('Error fetching motores:', error);
       }
     },
+    async fetchAsginacionMotores() {
+      try {
+        const response = await axios.get('http://localhost:8000/api/asignacion/all');
+        this.asignacioncamionmotores = response.data;
+        this.desaginacionmotorcamion = response.data;
+      } catch (error) {
+        console.error('Error fetching motores:', error);
+      }
+    },
     async asignMotor(){
       try {
-        const response = await axios.post('http://localhost:8000/api/asignacionmotorcamion', this.asignacioncamionmotor);
+        const response = await axios.post('http://localhost:8000/asignacion/', this.asignacioncamionmotor);
         this.message = 'Formulario enviado exitosamente.';
         this.isSuccess = true;
         this.responseData = response.data; // Almacenar la respuesta en responseData
         this.resetFormasignacioncamionmotor();
+        this.fetchAsginacionMotores();
       } catch (error) {
         this.message = 'Error al enviar el formulario.'+ JSON.stringify(this.asignacioncamionmotor);
         this.isSuccess = false;
@@ -297,7 +334,24 @@ export default{
           this.message += ` Detalles del error: ${error.response.data}`;
         }
       }
-
+    },
+    async desasignMotor(){
+      try {
+        const pathborrar = 'http://localhost:8000/asignacion/' + this.desaginacionmotorcamion.id;
+        this.message = pathborrar;
+        const response = await axios.delete(pathborrar);
+        this.message = 'Objeto borrado correctamente';
+        this.isSuccess = true;
+        this.responseData = response.data; // Almacenar la respuesta en responseData
+        this.resetFormdesaginacionmotorcamion();
+        this.fetchAsginacionMotores();
+      } catch (error) {
+        this.message = 'Error al enviar el formulario.'+ JSON.stringify(this.asignacioncamionmotor);
+        this.isSuccess = false;
+        if (error.response) {
+          this.message += ` Detalles del error: ${error.response.data}`;
+        }
+      }
     },
     resetForm() {
       this.form = {
@@ -321,7 +375,7 @@ export default{
       };
     },
     resetFormCamion() {
-      this.motor = {
+      this.camion = {
         n_serie:'',
         placa: '',
         estado: '',
@@ -329,16 +383,27 @@ export default{
         durabilidad: 0
       };
     },
-    resetFormasignacioncamionmotor: {
+    resetFormasignacioncamionmotor(){
+      this.asignacioncamionmotor = {
+          fecha_desasignacion: null,
+          motor:'',
+          camion: ''
+        }
+      },
+      
+      resetFormdesaginacionmotorcamion(){
+      this.asignacioncamionmotor = {
+        id_aborrar:'',
+        fecha_desasignacion: null,
         motor:'',
-        camion: '',
-        fecha_asignacion: '',
-        fecha_desasignacion: ''
+        camion: ''
       }
+    }
   },
   mounted() {
     this.fetchCamiones();
     this.fetchMotores();
+    this.fetchAsginacionMotores();
   }
 };
 </script>
