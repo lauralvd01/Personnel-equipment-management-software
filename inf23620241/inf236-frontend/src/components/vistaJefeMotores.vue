@@ -132,10 +132,6 @@
         <form @submit.prevent="asignMotor">
           <div class="column">
             <div class="input-box">
-              <label>Fecha Asignacion Motor</label>
-              <input v-model="asignacioncamionmotor.fecha_asignacion" required placeholder="(fecha)" type="date" />
-            </div>
-            <div class="input-box">
               <label>Fecha Desasignacion Motor</label>
               <input v-model="asignacioncamionmotor.fecha_desasignacion" required placeholder="(fecha)" type="date" />
             </div>
