@@ -71,3 +71,31 @@ De hecho, el build de los contenedores del backend funcionaba, pero el up mostra
 Se buscó una solución, y encontramos la propuesta de reemplazar `--default-authentication-plugin=mysql_native_password` en el archivo _docker-compose.yaml_ (que parece obsoleto; Deprecated), con `--mysql-native-password=ON` lo que sólo implica el requisito del package `cryptography` anadido en el archivo _requirements.txt_.
 
 Todavia no sabemos porqué lo que funcionó la primera vez con el proyecto_base que no funciona ahora, ni con nuestro proyecto ni con el proyecto_base, pero esta solución parece un menor cambio que aun nos permite hacer funcionar el backend.
+
+##Código ejemplo creación usuario "Jefe de motor" y "Mecánico" en la base de datos
+Utilizar el comando: **python manage.py shell**
+
+Dentro del archivo se crean los usuarios utilizando el siguiente modelo:
+
+from inf236backend.models import Usuario
+from django.utils import timezone
+
+Usuario.objects.create(
+    rut='11111111-1',
+    contrasena='micontrasena',
+    nombre='Nombre',
+    apellido='Apellido',
+    fecha_registro=timezone.now(),
+    rol='jefe',
+    turno='4x7'
+)
+
+Usuario.objects.create(
+    rut='22222222-2',
+    contrasena='micontrasenamec',
+    nombre='Nombre1',
+    apellido='Apellido1',
+    fecha_registro=timezone.now(),
+    rol='mecanico',
+    turno='7x7'
+)
