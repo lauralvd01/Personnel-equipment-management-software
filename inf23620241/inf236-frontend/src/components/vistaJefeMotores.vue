@@ -12,7 +12,7 @@
   </div>
     <div class="containerGeneral">
     <div class="radio-inputs">
-    <!--pestañistas de arriba -->
+    <!-- Pestañas superiores-->
     <label class="radio">
       <input type="radio" name="radio" value="motor" v-model="selectedOption" />
       <span class="name">Crear Motor</span>
@@ -26,7 +26,7 @@
       <span class="name">Manejo Asignaciones Motor</span>
     </label>
 
-     <!--
+     <!-- Aqui iria el manejo de las incidencias
     <label class="radio">
       <input type="radio" name="radio" value="asignincidencia" v-model="selectedOption" />
       <span class="name">Manejo Asignaciones Incidencia</span>
@@ -39,143 +39,143 @@
 
   
   <!-- Formulario creación de motor -->
-<div v-if="selectedOption === 'motor'">
-  <div class="containerGeneral">
-    <section class="container">
-      <!-- Título del formulario -->
-      <header>Formulario Creación de Motores </header>
-      
-      <!-- Formulario para crear un nuevo motor -->
-      <form @submit.prevent="submitMotor">
-        <div class="column">
-          <div class="input-box">
-            <!-- Campo para el número de serie del motor -->
-            <label>Número de Serie Motor</label>
-            <input v-model="motor.n_serie" required placeholder="Ingrese numero de serie" type="text">
-          </div>
-        </div>
-
-        <!-- Etiqueta para el estado operativo del motor -->
-        <label>¿Operativo?</label>
-        <div class="column">
-          <div class="radio-button-container">
-            <div class="radio-button">
-              <!-- Radio button para marcar el motor como operativo -->
-              <input v-model="motor.operativo" type="radio" class="radio-button__input" id="radio1" value="true" name="radio-group">
-              <label class="radio-button__label" for="radio1">
-                <span class="radio-button__custom"></span>
-                Si
-              </label>
-            </div>
-            <div class="radio-button">
-              <!-- Radio button para marcar el motor como no operativo -->
-              <input v-model="motor.operativo" type="radio" class="radio-button__input" id="radio2" value="false" name="radio-group">
-              <label class="radio-button__label" for="radio2">
-                <span class="radio-button__custom"></span>
-                No
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="column">
-          <div class="input-box">
-            <!-- Campo para la fecha de llegada del motor -->
-            <label>Fecha Llegada Motor</label>
-            <input v-model="motor.fecha_inicio" required placeholder="(fecha)" type="date">
-          </div>
-        </div>
+  <div v-if="selectedOption === 'motor'">
+    <div class="containerGeneral">
+      <section class="container">
+        <!-- Título del formulario -->
+        <header>Formulario Creación de Motores </header>
         
-        <!-- Botón para enviar el formulario -->
-        <button type="submit">Submit</button>
-      </form>
+        <!-- Formulario para crear un nuevo motor -->
+        <form @submit.prevent="submitMotor">
+          <div class="column">
+            <div class="input-box">
+              <!-- Campo para el número de serie del motor -->
+              <label>Número de Serie Motor</label>
+              <input v-model="motor.n_serie" required placeholder="Ingrese numero de serie" type="text">
+            </div>
+          </div>
 
-      <!-- Mensaje de éxito o error al enviar el formulario -->
-      <div v-if="message" :class="{'success': isSuccess, 'error': !isSuccess}">
-        {{ message }}
-      </div>
+          <!-- Etiqueta para el estado operativo del motor -->
+          <label>¿Operativo?</label>
+          <div class="column">
+            <div class="radio-button-container">
+              <div class="radio-button">
+                <!-- Radio button para marcar el motor como operativo -->
+                <input v-model="motor.operativo" type="radio" class="radio-button__input" id="radio1" value="true" name="radio-group">
+                <label class="radio-button__label" for="radio1">
+                  <span class="radio-button__custom"></span>
+                  Si
+                </label>
+              </div>
+              <div class="radio-button">
+                <!-- Radio button para marcar el motor como no operativo -->
+                <input v-model="motor.operativo" type="radio" class="radio-button__input" id="radio2" value="false" name="radio-group">
+                <label class="radio-button__label" for="radio2">
+                  <span class="radio-button__custom"></span>
+                  No
+                </label>
+              </div>
+            </div>
+          </div>
 
-      <!-- Datos de la respuesta del servidor después de enviar el formulario -->
-      <div v-if="responseData">
-        <h3>Datos de la Respuesta:</h3>
-        <pre>{{ responseData }}</pre>
-      </div>
-    </section>
+          <div class="column">
+            <div class="input-box">
+              <!-- Campo para la fecha de llegada del motor -->
+              <label>Fecha Llegada Motor</label>
+              <input v-model="motor.fecha_inicio" required placeholder="(fecha)" type="date">
+            </div>
+          </div>
+          
+          <!-- Botón para enviar el formulario -->
+          <button type="submit">Submit</button>
+        </form>
+
+        <!-- Mensaje de éxito o error al enviar el formulario -->
+        <div v-if="message" :class="{'success': isSuccess, 'error': !isSuccess}">
+          {{ message }}
+        </div>
+
+        <!-- Datos de la respuesta del servidor después de enviar el formulario -->
+        <div v-if="responseData">
+          <h3>Datos de la Respuesta:</h3>
+          <pre>{{ responseData }}</pre>
+        </div>
+      </section>
+    </div>
   </div>
-</div>
 
-<!-- Formulario creación de camión -->
-<div v-if="selectedOption === 'camion'">
-  <div class="containerGeneral">
-    <section class="container">
-      <!-- Título del formulario -->
-      <header>Formulario Creación de Camiones</header>
-      
-      <!-- Formulario para crear un nuevo camión -->
-      <form @submit.prevent="submitCamion">
-        <div class="column">
-          <div class="input-box">
-            <!-- Campo para el número de serie del camión -->
-            <label>Número de Serie Camión</label>
-            <input v-model="camion.n_serie" required placeholder="Ingrese numero de serie" type="text">
-          </div>
-          <div class="input-box">
-            <!-- Campo para la patente del camión -->
-            <label>Patente Camión</label>
-            <input v-model="camion.placa" required placeholder="Ingrese patente" type="text">
-          </div>
-        </div>
-
-        <!-- Etiqueta para el estado operativo del camión -->
-        <label>¿Operativo?</label>
-        <div class="column">
-          <div class="radio-button-container">
-            <div class="radio-button">
-              <!-- Radio button para marcar el camión como operativo -->
-              <input v-model="camion.estado" type="radio" class="radio-button__input" id="radio1" value="true" name="radio-group">
-              <label class="radio-button__label" for="radio1">
-                <span class="radio-button__custom"></span>
-                Si
-              </label>
-            </div>
-            <div class="radio-button">
-              <!-- Radio button para marcar el camión como no operativo -->
-              <input v-model="camion.estado" type="radio" class="radio-button__input" id="radio2" value="false" name="radio-group">
-              <label class="radio-button__label" for="radio2">
-                <span class="radio-button__custom"></span>
-                No
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="column">
-          <div class="input-box">
-            <!-- Campo para la fecha de llegada del camión -->
-            <label>Fecha Llegada Camión</label>
-            <input v-model="camion.fecha_inicio" required placeholder="(fecha)" type="date">
-          </div>
-        </div>
+  <!-- Formulario creación de camión -->
+  <div v-if="selectedOption === 'camion'">
+    <div class="containerGeneral">
+      <section class="container">
+        <!-- Título del formulario -->
+        <header>Formulario Creación de Camiones</header>
         
-        <!-- Botón para enviar el formulario -->
-        <button type="submit">Submit</button>
-      </form>
+        <!-- Formulario para crear un nuevo camión -->
+        <form @submit.prevent="submitCamion">
+          <div class="column">
+            <div class="input-box">
+              <!-- Campo para el número de serie del camión -->
+              <label>Número de Serie Camión</label>
+              <input v-model="camion.n_serie" required placeholder="Ingrese numero de serie" type="text">
+            </div>
+            <div class="input-box">
+              <!-- Campo para la patente del camión -->
+              <label>Patente Camión</label>
+              <input v-model="camion.placa" required placeholder="Ingrese patente" type="text">
+            </div>
+          </div>
 
-      <!-- Mensaje de éxito o error al enviar el formulario -->
-      <div v-if="message" :class="{'success': isSuccess, 'error': !isSuccess}">
-        {{ message }}
-      </div>
+          <!-- Etiqueta para el estado operativo del camión -->
+          <label>¿Operativo?</label>
+          <div class="column">
+            <div class="radio-button-container">
+              <div class="radio-button">
+                <!-- Radio button para marcar el camión como operativo -->
+                <input v-model="camion.estado" type="radio" class="radio-button__input" id="radio1" value="true" name="radio-group">
+                <label class="radio-button__label" for="radio1">
+                  <span class="radio-button__custom"></span>
+                  Si
+                </label>
+              </div>
+              <div class="radio-button">
+                <!-- Radio button para marcar el camión como no operativo -->
+                <input v-model="camion.estado" type="radio" class="radio-button__input" id="radio2" value="false" name="radio-group">
+                <label class="radio-button__label" for="radio2">
+                  <span class="radio-button__custom"></span>
+                  No
+                </label>
+              </div>
+            </div>
+          </div>
 
-      <!-- Datos de la respuesta del servidor después de enviar el formulario -->
-      <div v-if="responseData">
-        <h3>Datos de la Respuesta:</h3>
-        <pre>{{ responseData }}</pre>
-      </div>
-    </section>
+          <div class="column">
+            <div class="input-box">
+              <!-- Campo para la fecha de llegada del camión -->
+              <label>Fecha Llegada Camión</label>
+              <input v-model="camion.fecha_inicio" required placeholder="(fecha)" type="date">
+            </div>
+          </div>
+          
+          <!-- Botón para enviar el formulario -->
+          <button type="submit">Submit</button>
+        </form>
+
+        <!-- Mensaje de éxito o error al enviar el formulario -->
+        <div v-if="message" :class="{'success': isSuccess, 'error': !isSuccess}">
+          {{ message }}
+        </div>
+
+        <!-- Datos de la respuesta del servidor después de enviar el formulario -->
+        <div v-if="responseData">
+          <h3>Datos de la Respuesta:</h3>
+          <pre>{{ responseData }}</pre>
+        </div>
+      </section>
+    </div>
   </div>
-</div>
 
-<!-- Formulario asignación motor a camión -->
+  <!-- Formulario asignación motor a camión -->
   <div v-if="selectedOption === 'asign'">
     <div class="containerGeneral">
       <section class="container">
@@ -201,14 +201,14 @@
           </div>
           <button type="submit">Asignar Motor a Camión</button>
         </form>
-
+        <!-- Formulario desasignación motor a camión -->
         <form @submit.prevent="desasignMotor">
           <div class="column">
             <div class="input-box">
               <label>Camiones con Motor Asignados</label>
               <select v-model="desaginacionmotorcamion.id_aborrar">
                 <option v-for="asignacioncamionmotor in asignacioncamionmotores" :key="asignacioncamionmotor.id_asignacion" :value="asignacioncamionmotor.camion">
-                 {{ asignacioncamionmotor.motor }}
+                 {{ asignacioncamionmotor.camion }}
                 </option>
               </select>
             </div>
@@ -227,7 +227,7 @@
     </div>
   </div>
 
-  <!-- 
+  <!--  Logica para asignar incidencia, por tiempo no alcanzamos a realizarlo
   <div v-if="selectedOption === 'asignincidencia'">
     <div class="containerGeneral">
       <form @submit.prevent="searchAll">
@@ -431,6 +431,7 @@ export default{
 
     // Método para asignar un motor a un camión
     async asignMotor() {
+      this.fetchCamiones();
       try {
         const response = await axios.post('http://localhost:8000/asignacion/', this.asignacioncamionmotor);
         this.message = 'Formulario enviado exitosamente.';
