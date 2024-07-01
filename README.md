@@ -17,6 +17,10 @@ Puede acceder a la Wiki mediante el siguiente [enlace](https://gitlab.com/inf236
 
 Se puede acceder al prototipo de la vista de un Mecánico en el siguiente video: https://youtu.be/oqKZcD7FfYY
 
+## Video Prototipo
+
+Se pueden ver las funcionalidades del sistema en el siguiente video: https://youtu.be/XvwiAcvSx0w
+
 ## Instalación
 
 * Instalar y activar [Docker](https://docs.docker.com/engine/install/).
