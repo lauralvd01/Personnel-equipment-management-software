@@ -17,7 +17,7 @@ Puede acceder a la Wiki mediante el siguiente [enlace](https://gitlab.com/inf236
 
 Se puede acceder al prototipo de la vista de un Mecánico en el siguiente video: https://youtu.be/oqKZcD7FfYY
 
-## Video Prototipo
+## Video Prototipo Funcionalidad Final (Hito 5 y 6)
 
 Se pueden ver las funcionalidades del sistema en el siguiente video: https://youtu.be/XvwiAcvSx0w
 
