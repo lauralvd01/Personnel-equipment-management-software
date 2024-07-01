@@ -100,3 +100,5 @@ Usuario.objects.create(
     rol='mecanico',
     turno='7x7'
 )
+
+Es importante este paso, pues sin un usuario creado **no se puede iniciar sesión**.
