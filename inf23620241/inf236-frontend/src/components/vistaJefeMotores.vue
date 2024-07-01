@@ -1,10 +1,11 @@
 <template>
-    <h2>Vista Jefe Motores</h2>
-    <div class="posicionboton">
+  <h2>Vista Jefe Motores</h2>
+  <div class="posicionboton">
     <nav>
       <button @click="logout">
         <span class="button_top"> Cerrar Sesión
         </span>
+        <br />
       </button>
     </nav>
     <RouterView />
@@ -18,130 +19,171 @@
     </label>
     <label class="radio">
       <input type="radio" name="radio" value="camion" v-model="selectedOption" />
-      <span class="name">Crear Camion</span>
+      <span class="name">Crear Camión</span>
     </label>
     <label class="radio">
       <input type="radio" name="radio" value="asign" v-model="selectedOption" />
-      <span class="name">Asignar Motor a Camion</span>
+      <span class="name">Manejo Asignaciones Motor</span>
     </label>
+
+     <!--
+    <label class="radio">
+      <input type="radio" name="radio" value="asignincidencia" v-model="selectedOption" />
+      <span class="name">Manejo Asignaciones Incidencia</span>
+    </label>
+    -->
+    
     </div>
   </div>
 
 
   
-  <!-- -------------------------------------------- Ver las asignaciones entre motores y camiones (Ya mudado a BBDD)-->
-  <div v-if="selectedOption === 'motor'">
-    <div class="containerGeneral">
-        <section class="container">
-          <header>Formulario Creación de Motores </header>
-          <form @submit.prevent="submitMotor">
-            <div class="column">
-              <div class="input-box">
-                <label>Numero de Serie Motor</label>
-                <input v-model="motor.n_serie" required placeholder="Ingrese numero de serie" type="text">
-              </div>
-            </div>
-            <label>¿Operativo?</label>
-            <div class="column">
-                <div class="radio-button-container">
-                <div class="radio-button">
-                  <input v-model="motor.operativo" type="radio" class="radio-button__input" id="radio1" value="true" name="radio-group">
-                  <label class="radio-button__label" for="radio1">
-                    <span class="radio-button__custom"></span>
-                    Si
-                  </label>
-                </div>
-                <div class="radio-button">
-                  <input v-model="motor.operativo" type="radio" class="radio-button__input" id="radio2" value="false" name="radio-group">
-                  <label class="radio-button__label" for="radio2">
-                    <span class="radio-button__custom"></span>
-                    No
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="column">
-              <div class="input-box">
-                <label>Fecha Llegada Motor</label>
-                <input v-model="motor.fecha_inicio" required placeholder="(fecha)" type="date">
-              </div>
-            </div>
-            <button type="submit">Submit</button>
-          </form>
-          <div v-if="message" :class="{'success': isSuccess, 'error': !isSuccess}">
-            {{ message }}
+  <!-- Formulario creación de motor -->
+<div v-if="selectedOption === 'motor'">
+  <div class="containerGeneral">
+    <section class="container">
+      <!-- Título del formulario -->
+      <header>Formulario Creación de Motores </header>
+      
+      <!-- Formulario para crear un nuevo motor -->
+      <form @submit.prevent="submitMotor">
+        <div class="column">
+          <div class="input-box">
+            <!-- Campo para el número de serie del motor -->
+            <label>Número de Serie Motor</label>
+            <input v-model="motor.n_serie" required placeholder="Ingrese numero de serie" type="text">
           </div>
-          <div v-if="responseData">
-            <h3>Datos de la Respuesta:</h3>
-            <pre>{{ responseData }}</pre>
+        </div>
+
+        <!-- Etiqueta para el estado operativo del motor -->
+        <label>¿Operativo?</label>
+        <div class="column">
+          <div class="radio-button-container">
+            <div class="radio-button">
+              <!-- Radio button para marcar el motor como operativo -->
+              <input v-model="motor.operativo" type="radio" class="radio-button__input" id="radio1" value="true" name="radio-group">
+              <label class="radio-button__label" for="radio1">
+                <span class="radio-button__custom"></span>
+                Si
+              </label>
+            </div>
+            <div class="radio-button">
+              <!-- Radio button para marcar el motor como no operativo -->
+              <input v-model="motor.operativo" type="radio" class="radio-button__input" id="radio2" value="false" name="radio-group">
+              <label class="radio-button__label" for="radio2">
+                <span class="radio-button__custom"></span>
+                No
+              </label>
+            </div>
           </div>
-        </section>
+        </div>
+
+        <div class="column">
+          <div class="input-box">
+            <!-- Campo para la fecha de llegada del motor -->
+            <label>Fecha Llegada Motor</label>
+            <input v-model="motor.fecha_inicio" required placeholder="(fecha)" type="date">
+          </div>
+        </div>
+        
+        <!-- Botón para enviar el formulario -->
+        <button type="submit">Submit</button>
+      </form>
+
+      <!-- Mensaje de éxito o error al enviar el formulario -->
+      <div v-if="message" :class="{'success': isSuccess, 'error': !isSuccess}">
+        {{ message }}
       </div>
-  </div>
 
-<!-- -------------------------------------------- Ver las asignaciones entre motores y camiones (Ya mudado a BBDD)-->
-    
-  <div v-if="selectedOption === 'camion'">
-    <div class="containerGeneral">
-      <section class="container">
-        <header>Formulario Creación de Camiones </header>
-        <form @submit.prevent="submitCamion">
-          <div class="column">
-            <div class="input-box">
-              <label>Numero de Serie Camión</label>
-              <input v-model="camion.n_serie" required placeholder="Ingrese numero de serie" type="text">
-            </div>
-            <div class="input-box">
-              <label>Patente Camión</label>
-              <input v-model="camion.placa" required placeholder="Ingrese patente" type="text">
-            </div>
-          </div>
-          <label>¿Operativo?</label>
-          <div class="column">
-              <div class="radio-button-container">
-              <div class="radio-button">
-                <input v-model="camion.estado" type="radio" class="radio-button__input" id="radio1" value="true" name="radio-group">
-                <label class="radio-button__label" for="radio1">
-                  <span class="radio-button__custom"></span>
-                  Si
-                </label>
-              </div>
-              <div class="radio-button">
-                <input v-model="camion.estado" type="radio" class="radio-button__input" id="radio2" value="false" name="radio-group">
-                <label class="radio-button__label" for="radio2">
-                  <span class="radio-button__custom"></span>
-                  No
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="column">
-            <div class="input-box">
-              <label>Fecha Llegada Camión</label>
-              <input v-model="camion.fecha_inicio" required placeholder="(fecha)" type="date">
-            </div>
-          </div>
-          <button type="submit">Submit</button>
-        </form>
-        <div v-if="message" :class="{'success': isSuccess, 'error': !isSuccess}">
-          {{ message }}
-        </div>
-        <div v-if="responseData">
-          <h3>Datos de la Respuesta:</h3>
-          <pre>{{ responseData }}</pre>
-        </div>
-      </section>
-    </div>
+      <!-- Datos de la respuesta del servidor después de enviar el formulario -->
+      <div v-if="responseData">
+        <h3>Datos de la Respuesta:</h3>
+        <pre>{{ responseData }}</pre>
+      </div>
+    </section>
   </div>
+</div>
 
+<!-- Formulario creación de camión -->
+<div v-if="selectedOption === 'camion'">
+  <div class="containerGeneral">
+    <section class="container">
+      <!-- Título del formulario -->
+      <header>Formulario Creación de Camiones</header>
+      
+      <!-- Formulario para crear un nuevo camión -->
+      <form @submit.prevent="submitCamion">
+        <div class="column">
+          <div class="input-box">
+            <!-- Campo para el número de serie del camión -->
+            <label>Número de Serie Camión</label>
+            <input v-model="camion.n_serie" required placeholder="Ingrese numero de serie" type="text">
+          </div>
+          <div class="input-box">
+            <!-- Campo para la patente del camión -->
+            <label>Patente Camión</label>
+            <input v-model="camion.placa" required placeholder="Ingrese patente" type="text">
+          </div>
+        </div>
+
+        <!-- Etiqueta para el estado operativo del camión -->
+        <label>¿Operativo?</label>
+        <div class="column">
+          <div class="radio-button-container">
+            <div class="radio-button">
+              <!-- Radio button para marcar el camión como operativo -->
+              <input v-model="camion.estado" type="radio" class="radio-button__input" id="radio1" value="true" name="radio-group">
+              <label class="radio-button__label" for="radio1">
+                <span class="radio-button__custom"></span>
+                Si
+              </label>
+            </div>
+            <div class="radio-button">
+              <!-- Radio button para marcar el camión como no operativo -->
+              <input v-model="camion.estado" type="radio" class="radio-button__input" id="radio2" value="false" name="radio-group">
+              <label class="radio-button__label" for="radio2">
+                <span class="radio-button__custom"></span>
+                No
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="column">
+          <div class="input-box">
+            <!-- Campo para la fecha de llegada del camión -->
+            <label>Fecha Llegada Camión</label>
+            <input v-model="camion.fecha_inicio" required placeholder="(fecha)" type="date">
+          </div>
+        </div>
+        
+        <!-- Botón para enviar el formulario -->
+        <button type="submit">Submit</button>
+      </form>
+
+      <!-- Mensaje de éxito o error al enviar el formulario -->
+      <div v-if="message" :class="{'success': isSuccess, 'error': !isSuccess}">
+        {{ message }}
+      </div>
+
+      <!-- Datos de la respuesta del servidor después de enviar el formulario -->
+      <div v-if="responseData">
+        <h3>Datos de la Respuesta:</h3>
+        <pre>{{ responseData }}</pre>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Formulario asignación motor a camión -->
   <div v-if="selectedOption === 'asign'">
     <div class="containerGeneral">
       <section class="container">
-        <header>Formulario Asignacion de Motores</header>
+        <header>Formulario Asignación de Motores</header>
         <form @submit.prevent="asignMotor">
           <div class="column">
             <div class="input-box">
-              <label>Camiones Disponibles</label>
+              <label>Camiones Disponibles: </label>
               <select v-model="asignacioncamionmotor.camion">
                 <option v-for="camion in camiones" :key="camion.id_camion" :value="camion.id_camion">
                   {{ camion.placa }}
@@ -149,7 +191,7 @@
               </select>
             </div>
             <div class="input-box">
-              <label>Motores Disponibles</label>
+              <label>Motores Disponibles: </label>
               <select v-model="asignacioncamionmotor.motor">
                 <option v-for="motor in motores" :key="motor.id_motor" :value="motor.id_motor">
                   {{ motor.id_motor }}
@@ -163,17 +205,15 @@
         <form @submit.prevent="desasignMotor">
           <div class="column">
             <div class="input-box">
-              <label>Camiones Asignados</label>
+              <label>Camiones con Motor Asignados</label>
               <select v-model="desaginacionmotorcamion.id_aborrar">
-                <option v-for="asignacioncamionmotor in asignacioncamionmotores" :key="asignacioncamionmotor.id_asignacion" :value="asignacioncamionmotor.id_asignacion">
-                  {{ asignacioncamionmotor.motor }} 
+                <option v-for="asignacioncamionmotor in asignacioncamionmotores" :key="asignacioncamionmotor.id_asignacion" :value="asignacioncamionmotor.camion">
+                 {{ asignacioncamionmotor.motor }}
                 </option>
               </select>
-              <h1>Detalles de Asignación de Motor</h1>
-              <p>Id Motor a desasignar: {{ desaginacionmotorcamion.placa }}</p>
             </div>
           </div>
-          <button type="submit">Borrar Asignacion</button>
+          <button type="submit">Borrar Asignación</button>
         </form>
 
         <div v-if="message" :class="{'success': isSuccess, 'error': !isSuccess}">
@@ -186,6 +226,51 @@
       </section>
     </div>
   </div>
+
+  <!-- 
+  <div v-if="selectedOption === 'asignincidencia'">
+    <div class="containerGeneral">
+      <form @submit.prevent="searchAll">
+        <section class="container">
+          <div class="nav">
+            <header>Todas las Incidencias</header>
+          </div>
+        
+          <table>
+            <thead>
+              <tr>
+                <th>ID Camión</th>
+                <th>ID Motor</th>
+                <th>Fecha de Incidencia</th>
+                <th>Descripción del Problema</th>
+                <th>Mecánicos Asociados</th>
+                <th>Descripción del Trabajo Necesario</th>
+                <th>Mecánico Asignado</th>
+                <th>Fecha de Inicio del Trabajo</th>
+                <th>Fecha de Término del Trabajo</th>
+                <th>Solucionado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="incidencia in incidentsList" :key="incidencia.id_incidencia">
+                <td>{{ incidencia.camion_id }}</td>
+                <td>{{ incidencia.motor_id }}</td>
+                <td>{{ formatDate(incidencia.fecha_incidencia) }}</td>
+                <td>{{ incidencia.descripcion_problema }}</td>
+                <td>{{ incidencia.mecanicos_asociados }}</td>
+                <td>{{ incidencia.descripcion_trabajo_necesario }}</td>
+                <td>{{ incidencia.mecanico_asignado }}</td>
+                <td>{{ formatDate(incidencia.fecha_inicio_trabajo) }}</td>
+                <td>{{ formatDate(incidencia.fecha_termino_trabajo) }}</td>
+                <td>{{ incidencia.solucionado ? 'Sí' : 'No' }}</td>
+              </tr>
+            </tbody>
+          </table>  
+        </section>
+      </form>
+    </div>
+  </div>
+  -->
 </template>
 
 <script>
@@ -202,11 +287,15 @@ export default{
       router
     };
   },
+
+          
+
   data() {
     return {
       motores: [],
       camiones: [],
       asignacioncamionmotores: [],
+      incidentsList: [],
       desaginacionmotorcamion: {
         id_aborrar:'',
         fecha_desasignacion: null,
@@ -248,6 +337,7 @@ export default{
     };
   },
   methods: {
+    // Método para enviar el formulario de incidentes
     async submitForm() {
       try {
         const response = await axios.post('http://localhost:8000/api/incidents/', this.form);
@@ -256,7 +346,7 @@ export default{
         this.responseData = response.data; // Almacenar la respuesta en responseData
         this.resetForm();
       } catch (error) {
-        this.message = 'Error al enviar el formulario.'+ JSON.stringify(this.form);
+        this.message = 'Error al enviar el formulario.' + JSON.stringify(this.form);
         this.isSuccess = false;
         if (error.response) {
           this.message += ` Detalles del error: ${error.response.data}`;
@@ -264,6 +354,7 @@ export default{
       }
     },
 
+    // Método para enviar el formulario de motor
     async submitMotor() {
       try {
         const response = await axios.post('http://localhost:8000/api/motor/create', this.motor);
@@ -272,13 +363,15 @@ export default{
         this.responseData = response.data; // Almacenar la respuesta en responseData
         this.resetFormMotor();
       } catch (error) {
-        this.message = 'Error al enviar el formulario.'+ JSON.stringify(this.motor);
+        this.message = 'Error al enviar el formulario.' + JSON.stringify(this.motor);
         this.isSuccess = false;
         if (error.response) {
           this.message += ` Detalles del error: ${error.response.data}`;
         }
       }
     },
+
+    // Método para enviar el formulario de camión
     async submitCamion() {
       try {
         const response = await axios.post('http://localhost:8000/api/camion/create', this.camion);
@@ -287,13 +380,15 @@ export default{
         this.responseData = response.data; // Almacenar la respuesta en responseData
         this.resetFormCamion();
       } catch (error) {
-        this.message = 'Error al enviar el formulario.'+ JSON.stringify(this.camion);
+        this.message = 'Error al enviar el formulario.' + JSON.stringify(this.camion);
         this.isSuccess = false;
         if (error.response) {
           this.message += ` Detalles del error: ${error.response.data}`;
         }
       }
     },
+
+    // Método para obtener la lista de camiones
     async fetchCamiones() {
       try {
         const response = await axios.get('http://localhost:8000/api/camion/all');
@@ -302,6 +397,8 @@ export default{
         console.error('Error fetching camiones:', error);
       }
     },
+
+    // Método para obtener la lista de motores
     async fetchMotores() {
       try {
         const response = await axios.get('http://localhost:8000/api/motor/all');
@@ -310,6 +407,8 @@ export default{
         console.error('Error fetching motores:', error);
       }
     },
+
+    // Método para obtener la lista de asignaciones de motores a camiones
     async fetchAsginacionMotores() {
       try {
         const response = await axios.get('http://localhost:8000/api/asignacion/all');
@@ -319,7 +418,19 @@ export default{
         console.error('Error fetching motores:', error);
       }
     },
-    async asignMotor(){
+
+    // Método para obtener la lista de incidentes
+    async fetchIncidents() {
+      try {
+        const response = await axios.get('http://localhost:8000/api/incidents/all/');
+        this.incidentsList = response.data;
+      } catch (error) {
+        console.error('Error fetching Incidents:', error);
+      }
+    },
+
+    // Método para asignar un motor a un camión
+    async asignMotor() {
       try {
         const response = await axios.post('http://localhost:8000/asignacion/', this.asignacioncamionmotor);
         this.message = 'Formulario enviado exitosamente.';
@@ -328,16 +439,18 @@ export default{
         this.resetFormasignacioncamionmotor();
         this.fetchAsginacionMotores();
       } catch (error) {
-        this.message = 'Error al enviar el formulario.'+ JSON.stringify(this.asignacioncamionmotor);
+        this.message = 'Error al enviar el formulario.' + JSON.stringify(this.asignacioncamionmotor);
         this.isSuccess = false;
         if (error.response) {
           this.message += ` Detalles del error: ${error.response.data}`;
         }
       }
     },
-    async desasignMotor(){
+
+    // Método para desasignar un motor de un camión
+    async desasignMotor() {
       try {
-        const pathborrar = 'http://localhost:8000/asignacion/' + this.desaginacionmotorcamion.id;
+        const pathborrar = 'http://localhost:8000/asignacion/' + this.desaginacionmotorcamion.id_aborrar;
         this.message = pathborrar;
         const response = await axios.delete(pathborrar);
         this.message = 'Objeto borrado correctamente';
@@ -346,13 +459,15 @@ export default{
         this.resetFormdesaginacionmotorcamion();
         this.fetchAsginacionMotores();
       } catch (error) {
-        this.message = 'Error al enviar el formulario.'+ JSON.stringify(this.asignacioncamionmotor);
+        this.message = 'Error al enviar el formulario.' + JSON.stringify(this.asignacioncamionmotor);
         this.isSuccess = false;
         if (error.response) {
           this.message += ` Detalles del error: ${error.response.data}`;
         }
       }
     },
+
+    // Método para restablecer el formulario de incidentes
     resetForm() {
       this.form = {
         motorId: '',
@@ -365,6 +480,8 @@ export default{
         workToDo: ''
       };
     },
+
+    // Método para restablecer el formulario de motor
     resetFormMotor() {
       this.motor = {
         n_serie: '',
@@ -374,36 +491,48 @@ export default{
         durabilidad: 0
       };
     },
+
+    // Método para restablecer el formulario de camión
     resetFormCamion() {
       this.camion = {
-        n_serie:'',
+        n_serie: '',
         placa: '',
         estado: '',
         fecha_inicio: '',
         durabilidad: 0
       };
     },
-    resetFormasignacioncamionmotor(){
+
+    // Método para restablecer el formulario de asignación de motor a camión
+    resetFormasignacioncamionmotor() {
       this.asignacioncamionmotor = {
-          fecha_desasignacion: null,
-          motor:'',
-          camion: ''
-        }
-      },
-      
-      resetFormdesaginacionmotorcamion(){
-      this.asignacioncamionmotor = {
-        id_aborrar:'',
         fecha_desasignacion: null,
-        motor:'',
+        motor: '',
         camion: ''
-      }
+      };
+    },
+
+    // Método para restablecer el formulario de desasignación de motor de camión
+    resetFormdesaginacionmotorcamion() {
+      this.asignacioncamionmotor = {
+        id_aborrar: '',
+        fecha_desasignacion: null,
+        motor: '',
+        camion: ''
+      };
+    },
+
+    // Método para cerrar sesión
+    async logout() {
+      this.$router.push('/');
     }
   },
   mounted() {
+    // Cargar datos iniciales al montar el componente
     this.fetchCamiones();
     this.fetchMotores();
     this.fetchAsginacionMotores();
+    this.fetchIncidents();
   }
 };
 </script>
@@ -436,6 +565,20 @@ export default{
 
 
 <style scoped>
+.posicionboton {
+  position: relative;
+  max-width: 1000px;
+  /* Ajustado para permitir que el contenedor se expanda */
+  width: 100%;
+  padding-left: 25%;
+  /*border-radius: 8px;*/
+}
+
+.button_top {
+  max-width: 100px;
+  margin-left: 0px;
+}
+
 .radio-inputs {
   position: relative;
   display: flex;
@@ -447,6 +590,8 @@ export default{
   width: 100%;
   padding: 1rem 1rem 0 1rem;
 }
+
+
 
 .radio-inputs .radio input {
   display: none;
