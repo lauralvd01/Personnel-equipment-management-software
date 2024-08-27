@@ -1,14 +1,14 @@
-# Grupo 1
+# Grupo 2
 
-Este es el repositorio del *Grupo 1*, cuyos integrantes son:
+Este es el repositorio del *Grupo 2*, cuyos integrantes son:
 
-* Darael Badilla - 201821046-3
+* Marcelo García - 201830013-6
+* Santiago López - 201713063-6
 * Daniela Stuven - 202030014-3
 * Diego Tobar - 201930050-4
-* Laura Levraud - 202490033-1
-* **Tutor**: Ariane Carvajal
+* **Tutor**: Cristobal Moraga
 * **Profesor**: Wladimir Ormazabal
-
+Este es el repositorio que dará continuidad al proyecto hecho en 2024 - 01 en INF236
 ## Wiki
 
 Puede acceder a la Wiki mediante el siguiente [enlace](https://gitlab.com/inf236-2024-1/grupo001/-/wikis/home)
