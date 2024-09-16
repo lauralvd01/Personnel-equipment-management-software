@@ -59,7 +59,7 @@ docker exec -it inf236_backend_mariadb mysql -p
 
 
 
-## Resolución de problemas de leventamiento
+## Resolución de problemas de levantamiento
 
 Teníamos problemas para leventar los contenedores, después de haber borrado las imágenes para hacer un nuevo build desde cero.
 
@@ -71,3 +71,5 @@ De hecho, el build de los contenedores del backend funcionaba, pero el up mostra
 Se buscó una solución, y encontramos la propuesta de reemplazar `--default-authentication-plugin=mysql_native_password` en el archivo _docker-compose.yaml_ (que parece obsoleto; Deprecated), con `--mysql-native-password=ON` lo que sólo implica el requisito del package `cryptography` anadido en el archivo _requirements.txt_.
 
 Todavia no sabemos porqué lo que funcionó la primera vez con el proyecto_base que no funciona ahora, ni con nuestro proyecto ni con el proyecto_base, pero esta solución parece un menor cambio que aun nos permite hacer funcionar el backend.
+
+**Actualización 15/09:** Funciona comentando '--mysql_native_password=ON' para levantar el backend
