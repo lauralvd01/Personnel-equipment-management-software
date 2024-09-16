@@ -1,0 +1,34 @@
+[
+    {
+        "id_camion": 1,
+        "n_serie": "ABC123456789",
+        "placa": "XYZ123",
+        "estado": "Activo",
+        "fecha_inicio": "2021-01-15T08:00:00Z",
+        "durabilidad": 50000
+    },
+    {
+        "id_camion": 2,
+        "n_serie": "DEF987654321",
+        "placa": "LMN456",
+        "estado": "En Mantenimiento",
+        "fecha_inicio": "2020-06-10T08:00:00Z",
+        "durabilidad": 30000
+    },
+    {
+        "id_camion": 3,
+        "n_serie": "GHI654321098",
+        "placa": "PQR789",
+        "estado": "Inactivo",
+        "fecha_inicio": "2019-03-22T08:00:00Z",
+        "durabilidad": 75000
+    },
+    {
+        "id_camion": 4,
+        "n_serie": "JKL321456987",
+        "placa": "STU012",
+        "estado": "Activo",
+        "fecha_inicio": "2022-09-05T08:00:00Z",
+        "durabilidad": 40000
+    }
+]

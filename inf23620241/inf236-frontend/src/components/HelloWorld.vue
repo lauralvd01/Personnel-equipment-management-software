@@ -38,7 +38,13 @@ export default {
         const response = await axios.post('http://localhost:8000/api/login/', this.form);
         console.log(response.data)
         if (response.data.success) {
-          this.$router.push('/vistaMecanico/' + response.data.id);
+          if (response.data.rol === 'Jefe') {
+            this.$router.push('/vistaJefeMotores/');
+          } else if (response.data.rol === 'Mecánico') {
+            this.$router.push('/vistaMecanico/' + response.data.id_usuario);
+          } else {
+            this.msg = 'Rol de usuario desconocido';
+          }
         } else {
           this.msg = 'Usuario o contraseña incorrectos';
         }

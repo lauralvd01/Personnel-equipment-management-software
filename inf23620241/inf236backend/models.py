@@ -79,6 +79,9 @@ class Asign(models.Model):
     camion_id = models.CharField(default="", max_length=100)
     asign_date = models.CharField(default="", max_length=100)
     unassign_date = models.CharField(default="", max_length=100)
+    
+    def __str__(self):
+        return f"Motor {self.motor_id} - Camión {self.camion_id} ({self.asign_date} a {self.unassign_date})"
 
     def filterByMotor(motor_id):
         import json

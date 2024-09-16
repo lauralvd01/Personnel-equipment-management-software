@@ -1,22 +1,26 @@
 <template>
+  <div>
     <h2>Vista Jefe Motores</h2>
     <div class="containerGeneral">
-    <div class="radio-inputs">
-    <label class="radio">
-      <input type="radio" name="radio" value="html" v-model="selectedOption" />
-      <span class="name">Asignar Motor a Camión</span>
-    </label>
-    <label class="radio">
-      <input type="radio" name="radio" value="react" v-model="selectedOption" />
-      <span class="name">Revisar Incidencias</span>
-    </label>
-    <label class="radio">
-      <input type="radio" name="radio" value="vue" v-model="selectedOption" />
-      <span class="name">Gráficos y Análisis</span>
-    </label>
+      <div class="radio-inputs">
+        <label class="radio">
+          <input type="radio" name="radio" value="html" v-model="selectedOption" />
+          <span class="name">Asignar Motor a Camión</span>
+        </label>
+        <label class="radio">
+          <input type="radio" name="radio" value="react" v-model="selectedOption" />
+          <span class="name">Revisar Incidencias</span>
+        </label>
+        <label class="radio">
+          <input type="radio" name="radio" value="vue" v-model="selectedOption" />
+          <span class="name">Gráficos y Análisis</span>
+        </label>
+        <label class="radio">
+          <input type="radio" name="radio" value="list" v-model="selectedOption" />
+          <span class="name">Lista de Camiones</span>
+        </label>
+      </div>
     </div>
-  </div>
-
 
     <div v-if="selectedOption === 'html'">
       <div class="containerGeneral">
@@ -89,37 +93,101 @@
 
     <div v-if="selectedOption === 'react'">
       <div class="containerGeneral">
-      <section class="container">
-      
-      </section>
-    </div>
+        <section class="container">
+          <!-- Contenido para "Revisar Incidencias" aquí -->
+        </section>
+      </div>
     </div>
 
     <div v-if="selectedOption === 'vue'">
       <div class="containerGeneral">
-      <section class="container">
-      <form>
-        <label for="vue-name">Name:</label>
-        <input type="text" id="vue-name" name="vue-name" />
-        <button type="submit">Submit</button>
-      </form>
-    </section>
+        <section class="container">
+          <form>
+            <label for="vue-name">Name:</label>
+            <input type="text" id="vue-name" name="vue-name" />
+            <button type="submit">Submit</button>
+          </form>
+        </section>
+      </div>
     </div>
+    <div v-if="selectedOption === 'list'">
+      <div class="containerGeneral">
+        <section class="container">
+          <h3>Lista de Camiones</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>ID Camión</th>
+                <th>Número de Serie</th>
+                <th>Placa</th>
+                <th>Estado</th>
+                <th>Fecha de Inicio</th>
+                <th>Durabilidad</th>
+                <th> Cambiar Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="camion in camiones" :key="camion.id_camion">
+                <td>{{ camion.id_camion }}</td>
+                <td>{{ camion.n_serie }}</td>
+                <td>{{ camion.placa }}</td>
+                <td>{{ camion.estado }}</td>
+                <td>{{ camion.fecha_inicio ? new Date(camion.fecha_inicio).toLocaleDateString() : 'No disponible' }}</td>
+                <td>{{ camion.durabilidad || 'No disponible' }}</td>
+                <td>
+                  <label class="switch">
+                    <input type="checkbox" :checked="camion.estado === 'Activo'" @change="updateCamion(camion)">
+                    <span class="slider round"></span>
+                  </label>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
     </div>
+  </div>
 </template>
-
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 export default {
-  name: 'App',
+  name: 'VistaJefeMotores',
   setup() {
     const selectedOption = ref('html');
+    const camiones = ref([]);
+    const fetchCamiones = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/camiones/');
+        camiones.value = response.data;
+      } catch (error) {
+        console.error('Error fetching camiones:', error);
+      }
+    };
+
+    const updateCamion = async (camion) => {
+      try {
+        const updatedEstado = camion.estado === 'Activo' ? 'Inactivo' : 'Activo';
+        await axios.patch(`http://localhost:8000/api/camiones/${camion.id_camion}/`, {
+          estado: updatedEstado
+        });
+        camion.estado = updatedEstado;
+      } catch (error) {
+        console.error('Error updating camion:', error);
+      }
+    };
+
+    onMounted(() => {
+      fetchCamiones();
+    });
 
     return {
-      selectedOption
+      selectedOption,
+      camiones,
+      updateCamion
     };
+    
   },
   data() {
     return {
@@ -135,7 +203,7 @@ export default {
       },
       message: '',
       isSuccess: false,
-      responseData: null // Añadido para almacenar la respuesta
+      responseData: null 
     };
   },
   methods: {
@@ -147,7 +215,7 @@ export default {
         this.responseData = response.data; // Almacenar la respuesta en responseData
         this.resetForm();
       } catch (error) {
-        this.message = 'Error al enviar el formulario.'+ JSON.stringify(this.form);
+        this.message = 'Error al enviar el formulario.' + JSON.stringify(this.form);
         this.isSuccess = false;
         if (error.response) {
           this.message += ` Detalles del error: ${error.response.data}`;
@@ -169,29 +237,6 @@ export default {
   }
 };
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -468,7 +513,54 @@ button:hover {
   border-color: #4c8bf5;
   box-shadow: 0 0 20px #4c8bf580;
 }
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
 
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  border-radius: 50%;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.round {
+  border-radius: 34px;
+}
 
 
 </style>

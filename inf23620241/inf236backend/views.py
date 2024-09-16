@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign
 from .serializers import MotorSerializer, CamionSerializer, AsignacionMotorCamionSerializer, IncidentSerializer, AsignSerializer
-
+import json
 
 
 # Create your views here.
@@ -56,13 +56,19 @@ def login_view(request):
     rut = request.data.get('rut')
     password = request.data.get('password')
 
-    import json
+    # Cargar datos de usuarios
     with open('inf236backend/tempDB/users.json') as my_file:
         data = json.load(my_file)
     
+    # Buscar usuario que coincida con rut y contraseña
     for user in data:
         if user['rut'] == rut and user['contrasena'] == password:
-            return Response({'success': True, 'id': user['id_usuario']}, status=status.HTTP_200_OK)
+            return Response({
+                'success': True,
+                'id_usuario': user['id_usuario'],
+                'rol': user['rol']  # Incluye el rol del usuario en la respuesta
+            }, status=status.HTTP_200_OK)
+    
     return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
 
 
@@ -153,3 +159,26 @@ def edit_password(request):
             else :
                 return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
     return Response({'success': False}, status=status.HTTP_404_NOT_FOUND)
+
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
+import json
+import os
+
+@api_view(['GET'])
+def getAllTrucks(request):
+    try:
+        # Define la ruta del archivo JSON
+        file_path = os.path.join('inf236backend', 'tempDB', 'camion.json')
+
+        # Abre y lee el archivo JSON
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+        
+        # Retorna la respuesta en formato JSON
+        return Response(data, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        # Manejo de errores
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
