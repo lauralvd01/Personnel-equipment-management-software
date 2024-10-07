@@ -63,6 +63,14 @@ class Incidencia(models.Model):
     fecha_fin_trabajo = models.DateTimeField(null=True, blank=True)
     solucionado = models.BooleanField(default=False)
 
+class Record(models.Model):
+    record_id = models.AutoField(primary_key=True, default= 0)
+    camion = models.ForeignKey(Camion, on_delete=models.CASCADE)
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    problem_description = models.TextField()
+    record_date = models.DateTimeField(default=None)
+
+
 
 
 

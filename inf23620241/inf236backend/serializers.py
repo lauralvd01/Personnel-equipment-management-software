@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign
+from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign, Record
 
 
 # Serializers are in charge to render arbitrary data types (json, URL encode forms, XML's) to python-like objects
@@ -18,6 +18,21 @@ class AsignacionMotorCamionSerializer(serializers.ModelSerializer):
     class Meta:
         model = AsignacionMotorCamion
         fields = '__all__'
+
+class RecordSerializer(serializers.ModelSerializer):
+    placa = serializers.CharField(write_only=True)
+    class Meta:
+        model = Record
+        fields = ['camion', 'user', 'problem_description', 'record_date', 'placa']
+        def create(self, validated_data):
+            placa = validated_data.pop('placa')
+            try:
+                camion = Camion.objects.get(placa=placa)
+            except Camion.DoesNotExist:
+                raise serializers.ValidationError(f"No se encontró un camión con la placa {placa}.")
+            
+            validated_data['camion'] = camion
+            return super().create(validated_data)
 
 
 
@@ -81,3 +96,5 @@ class IncidentSerializer(serializers.ModelSerializer):
                 new_data[key] = data[key]
         IncidentSerializer.update_incident(new_data)
         return new_data
+    
+
