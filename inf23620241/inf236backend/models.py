@@ -6,7 +6,7 @@ from django.db import models
 # Model creation with its fields
 # Add as many models/fields as necessary.
 class Motor(models.Model):
-    id_motor = models.AutoField(primary_key=True, default=0)
+    id_motor = models.AutoField(primary_key=True)
     n_serie = models.CharField(max_length=256, default="")
     operativo = models.BooleanField(default=True)
     tiempo_en_uso = models.IntegerField(null=True, blank=True)
@@ -14,20 +14,20 @@ class Motor(models.Model):
     durabilidad = models.IntegerField(null=True, blank=True)
 
 class Sistema(models.Model):
-    id_sistema = models.AutoField(primary_key=True, default=0)
+    id_sistema = models.AutoField(primary_key=True)
     motor = models.ForeignKey(Motor, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=256, default="")
     n_serie = models.CharField(max_length=256, default="")
 
 class Componente(models.Model):
-    id_componente = models.AutoField(primary_key=True, default=0)
+    id_componente = models.AutoField(primary_key=True)
     sistema = models.ForeignKey(Sistema, on_delete=models.CASCADE)
     n_serie = models.CharField(max_length=256, default="")
     fecha_inicio = models.DateTimeField(default=None)
     durabilidad = models.IntegerField(null=True, blank=True)
 
 class Camion(models.Model):
-    id_camion = models.AutoField(primary_key=True, default=0)
+    id_camion = models.AutoField(primary_key=True)
     n_serie = models.CharField(max_length=256, default="")
     placa = models.CharField(max_length=256, default="")
     estado = models.CharField(max_length=256, default="")
@@ -35,14 +35,14 @@ class Camion(models.Model):
     durabilidad = models.IntegerField(null=True, blank=True)
 
 class AsignacionMotorCamion(models.Model):
-    id_asignacion = models.AutoField(primary_key=True, default=0)
+    id_asignacion = models.AutoField(primary_key=True)
     motor = models.ForeignKey(Motor, on_delete=models.CASCADE)
     camion = models.ForeignKey(Camion, on_delete=models.CASCADE)
     fecha_asignacion = models.DateTimeField(default=None)
     fecha_desasignacion = models.DateTimeField(null=True, blank=True)
 
 class Usuario(models.Model):
-    id_usuario = models.AutoField(primary_key=True, default=0)
+    id_usuario = models.AutoField(primary_key=True)
     rut = models.CharField(max_length=256, default="")
     contrasena = models.CharField(max_length=256, default="")
     nombre = models.CharField(max_length=256, default="")
@@ -53,7 +53,7 @@ class Usuario(models.Model):
 
 
 class Incidencia(models.Model):
-    id_incidencia = models.AutoField(primary_key=True, default=0)
+    id_incidencia = models.AutoField(primary_key=True)
     motor = models.ForeignKey(Motor, on_delete=models.CASCADE)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, null=True, blank=True)
     descripcion_problema = models.TextField()
@@ -64,7 +64,7 @@ class Incidencia(models.Model):
     solucionado = models.BooleanField(default=False)
 
 class Record(models.Model):
-    record_id = models.AutoField(primary_key=True, default= 0)
+    record_id = models.AutoField(primary_key=True)
     camion = models.ForeignKey(Camion, on_delete=models.CASCADE)
     user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     problem_description = models.TextField()
