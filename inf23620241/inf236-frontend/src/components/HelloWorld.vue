@@ -42,6 +42,8 @@ export default {
             this.$router.push('/vistaJefeMotores/');
           } else if (response.data.rol === 'Mecánico') {
             this.$router.push('/vistaMecanico/' + response.data.id_usuario);
+          } else if (response.data.rol === 'Camionero') {
+            this.$router.push('/vistaConductores/' + response.data.id_usuario);
           } else {
             this.msg = 'Rol de usuario desconocido';
           }

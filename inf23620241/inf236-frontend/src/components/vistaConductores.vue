@@ -1,4 +1,5 @@
 <template>
+  <div>
     <h2>Vista Conductor</h2>
     <div class="posicionboton">
       <nav>
@@ -28,54 +29,53 @@
     </div>
     <!-- -------------------------Ingresar antecedente-------------------------------->
     <div v-if="selectedOption === 'report'">
-    <div class="containerGeneral">
-      <section class="container">
-        <header>Formulario de informe de un antecedente</header>
-        <form @submit.prevent="submitReport">
-          <div class="column">
-            <div class="input-box">
-              <label>Identificador del Camión</label>
-              <input v-model="report.placa_camion" required placeholder="Ingrese el identificador del motor" type="text">
+      <div class="containerGeneral">
+        <section class="container">
+          <header>Formulario de informe de un antecedente</header>
+          <form @submit.prevent="submitReport">
+            <div class="column">
+              <div class="input-box">
+                <label>Identificador del Camión</label>
+                <input v-model="report.placa_camion" required placeholder="Ingrese el identificador del motor" type="text">
+              </div>
+              <div class="input-box">
+                <label>Fecha del antecedente</label>
+                <input v-model="report.record_date" required placeholder="Inserte Fecha" type="date">
+              </div>
             </div>
             <div class="input-box">
-              <label>Fecha del antecedente</label>
-              <input v-model="report.record_date" required placeholder="Inserte Fecha" type="date">
+              <label>Descripción del problema</label>
+              <textarea v-model="report.problem_description" required
+                placeholder="Describa el/los problemas asociados a la incidencia"></textarea>
             </div>
+            <button type="submit">Ingresar</button>
+          </form>
+          <div v-if="response_report">
+            <h3>Antecedente creado :</h3>
+            <table v-if="response_report">
+              <thead>
+                <tr>
+                  <th>Camión ID</th>
+                  <th>Fecha de antecedente</th>
+                  <th>Descripción del problema</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{ response_report.id_camion }}</td>
+                  <td>{{ response_report.record_date }}</td>
+                  <td>{{ response_report.problem_description }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="input-box">
-            <label>Descripción del problema</label>
-            <textarea v-model="report.problem_description" required
-              placeholder="Describa el/los problemas asociados a la incidencia"></textarea>
-          </div>
-          <button type="submit">Ingresar</button>
-        </form>
-        <div v-if="response_report">
-          <h3>Antecedente creado :</h3>
-          <table v-if="response_report">
-            <thead>
-              <tr>
-                <th>Camión ID</th>
-                <th>Fecha de antecedente</th>
-                <th>Descripción del problema</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{ response_report.id_camion }}</td>
-                <td>{{ response_report.record_date }}</td>
-                <td>{{ response_report.problem_description }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   </div>
-
 </template>  
-
 <script>
-import { ref } from 'vue';
+import { ref} from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
@@ -98,7 +98,6 @@ export default {
                 record_date: '',
                 problem_description: ''
             },
-            response_report: null,
             search_id_camion: '',
             recordsList: [],
             editIndex: null,
@@ -144,3 +143,4 @@ export default {
         }
     }
 }
+</script>
