@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign, Record
+from .models import Motor, Camion, AsignacionMotorCamion, Incident, Asign, Record, Records
 
 
 # Serializers are in charge to render arbitrary data types (json, URL encode forms, XML's) to python-like objects
@@ -20,22 +20,18 @@ class AsignacionMotorCamionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class RecordSerializer(serializers.ModelSerializer):
-    placa = serializers.CharField(write_only=True)
     class Meta:
-        model = Record
-        fields = ['camion', 'user', 'problem_description', 'record_date', 'placa']
-        def create(self, validated_data):
-            placa = validated_data.pop('placa')
-            try:
-                camion = Camion.objects.get(placa=placa)
-            except Camion.DoesNotExist:
-                raise serializers.ValidationError(f"No se encontró un camión con la placa {placa}.")
-            
-            validated_data['camion'] = camion
-            return super().create(validated_data)
+        model = Records
+        fields = '__all__'  # Asegúrate de que incluye los campos que deseas
 
-
-
+    def save(self):
+        data = readData('./inf236backend/tempDB/records.json')
+        if len(data) == 0:
+            self.validated_data['id'] = 1
+        else:
+            self.validated_data['id'] = data[-1]['id'] + 1
+        data.append(self.validated_data)
+        saveData('./inf236backend/tempDB/records.json',data)
 
 
 #Momentaneo solo para Hito 4

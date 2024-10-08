@@ -118,23 +118,6 @@ class Incident(models.Model):
     solved = models.BooleanField(default=False)
     id = models.IntegerField(primary_key=True, default=0)
 
-    # def __init__(self, report) :
-    #     print("Creating incident with data: ", report)
-    #     import datetime
-    #     self.motor_id = report['motor_id']
-    #     if isinstance(report['incident_date'], datetime.date) :
-    #             date = report['incident_date'].strftime("%Y-%m-%d")
-    #             self.incident_date = date
-    #     else:
-    #         self.incident_date = report['incident_date']
-    #     self.problem_description = report['problem_description']
-    #     self.mechanics_associated = report['mechanics_associated']
-    #     self.work_to_do = report['work_to_do']
-    #     self.mechanic_id = ""
-    #     self.start_date = ""
-    #     self.end_date = ""
-    #     self.solved = False
-
     def all():
         import json
         with open('./inf236backend/tempDB/incidents.json') as incidentsDB:
@@ -163,4 +146,44 @@ class Incident(models.Model):
         for incident in data:
             if incident['id'] == incident_id:
                 return incident
+        return None
+    
+class Records(models.Model):
+    camion_id = models.CharField(default="", blank=True, max_length=100)
+    user_id = models.CharField(default="", blank=True, max_length=100)
+    problem_description = models.TextField(default="", blank=True)
+    record_date = models.CharField(default="", blank=True, max_length=100)
+    id = models.IntegerField(primary_key=True, default=0)
+
+    def all(cls):
+        import json
+        """Devuelve todos los registros desde el archivo JSON."""
+        with open('./inf236backend/tempDB/records.json') as recordsDB:
+            data = json.load(recordsDB)
+        return data
+
+    def filterByCamion(cls, camion_id):
+        import json
+        """Filtra registros por ID de camión."""
+        with open('./inf236backend/tempDB/records.json') as recordsDB:
+            data = json.load(recordsDB)
+        filtered_data = [record for record in data if f"{record['camion_id']}" == camion_id]
+        return filtered_data
+
+    def filterByUser(cls, user_id):
+        import json
+        """Filtra registros por ID de usuario."""
+        with open('./inf236backend/tempDB/records.json') as recordsDB:
+            data = json.load(recordsDB)
+        filtered_data = [record for record in data if 'user_id' in record.keys() and f"{record['user_id']}" == user_id]
+        return filtered_data
+
+    def getById(cls, record_id):
+        import json
+        """Devuelve un registro por su ID."""
+        with open('./inf236backend/tempDB/records.json') as recordsDB:
+            data = json.load(recordsDB)
+        for record in data:
+            if record['id'] == record_id:
+                return record
         return None
