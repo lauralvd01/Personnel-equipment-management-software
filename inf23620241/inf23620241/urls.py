@@ -20,7 +20,7 @@ from rest_framework.routers import DefaultRouter
 from inf236backend.views import MotorViewSet, SistemaViewSet, ComponenteViewSet, CamionViewSet, AsignacionMotorCamionViewSet, UsuarioViewSet, IncidenciaViewSet
 from inf236backend.views import login, filtrar_incidencias
 
-from inf236backend.views import creacion_motor, creacion_camion, getAllCamiones, getAllMotores, getAllAsignaciones, handle_incident, search_incidents, search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password, creacion_usuario
+from inf236backend.views import creacion_motor, creacion_camion, getAllCamiones, getAllMotores, getAllAsignaciones, handle_incident, search_incidents, search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password, creacion_usuario, getAllTrucks
 
 router = DefaultRouter()
 router.register(r'motor',MotorViewSet)
@@ -44,6 +44,7 @@ urlpatterns = [
     path('api/incidents/', search_incidents, name='search_incidents'),
     path('api/incidents/edit/', edit_incident, name='edit_incident'),
     path('api/login/edit/', edit_password, name='edit_password'),
+    path('api/camiones/', getAllTrucks, name='get_all_trucks'),,
     path('api/usuario/', creacion_usuario, name='creacion_usuario'),
 
 

@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Motor, Sistema, Componente, Camion, AsignacionMotorCamion, Usuario, Incidencia
 from .serializers import MotorSerializer, SistemaSerializer, ComponenteSerializer, CamionSerializer, AsignacionMotorCamionSerializer, UsuarioSerializer,  IncidenciaSerializer
-
+import json
 
 
 # Create your views here.

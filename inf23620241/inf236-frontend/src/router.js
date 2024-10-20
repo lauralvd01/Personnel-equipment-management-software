@@ -6,7 +6,7 @@ import vistaMecanico from './components/vistaMecanicos.vue'
 
 const routes = [
   { path: '/', component: HomeView},
-  { path: '/vistaJefeMotores/:id', component: vistaJefeMotores},
+  { path: '/vistaJefeMotores/', component: vistaJefeMotores},
   { path: '/vistaMecanico/:id', component: vistaMecanico}
 ]
 

@@ -61,11 +61,12 @@ export default {
 
         // Verificar si el inicio de sesión fue exitoso
         if (response.data.success) {
-          // Redirigir al usuario basado en su rol
-          if (response.data.rol == 'mecanico') {
-            this.$router.push('/vistaMecanico/' + response.data.id);
+          if (response.data.rol === 'Jefe') {
+            this.$router.push('/vistaJefeMotores/');
+          } else if (response.data.rol === 'Mecánico') {
+            this.$router.push('/vistaMecanico/' + response.data.id_usuario);
           } else {
-            this.$router.push('/vistaJefeMotores/' + response.data.id); 
+            this.msg = 'Rol de usuario desconocido';
           }
         } else {
           // Mostrar mensaje de error si las credenciales son incorrectas
