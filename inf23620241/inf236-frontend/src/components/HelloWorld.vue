@@ -1,16 +1,29 @@
 <template>
   <div class="hello">
+    <!-- Título del sistema -->
     <h2>Sistema de monitoreo de fallas en motores mineros</h2>
+    
+    <!-- Contenedor del formulario de inicio de sesión -->
     <div class="container">
-      <form class="form" @submit.prevent="submitForm">
-        <div class="title">Por favor<br><span>Ingrese su rut y contraseña</span></div>
-        <input v-model="form.rut" type="text" placeholder="Rut" name="rut" class="input" required>
-        <input v-model="form.password" type="password" placeholder="Contraseña" name="password" class="input" required>
-        <button type="submit" class="button-confirm">Ingresar</button>
+      <!-- Formulario de inicio de sesión -->
+      <form class="form" @submit.prevent="login">
+        <div class="title">
+          Por favor<br><span>Ingrese su rut y contraseña</span>
+        </div>
+        
+        <!-- Campo de entrada para el RUT -->
+        <input v-model="usuario.rut" type="text" placeholder="Rut en bdd" name="rut_en_bdd" class="input" required>
+        
+        <!-- Campo de entrada para la contraseña -->
+        <input v-model="usuario.contrasena" type="password" placeholder="Contraseña en bdd" name="password_en_bdd" class="input" required>
+        
+        <!-- Botón de enviar para el formulario -->
+        <button @click="login" class="button-confirm">Ingresar</button>
       </form>
-      
     </div>
-    <p>{{ msg }}</p> <!-- Para mostrar el mensaje de éxito o error -->
+    
+    <!-- Mensaje de error o éxito -->
+    <p>{{ msg }}</p>
   </div>
 </template>
 
@@ -21,10 +34,12 @@ import { useRouter } from 'vue-router';
 export default {
   data() {
     return {
-      form: {
+      // Datos del usuario para el formulario de inicio de sesión
+      usuario: {
         rut: '',
-        password: ''
+        contrasena: ''
       },
+      // Mensaje de error o éxito
       msg: ''
     };
   },
@@ -33,10 +48,18 @@ export default {
     return { router };
   },
   methods: {
-    async submitForm() {
+    async login() {
       try {
-        const response = await axios.post('http://localhost:8000/api/login/', this.form);
-        console.log(response.data)
+        // Realizar una solicitud POST a la API para el inicio de sesión
+        const response = await axios.post('http://localhost:8000/api/sesion/', {
+          rut: this.usuario.rut,
+          contrasena: this.usuario.contrasena
+        });
+
+        // Guardar la respuesta en un mensaje (para depuración)
+        this.message = JSON.stringify(response);
+
+        // Verificar si el inicio de sesión fue exitoso
         if (response.data.success) {
           if (response.data.rol === 'Jefe') {
             this.$router.push('/vistaJefeMotores/');
@@ -46,15 +69,18 @@ export default {
             this.msg = 'Rol de usuario desconocido';
           }
         } else {
+          // Mostrar mensaje de error si las credenciales son incorrectas
           this.msg = 'Usuario o contraseña incorrectos';
         }
       } catch (error) {
+        // Mostrar mensaje de error si ocurre un error durante la solicitud
         this.msg = 'Usuario o contraseña incorrectos';
       }
     }
   }
 };
 </script>
+
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

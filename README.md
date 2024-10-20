@@ -17,6 +17,10 @@ Puede acceder a la Wiki mediante el siguiente [enlace](https://gitlab.com/inf236
 
 Se puede acceder al prototipo de la vista de un Mecánico en el siguiente video: https://youtu.be/oqKZcD7FfYY
 
+## Video Prototipo Funcionalidad Final (Hito 5 y 6)
+
+Se pueden ver las funcionalidades del sistema en el siguiente video: https://youtu.be/XvwiAcvSx0w
+
 ## Instalación
 
 * Instalar y activar [Docker](https://docs.docker.com/engine/install/).
@@ -73,3 +77,34 @@ Se buscó una solución, y encontramos la propuesta de reemplazar `--default-aut
 Todavia no sabemos porqué lo que funcionó la primera vez con el proyecto_base que no funciona ahora, ni con nuestro proyecto ni con el proyecto_base, pero esta solución parece un menor cambio que aun nos permite hacer funcionar el backend.
 
 **Actualización 15/09:** Funciona comentando '--mysql_native_password=ON' para levantar el backend
+
+## Código ejemplo creación usuario "Jefe de motor" y "Mecánico" en la base de datos
+
+Utilizar el comando: **python manage.py shell**
+
+Dentro del archivo se crean los usuarios utilizando el siguiente modelo:
+
+from inf236backend.models import Usuario
+from django.utils import timezone
+
+Usuario.objects.create(
+    rut='11111111-1',
+    contrasena='micontrasena',
+    nombre='Nombre',
+    apellido='Apellido',
+    fecha_registro=timezone.now(),
+    rol='jefe',
+    turno='4x7'
+)
+
+Usuario.objects.create(
+    rut='22222222-2',
+    contrasena='micontrasenamec',
+    nombre='Nombre1',
+    apellido='Apellido1',
+    fecha_registro=timezone.now(),
+    rol='mecanico',
+    turno='7x7'
+)
+
+Es importante este paso, pues sin un usuario creado **no se puede iniciar sesión**.
