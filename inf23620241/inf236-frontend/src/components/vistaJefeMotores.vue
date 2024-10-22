@@ -14,6 +14,10 @@
     <div class="radio-inputs">
     <!-- Pestañas superiores-->
     <label class="radio">
+      <input type="radio" name="radio" value="list" v-model="selectedOption" />
+      <span class="name">Lista de Camiones</span>
+    </label>
+    <label class="radio">
       <input type="radio" name="radio" value="motor" v-model="selectedOption" />
       <span class="name">Crear Motor</span>
     </label>
@@ -25,6 +29,7 @@
       <input type="radio" name="radio" value="asign" v-model="selectedOption" />
       <span class="name">Manejo Asignaciones Motor</span>
     </label>
+  
 
      <!-- Aqui iria el manejo de las incidencias
     <label class="radio">
@@ -36,7 +41,42 @@
     </div>
   </div>
 
-
+  <div v-if="selectedOption === 'list'">
+      <div class="containerGeneral">
+        <section class="container">
+          <h3>Lista de Camiones</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>ID Camión</th>
+                <th>Número de Serie</th>
+                <th>Placa</th>
+                <th>Estado</th>
+                <th>Fecha de Inicio</th>
+                <th>Durabilidad</th>
+                <th> Cambiar Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="camion in camiones" :key="camion.id_camion">
+                <td>{{ camion.id_camion }}</td>
+                <td>{{ camion.n_serie }}</td>
+                <td>{{ camion.placa }}</td>
+                <td>{{ camion.estado }}</td>
+                <td>{{ camion.fecha_inicio ? new Date(camion.fecha_inicio).toLocaleDateString() : 'No disponible' }}</td>
+                <td>{{ camion.durabilidad || 'No disponible' }}</td>
+                <td>
+                  <label class="switch">
+                    <input type="checkbox" :checked="camion.estado === 'Activo'" @change="updateCamion(camion)">
+                    <span class="slider round"></span>
+                  </label>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </div>
   
   <!-- Formulario creación de motor -->
   <div v-if="selectedOption === 'motor'">
@@ -226,6 +266,7 @@
       </section>
     </div>
   </div>
+   
 
   <!--  Logica para asignar incidencia, por tiempo no alcanzamos a realizarlo
   <div v-if="selectedOption === 'asignincidencia'">
@@ -274,18 +315,51 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 export default{
   name: 'App',
   setup() {
+    const selectedOption = ref('html');
     const router = useRouter();
-    return {
-      selectedOption: ref('motor'),
-      router
+    const camiones = ref([]);
+    const fetchCamiones = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/camiones/');
+        camiones.value = response.data.map(camion => ({
+          ...camion,
+          estado: camion.estado || 'Inactivo' // Asigna 'Inactivo' si el estado es indefinido
+        }));
+      } catch (error) {
+        console.error('Error fetching camiones:', error);
+      }
     };
+    const updateCamion = async (camion) => {
+      try {
+        const updatedEstado = camion.estado === 'Activo' ? 'Inactivo' : 'Activo';
+        await axios.patch(`http://localhost:8000/api/camiones/${camion.id_camion}/`, {
+          estado: updatedEstado
+        });
+        camion.estado = updatedEstado;
+      } catch (error) {
+        console.error('Error updating camion:', error);
+      }
+    };
+    onMounted(() => {
+      fetchCamiones();
+    });
+    return {
+      //selectedOption: ref('motor'),
+      selectedOption,
+      router, 
+      camiones,
+      updateCamion
+
+    };
+    
+    
   },
 
           
@@ -852,6 +926,54 @@ button:hover {
   transform: scale(1.2);
   border-color: #4c8bf5;
   box-shadow: 0 0 20px #4c8bf580;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  border-radius: 50%;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.round {
+  border-radius: 34px;
 }
 
 

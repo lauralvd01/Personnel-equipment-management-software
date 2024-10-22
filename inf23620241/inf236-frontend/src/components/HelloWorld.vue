@@ -61,10 +61,13 @@ export default {
 
         // Verificar si el inicio de sesión fue exitoso
         if (response.data.success) {
+          console.log(response.data.rol);
           if (response.data.rol === 'Jefe') {
             this.$router.push('/vistaJefeMotores/');
           } else if (response.data.rol === 'Mecánico') {
             this.$router.push('/vistaMecanico/' + response.data.id_usuario);
+          } else if (response.data.rol === 'Conductor') {
+            this.$router.push('/vistaConductores/' + response.data.id_usuario);
           } else {
             this.msg = 'Rol de usuario desconocido';
           }

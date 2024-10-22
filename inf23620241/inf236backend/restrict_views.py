@@ -7,7 +7,8 @@ class RestrictViewMiddleware:
     def call(self, request):
         restricted_paths = [
             '/vistaMecanico/', 
-            '/vistaJefeMotores/',    # Agrega aquí las otras rutas que deseas restringir
+            '/vistaJefeMotores/', 
+            '/vistaConductores/',   # Agrega aquí las otras rutas que deseas restringir
         ]
 
         if request.path in restricted_paths:

@@ -67,6 +67,14 @@ class Incidencia(models.Model):
     mecanico_asignado = models.ForeignKey(Usuario, on_delete=models.CASCADE, null=True)
     # Caso de que la incidencia tenga varios mecanicos asociados --> Por hacer (necesita construir una tabla mas)
 
+class Antecedente(models.Model):
+    antecedente_id = models.AutoField(primary_key=True)
+    camion = models.ForeignKey(Camion, on_delete=models.CASCADE)
+    motor = models.ForeignKey(Motor, on_delete=models.CASCADE)
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    problem_description = models.TextField(default="", null=True, blank=True)
+    antecedente_date = models.DateTimeField(null=True, blank=True)
+
 
 
 

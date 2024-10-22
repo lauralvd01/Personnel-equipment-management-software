@@ -17,10 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from inf236backend.views import MotorViewSet, SistemaViewSet, ComponenteViewSet, CamionViewSet, AsignacionMotorCamionViewSet, UsuarioViewSet, IncidenciaViewSet
+from inf236backend.views import MotorViewSet, SistemaViewSet, ComponenteViewSet, CamionViewSet, AsignacionMotorCamionViewSet, UsuarioViewSet, IncidenciaViewSet, AntecedenteViewSet
 from inf236backend.views import login, filtrar_incidencias
 
-from inf236backend.views import creacion_motor, creacion_camion, getAllCamiones, getAllMotores, getAllAsignaciones, handle_incident, search_incidents, search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password, creacion_usuario
+from inf236backend.views import creacion_motor, creacion_camion, getAllCamiones, getAllMotores, getAllAsignaciones, handle_incident, search_incidents, search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password, creacion_usuario, getAllTrucks
 
 router = DefaultRouter()
 router.register(r'motor',MotorViewSet)
@@ -30,6 +30,7 @@ router.register(r'camion',CamionViewSet)
 router.register(r'asignacion',AsignacionMotorCamionViewSet)
 router.register(r'usuario',UsuarioViewSet)
 router.register(r'incidencia',IncidenciaViewSet)
+router.register(r'antecedente', AntecedenteViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -55,6 +56,9 @@ urlpatterns = [
     path('api/camion/create', creacion_camion, name='creacion_camion'),
     path('api/camion/all', getAllCamiones, name='getAllCamiones'),
     path('api/motor/all', getAllMotores, name='getAllMotores'),
-    path('api/asignacion/all', getAllAsignaciones, name='getAllAsignaciones')
+    path('api/asignacion/all', getAllAsignaciones, name='getAllAsignaciones'),
+    path('api/camiones/', getAllTrucks, name= 'get_all_trucks'),
+    #path('api/antecedentes/submit/', submit_antecedente, name='submitantecedente'),
+
 ]
 
