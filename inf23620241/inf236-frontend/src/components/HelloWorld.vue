@@ -12,10 +12,10 @@
         </div>
         
         <!-- Campo de entrada para el RUT -->
-        <input v-model="usuario.rut" type="text" placeholder="Rut en bdd" name="rut_en_bdd" class="input" required>
+        <input v-model="usuario.rut" type="text" placeholder="Rut" name="rut_en_bdd" class="input" required>
         
         <!-- Campo de entrada para la contraseña -->
-        <input v-model="usuario.contrasena" type="password" placeholder="Contraseña en bdd" name="password_en_bdd" class="input" required>
+        <input v-model="usuario.contrasena" type="password" placeholder="Contraseña" name="password_en_bdd" class="input" required>
         
         <!-- Botón de enviar para el formulario -->
         <button @click="login" class="button-confirm">Ingresar</button>
@@ -61,7 +61,7 @@ export default {
 
         // Verificar si el inicio de sesión fue exitoso
         if (response.data.success) {
-          console.log(response.data.rol);
+          console.log("rol recibido: ", response.data.rol);
           if (response.data.rol === 'Jefe') {
             this.$router.push('/vistaJefeMotores/');
           } else if (response.data.rol === 'Mecánico') {

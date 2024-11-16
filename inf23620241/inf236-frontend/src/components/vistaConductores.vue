@@ -31,11 +31,11 @@
       <div class="containerGeneral">
         <section class="container">
           <header>Formulario de informe de un antecedente</header>
-          <form @submit.prevent="submitReport">
+          <form @submit.prevent="submitForm">
             <div class="column">
               <div class="input-box">
                 <label>Patente del Camión</label>
-                <input v-model="report.camion_id" required placeholder="Ingrese el ID del camión" type="text" />
+                <input v-model="report.patente" required placeholder="Ingrese la patente del camión" type="text" />
               </div>
               <!-- <div class="input-box">
                 <label>ID del Usuario</label>
@@ -72,7 +72,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>{{ response_report.camion_id }}</td>
+                  <td>{{ response_report.patente }}</td>
                   <td>{{ response_report.user_id }}</td>
                   <td>{{ response_report.record_date }}</td>
                   <td>{{ response_report.problem_description }}</td>
@@ -81,6 +81,34 @@
             </table>
           </div>
         </section>
+      </div>
+    </div>
+    <!---------  Historial de incidencias del usuario ------------->
+    <div v-if="selectedOption === 'search'">
+      <div class = 'containerGeneral'>
+        <section class="container">
+            <header>Historial de antecedentes</header>
+            <div v-if="historial.length > 0">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Patente</th>
+                    <th>Fecha de antecedente</th>
+                    <th>Descripción del problema</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="record in historial" :key="record.id">
+                    <td>{{ record.patente}}</td>
+                    <td>{{ record.record_date }}</td>
+                    <td>{{ record.problem_description }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p v-else> No hay antecedentes disponibles.</p>
+        </section>
+
       </div>
     </div>
   </div>
@@ -104,9 +132,9 @@ export default {
   data() {
     return {
       response_report: null,
+      historial: [],
       report: {
-        camion_id: '', // Nuevo campo para ID del camión
-        user_id: '',   // Nuevo campo para ID del usuario
+        patente: '', // Nuevo campo para patente del camión
         problem_description: '',
         record_date: '',
       },
@@ -114,6 +142,13 @@ export default {
       isSuccess: false, // Variable para el estado del mensaje de éxito o error
     };
   },
+  watch: {
+        selectedOption(newOption) {
+          if (newOption === 'search') {
+          this.fetchRecords();
+        }
+      }
+    },
   methods: {
     async submitReport() {
       try {
@@ -131,7 +166,19 @@ export default {
         this.isSuccess = false;
       }
     },
-  },
+    async fetchRecords() {
+      try {
+        const response = await axios.get('api/antecedentes/{user_id>}');
+        if (response.ok) {                            
+          this.historial = await response.data;
+        } else {
+          this.message = 'Error al obtener historial de antecedentes';
+        }
+      } catch (error) {
+        this.message = 'Error en la conexión con el servidor';
+      }
+    },
+  }
 };
 </script>
 
@@ -433,5 +480,20 @@ button:hover {
   transform: scale(1.2);
   border-color: #4c8bf5;
   box-shadow: 0 0 20px #4c8bf580;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  border: 2px solid #555;
+  padding: 10px;
+}
+
+table th {
+  background-color: #f2f2f2;
+  text-align: left;
 }
 </style>

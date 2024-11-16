@@ -367,7 +367,7 @@ export default{
   data() {
     return {
       motores: [],
-      camiones: [],
+      //camiones: [],
       asignacioncamionmotores: [],
       incidentsList: [],
       desaginacionmotorcamion: {
