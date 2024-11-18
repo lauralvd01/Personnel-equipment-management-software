@@ -101,27 +101,7 @@ class IncidenciaViewSet(viewsets.ModelViewSet):
             return Response(new_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class AntecedenteViewSet(viewsets.ModelViewSet):
-    queryset = Antecedente.objects
-    serializer_class = AntecedenteSerializer
-    permission_classes = [IsAuthenticated]
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        
-        self.perform_create(serializer)
-
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-        return super().create(request, *args, **kwargs)
-
-    def perform_create(self, serializer):
-        serializer.save(usuario=self.request.user)
-    
-
-    
 ###################################### LOGIN ######################################################
 @api_view(['POST'])
 def login(request):
@@ -188,11 +168,30 @@ def filtrar_incidencias(request):
 
 
 
+################################################ ANTECEDENTES ################################################
 
+class AntecedenteViewSet(viewsets.ModelViewSet):
+    queryset = Antecedente.objects.all()
+    serializer_class = AntecedenteSerializer
 
-
-
-
+    def create(self, request, *args, **kwargs):
+        # Crear el serializer para los antecedentes
+        serializer = AntecedenteSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            # Guardar el antecedente
+            serializer.save()
+            
+            # Puedes agregar lógicas adicionales aquí si es necesario, como actualizar el camión o motor.
+            # Ejemplo:
+            # camion = serializer.validated_data['camion']
+            # camion.estado = 'En reparación'
+            # camion.save()
+            
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        # Si el serializer no es válido, retornar los errores
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 ###################################### A partir de acá se hacen pruebas de conexión Controlador-Vista ####################################################################
 # Nueva vista para manejar la solicitud POST del formulario de incidencias
@@ -397,24 +396,19 @@ def getAllTrucks(request):
         serializer = CamionSerializer(camiones , many = True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response({'error': 'No hay camiones creados'}, status=status.HTTP_400_BAD_REQUEST)
+################################################# ANTECEDENTES #####################################################
+@api_view(['POST'])
+def submit_antecedente(request):
+    serializer = AntecedenteSerializer(data=request.data)
+    
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-#@api_view(['POST'])
-#def submit_antecedente(request):
-#    serializer = AntecedenteSerializer(data=request.data)
-#    if serializer.is_valid():
-#        print(f"Serializer data: {serializer.validated_data}")
-#        serializer.save()
-#        return Response(serializer.data, status=status.HTTP_201_CREATED)
-#    print(f"Serializer errors: {serializer.errors}")
-#    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-#@api_view(['POST'])
-#def asignacionMotorCamion(request):
- #   serializer = AsignacionMotorCamionSerializer(data=request.data)
-  #  if serializer.is_valid():
-    #    print(f"Serializer data: {serializer.validated_data}")
-   #     serializer.save()
-    #    return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #print(f"Serializer errors: {serializer.errors}")
-    #return Response(serializer.errors, status=status.   HTTP_400_BAD_REQUEST)  
+@api_view(['GET'])
+def get_antecedentes(request):
+    antecedentes = Antecedente.objects.all()  # Obtener todos los antecedentes
+    serializer = AntecedenteSerializer(antecedentes, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

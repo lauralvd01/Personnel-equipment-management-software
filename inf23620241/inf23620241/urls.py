@@ -20,7 +20,7 @@ from rest_framework.routers import DefaultRouter
 from inf236backend.views import MotorViewSet, SistemaViewSet, ComponenteViewSet, CamionViewSet, AsignacionMotorCamionViewSet, UsuarioViewSet, IncidenciaViewSet, AntecedenteViewSet
 from inf236backend.views import login, filtrar_incidencias
 
-from inf236backend.views import creacion_motor, creacion_camion, getAllCamiones, getAllMotores, getAllAsignaciones, handle_incident, search_incidents, search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password, creacion_usuario, getAllTrucks
+from inf236backend.views import creacion_motor, creacion_camion, getAllCamiones, getAllMotores, getAllAsignaciones, handle_incident, search_incidents, search_asign, submit_incident, getAllIncidents, search_incidents, edit_incident, edit_password, creacion_usuario, getAllTrucks, submit_antecedente, get_antecedentes
 
 router = DefaultRouter()
 router.register(r'motor',MotorViewSet)
@@ -58,7 +58,7 @@ urlpatterns = [
     path('api/motor/all', getAllMotores, name='getAllMotores'),
     path('api/asignacion/all', getAllAsignaciones, name='getAllAsignaciones'),
     path('api/camiones/', getAllTrucks, name= 'get_all_trucks'),
-    #path('api/antecedentes/submit/', submit_antecedente, name='submitantecedente'),
-
-]
+    path('api/antecedente/', get_antecedentes, name='get_antecedentes'),  # GET para obtener antecedentes
+    path('api/antecedente/create/', submit_antecedente, name='create_antecedente'),  # POST para crear antecedente
+    ]
 

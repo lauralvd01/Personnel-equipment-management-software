@@ -2,7 +2,7 @@ version: '3'
 services:
   db:
     image: mysql
-    command: --mysql-native-password=ON
+    #command: --mysql-native-password=ON
     container_name: inf236_backend_mariadb
     restart: always
     env_file:

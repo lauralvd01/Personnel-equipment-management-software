@@ -31,7 +31,7 @@
       <div class="containerGeneral">
         <section class="container">
           <header>Formulario de informe de un antecedente</header>
-          <form @submit.prevent="submitForm">
+          <form @submit.prevent="submitReport">
             <div class="column">
               <div class="input-box">
                 <label>Patente del Camión</label>
@@ -134,25 +134,26 @@ export default {
       response_report: null,
       historial: [],
       report: {
-        patente: '', // Nuevo campo para patente del camión
+        placa: '',  // Asumí que el campo es "patente" en vez de "placa"
         problem_description: '',
         record_date: '',
       },
       message: '',
-      isSuccess: false, // Variable para el estado del mensaje de éxito o error
+      isSuccess: false,
+      userId: 1, // Establecer el ID de usuario de forma estática para pruebas, o puedes obtenerlo dinámicamente
     };
   },
   watch: {
-        selectedOption(newOption) {
-          if (newOption === 'search') {
-          this.fetchRecords();
-        }
+    selectedOption(newOption) {
+      if (newOption === 'search') {
+        this.fetchRecords();
       }
-    },
+    }
+  },
   methods: {
     async submitReport() {
       try {
-        const response = await axios.post('http://localhost:8000/antecedente/', this.report);
+        const response = await axios.post('http://localhost:8000/api/antecedente/create/', this.report);
         this.message = 'Formulario enviado exitosamente.';
         this.isSuccess = true;
         this.response_report = response.data;
@@ -168,9 +169,10 @@ export default {
     },
     async fetchRecords() {
       try {
-        const response = await axios.get('api/antecedentes/{user_id>}');
-        if (response.ok) {                            
-          this.historial = await response.data;
+        // Modificar la URL de la API para obtener los antecedentes con el user_id
+        const response = await axios.get(`http://localhost:8000/api/antecedente/?user_id=${this.userId}`);
+        if (response.status === 200) {
+          this.historial = response.data;
         } else {
           this.message = 'Error al obtener historial de antecedentes';
         }

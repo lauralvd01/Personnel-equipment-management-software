@@ -30,11 +30,13 @@ class Componente(models.Model):
 class Camion(models.Model):
     id_camion = models.AutoField(primary_key=True)
     n_serie = models.CharField(max_length=256, default="XXX")
-    placa = models.CharField(max_length=256, default="Placa")
+    placa = models.CharField(max_length=6, default="XXXXXX")
     estado = models.CharField(max_length=256, default="Operativo")
     fecha_inicio = models.DateTimeField(null=True, blank=True)
     durabilidad = models.IntegerField(default=0)
-
+    #def __str__(self):
+       # return f"Camión {self.id_camion} - Placa {self.placa}"
+    
 class AsignacionMotorCamion(models.Model):
     id_asignacion = models.AutoField(primary_key=True)
     motor = models.ForeignKey(Motor, on_delete=models.CASCADE)
