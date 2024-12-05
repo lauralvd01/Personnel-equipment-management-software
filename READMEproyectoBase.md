@@ -1,61 +1,62 @@
-# Proyecto Base
+# Base project
 
-- [Proyecto Base](#proyecto-base)
-  - [Instalación](#instalación)
-    - [Creación del proyecto:](#creación-del-proyecto)
-    - [Parte con Django:](#parte-con-django)
+- [Base project](#base-project)
+  - [Installation](#instlalation)
+    - [Creation of the project:](#creation-of-the-project)
+    - [Part with Django:](#part-with-django)
   - [Endpoints](#endpoints)
 
-## Instalación
+## Installation
 
-* Instalar [Docker](https://docs.docker.com/engine/install/).
-* Instalar [Docker Compose](https://docs.docker.com/compose/install/)
-* Clonar este repositorio e ingresar el siguiente código:
+* Install [Docker](https://docs.docker.com/engine/install/).
+* Install [Docker Compose](https://docs.docker.com/compose/install/)
+* Clone this repo and execute this code:
 ```
 docker-compose build
 docker-compose up
 ```
 
-¡Listo!
+Ready!
 
-Este proyecto contiene los docker de la Base de Datos y la API. Deben añadir un tercer contenedor al archivo `docker-compose-yaml` con las configuraciones de la Vista que deseen utilizar.
+This project contains the dockers of the Database and the API. You need to add a third container in the archive `docker-compose-yaml` with the configurations that you want to use for the Views.
 
-A continuación se presenta una breve explicación de los pasos hechos para crearlo.
+Next is a short explication of the steps done during the creation of this project.
 
-### Creación del proyecto:
-* Crear el entorno virtual `python3 -m venv venv`.
+### Creation of the project:
+* Create the virtual environment `python3 -m venv venv`.
 
-Se utiliza el modulo `venv` (penúltimo argumento), que se instala en la carpeta creada `venv` (último argumento). 
+We install the module `venv` (first argument) in the folder created `venv` (last argument).
 
-* Setear entorno virtual `source venv/bin/activate`
+* Activate the virtual environment `source venv/bin/activate`
 
-Esto es para activar el entorno virtual, así cualquier `pip install ...` que se realice, se instalará en dicho entorno.
+So that every `pip install ...` install the packages in this environment.
 
-### Parte con Django:
-Creación del modelo, en este caso se crea la entidad **Motor** con su atributo **n_serie**, el cual hace referencia a _Número de serie_. 
+### Part with Django:
+- Creation of some models, in this case the 
+**Motor** entity with its atribute *serial_number*. 
 
-Luego se hace migración a la Base de Datos con los siguientes comandos:
+- Migration of the database with the following commands:
 ```
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-A continuación se crea el _serializer_, esto es un componente de Django que permite transformar y manejar diferentes modelos de datos (para que Django entienda el modelo).
+- Creation of the _serializer_, a Django component that allows to transform and manage different model types.
 
-Luego se creó la lógica del negocio. Se utiliza la clase padre `ModelViewSet`, la cual permite heredar las acciones CRUD necesarias para el proyecto.
+- Creation of the business logic. The mother class `ModelViewSet` allows to inherit the CRUD actions needed for the project.
 
 
-PD: El código está comentado en inglés, para que practiquen ;D
 
 ## Endpoints
 
-Una vez hayan levantado los contenedores pueden utilizar [Postman](https://www.postman.com) u otra herramienta similar para probar los endpoints.
-En el proyecto base se han implementado los siguientes:
+Once the containers are up, you can use [Postman](https://www.postman.com) or another similar tool to test the endpoints.
+
+In the base project the following have been implemented:
 ```
 GET: localhost:8000/motor/
 POST: localhost:8000/motor/
 PUT: localhost:8000/motor/{id_motor}/
 DELETE: localhost:8000/motor/{id_motor}/
 ```
-Ejemplo:
+Example:
 ![POST request](./img/image.png)
